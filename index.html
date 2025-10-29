@@ -4,244 +4,43 @@
 <meta charset="UTF-8">
 <title>Judgement – Minimalist Online</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-  :root{
-    --bg:#0a1a0a; --card:#fff; --accent:#ffcc00; --table:#2c5f2c;
-    --radius:12px; --gap:1rem;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:Helvetica,Arial,sans-serif;background:var(--bg);color:#eee;display:flex;flex-direction:column;align-items:center;padding:1rem;}
-  h1{font-size:1.8rem;margin-bottom:.5rem;text-align:center;}
-  .screen{display:none;flex-direction:column;align-items:center;width:100%;max-width:800px;}
-  .screen.active{display:flex;}
-  input,button,select{padding:.6rem 1rem;margin:.3rem;border-radius:var(--radius);font-size:1rem;}
-  input,select{background:#222;color:#fff;border:1px solid #444;}
-  button{background:var(--accent);color:#000;border:none;cursor:pointer;transition:.2s;}
-  button:hover{transform:scale(1.04);}
-  .avatar-preview{width:60px;height:60px;border-radius:50%;object-fit:cover;margin:.5rem;}
-  #lobbyList,#hostSelect{margin-top:1rem;width:100%;max-width:400px;}
-  .player-item{display:flex;align-items:center;gap:.5rem;padding:.4rem;background:#222;border-radius:var(--radius);margin:.3rem 0;}
-  #table{
-    position:relative;width:90vmin;height:90vmin;max-width:600px;max-height:600px;
-    background:var(--table);border-radius:50%;margin:2rem 0;
-    box-shadow:0 0 30px rgba(0,0,0,.7);
-  }
-  .seat{
-    position:absolute;width:80px;height:110px;text-align:center;
-    transform:translate(-50%,-50%);
-  }
-  .seat img{width:60px;height:60px;border-radius:50%;object-fit:cover;}
-  .seat .name{margin-top:.3rem;font-size:.9rem;}
-  .hand{
-    position:absolute;bottom:-70px;left:50%;transform:translateX(-50%);
-    display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center;
-  }
-  .card{
-    width:45px;height:65px;background:var(--card);color:#000;
-    border-radius:6px;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;font-weight:bold;
-    box-shadow:0 2px 4px rgba(0,0,0,.4);cursor:pointer;
-  }
-  .card.spades,.card.clubs{color:#000;}
-  .card.hearts,.card.diamonds{color:#d00;}
-  .trick{display:flex;gap:.5rem;justify-content:center;margin:1rem 0;}
-  #msg{color:var(--accent);margin-top:.5rem;}
-.avatar-preview {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin: .8rem 0;
-}
-</style>
-<!-- Add this INSIDE <head>, before </head> -->
+<link rel="stylesheet" href="styles.css">
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
-
-<!-- Replace the entire <script> at the bottom with this: -->
-<script>
-/* ---------- YOUR FIREBASE CONFIG (PASTE HERE) ---------- */
-const firebaseConfig = {
-  apiKey: "AIzaSyC3-j38Zol7jqdPaCxr8gQ6eyqyfBmJiv4",
-  authDomain: "judgement-game-ef741.firebaseapp.com",
-  databaseURL: "https://judgement-game-ef741-default-rtdb.firebaseio.com",
-  projectId: "judgement-game-ef741",
-  storageBucket: "judgement-game-ef741.firebasestorage.app",
-  messagingSenderId: "518151609641",
-  appId: "1:518151609641:web:339ef9c79ce4ac98f22b38"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-/* ---------- GLOBAL STATE ---------- */
-const storage = {
-  players: [],
-  hostId: null,
-  round: 1,
-  cardsPerRound: 0,
-  deck: [],
-  hands: {},
-  trick: [],
-  leadSuit: null,
-  trump: null,
-  bids: {},
-  tricksWon: {},
-  myId: null,
-  gameRef: null  // New: Firebase game room
-};
-
-/* ---------- HELPERS (same as before) ---------- */
-const suits = ['♠','♥','♦','♣'];
-const ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
-function makeDeck(){
-  const d = [];
-  for(const s of suits)for(const r of ranks) d.push({suit:s,rank:r,value: ranks.indexOf(r)+1});
-  return d.sort(()=>Math.random()-.5);
-}
-function cardToString(c){ return c.rank+c.suit; }
-function suitColor(s){ return ['♠','♣'].includes(s)?'spades':'hearts'; }
-
-/* ---------- AVATAR PREVIEW (same) ---------- */
-document.getElementById('avatarSelect').addEventListener('change',e=>{
-  document.getElementById('avatarPreview').src = e.target.value;
-});
-
-/* ---------- REGISTER (now uses Firebase) ---------- */
-function registerPlayer(){
-  const name = document.getElementById('playerName').value.trim();
-  const avatar = document.getElementById('avatarSelect').value;
-  if(!name) return alert('Enter a name');
-  const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);  // Unique ID
-  const player = {id, name, avatar, joinedAt: Date.now()};
-  storage.myId = id;
-  
-  // Save to Firebase
-  const playersRef = db.ref('players');
-  playersRef.child(id).set(player).then(()=>{
-    showScreen('lobby');
-    listenForPlayers();  // Auto-update lobby
-  });
-}
-
-/* ---------- LOBBY WITH REAL-TIME SYNC ---------- */
-function listenForPlayers(){
-  const playersRef = db.ref('players');
-  playersRef.on('value', (snapshot) => {
-    const playersData = snapshot.val();
-    storage.players = playersData ? Object.values(playersData) : [];
-    refreshLobby();
-  });
-}
-function refreshLobby(){
-  const list = document.getElementById('lobbyList');
-  list.innerHTML = '';
-  storage.players.forEach(p=>{
-    const div = document.createElement('div');
-    div.className='player-item';
-    div.innerHTML = `<img src="${p.avatar}" width="40" height="40" style="border-radius:50%;"> ${p.name}`;
-    list.appendChild(div);
-  });
-  const hostSel = document.getElementById('hostSelect');
-  const startBtn = document.getElementById('startBtn');
-  if(storage.players.length >= 2){
-    hostSel.style.display = 'block';
-    startBtn.style.display = 'block';
-    hostSel.innerHTML = '';
-    storage.players.forEach(p=>{
-      const opt = document.createElement('option');
-      opt.value = p.id; opt.textContent = p.name + ' (host)';
-      hostSel.appendChild(opt);
-    });
-  } else {
-    hostSel.style.display = 'none';
-    startBtn.style.display = 'none';
-  }
-}
-function leaveLobby(){
-  db.ref('players').child(storage.myId).remove();
-  storage.myId = null;
-  showScreen('register');
-}
-
-/* ---------- START GAME (saves to Firebase game state) ---------- */
-function startGame(){
-  const hostId = document.getElementById('hostSelect').value;
-  if(!hostId) return alert('Pick a host');
-  storage.hostId = hostId;
-  const N = storage.players.length;
-  storage.cardsPerRound = Math.floor(52 / N);
-  storage.round = 1;
-  storage.players.forEach((p, i) => p.seat = i);
-  
-  // Save game state to Firebase
-  storage.gameRef = db.ref('game');
-  storage.gameRef.set({
-    hostId, players: storage.players, round: 1, cardsPerRound: storage.cardsPerRound,
-    hands: {}, trick: [], leadSuit: null, trump: suits[1 % suits.length]  // Initial trump
-  }).then(() => {
-    dealRound();
-    showScreen('game');
-    renderTable();
-    renderMyHand();
-    if(isMyTurn()) document.getElementById('msg').textContent = 'Your turn – lead a card';
-    listenForGameUpdates();  // Sync game state
-  });
-}
-
-/* ---------- REAL-TIME GAME SYNC ---------- */
-function listenForGameUpdates(){
-  if(!storage.gameRef) return;
-  storage.gameRef.on('value', (snapshot) => {
-    const gameData = snapshot.val();
-    if(gameData) {
-      // Update storage with game data (hands, trick, etc.)
-      Object.assign(storage, gameData);
-      renderTable();
-      renderMyHand();
-      renderCurrentTrick();
-    }
-  });
-}
-
-// ---------- DEAL, PLAY, RESOLVE (same logic, but update Firebase on changes) ----------
-function dealRound(){
-  // ... (same as original dealRound code)
-  // After dealing, update Firebase
-  storage.gameRef.update({ hands: storage.hands, trump: storage.trump });
-}
-
-function playCard(card, el){
-  if(!isMyTurn()) return;
-  const myId = storage.myId;
-  storage.hands[myId] = storage.hands[myId].filter(x => x !== card);
-  el.remove();
-  storage.trick.push({playerId: myId, card});
-  if(!storage.leadSuit) storage.leadSuit = card.suit;
-  storage.gameRef.update({ hands: storage.hands, trick: storage.trick, leadSuit: storage.leadSuit });
-  setTimeout(() => nextPlayerPlays(), 600);
-}
-
-// (Keep all other functions like nextPlayerPlays, resolveTrick, etc. – just add `storage.gameRef.update({ ... })` after state changes)
-
-// For brevity, the rest (resolveTrick, nextRound, etc.) stays the same as original, but call `storage.gameRef.update()` on state changes like hands/trick.
-
-function resetGame(){
-  db.ref('players').remove();
-  if(storage.gameRef) storage.gameRef.remove();
-  location.reload();
-}
-
-/* ---------- SCREEN SWITCH (same) ---------- */
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-/* ---------- INIT ---------- */
-listenForPlayers();  // Start listening on load
-</script>
+<!-- Project JavaScript Modules -->
+<script src="js/config.js"></script>
+<script src="js/state.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/register.js"></script>
+<script src="js/lobby.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/game.js"></script>
+<script src="js/userMenu.js"></script>
+<script src="js/init.js"></script>
 </head>
 <body>
+
+<!-- User Info Display (Top Right) -->
+<div id="userInfo" onclick="toggleUserMenu()">
+  <img id="userInfoAvatar" src="" alt="avatar">
+  <span class="userName" id="userInfoName"></span>
+  <div id="userMenu" onclick="event.stopPropagation()">
+    <button onclick="leaveGame()">Leave Game</button>
+    <button onclick="newGame()">New Game</button>
+  </div>
+</div>
+
+<!-- Scorecard Button (Top Left) -->
+<button id="scorecardBtn" onclick="toggleScorecard()" style="display:none;">📊 Scorecard</button>
+
+<!-- Scorecard Overlay -->
+<div id="scorecardOverlay" onclick="toggleScorecard()">
+  <div id="scorecardModal" onclick="event.stopPropagation()">
+    <h2>Game Scorecard</h2>
+    <button class="close-btn" onclick="toggleScorecard()">✕</button>
+    <div id="scorecardContent"></div>
+  </div>
+</div>
 
 <!-- ===== REGISTER SCREEN ===== -->
 <div id="register" class="screen active">
@@ -249,20 +48,20 @@ listenForPlayers();  // Start listening on load
   <input type="text" id="playerName" placeholder="Your name" maxlength="20">
 
   <select id="avatarSelect">
-    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar1">Avatar 1 – Short hair</option>
-    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar2">Avatar 2 – Beard</option>
-    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar3">Avatar 3 – Glasses</option>
-    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar4">Avatar 4 – Ponytail</option>
-    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar5">Avatar 5 – Hat</option>
-    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar6">Avatar 6 – Curly</option>
-    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar7">Avatar 7 – Bob</option>
-    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar8">Avatar 8 – Dreadlocks</option>
-    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar9">Avatar 9 – Mohawk</option>
-    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar10">Avatar 10 – Bald</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix">Avatar 1 – Cool Guy</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka">Avatar 2 – Curly Hair</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=Charlie">Avatar 3 – Glasses</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=Lucy">Avatar 4 – Ponytail</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=Max">Avatar 5 – Bearded</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=Sophie">Avatar 6 – Hat</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=Oscar">Avatar 7 – Bald</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=Emma">Avatar 8 – Bob Cut</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=Jack">Avatar 9 – Mohawk</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=Mia">Avatar 10 – Long Hair</option>
   </select>
 
   <img id="avatarPreview" class="avatar-preview"
-       src="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar1" alt="preview">
+       src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="preview">
 
   <button onclick="registerPlayer()">Join Game</button>
 </div>
@@ -270,362 +69,55 @@ listenForPlayers();  // Start listening on load
 <!-- ===== LOBBY SCREEN ===== -->
 <div id="lobby" class="screen">
   <h1>Lobby</h1>
+  <div id="lobbyInfo" style="background:#222;padding:1rem;border-radius:var(--radius);margin-bottom:1rem;"></div>
   <div id="lobbyList"></div>
-  <select id="hostSelect" style="display:none;"></select>
+  <div id="hostSelectContainer" style="display:none;margin-top:1rem;">
+    <label style="display:block;margin-bottom:0.3rem;font-weight:bold;">Select Starting Player (Host):</label>
+    <select id="hostSelect"></select>
+  </div>
+  <div id="roundSelectContainer" style="display:none;margin-top:1rem;">
+    <label style="display:block;margin-bottom:0.3rem;font-weight:bold;">Starting Cards:</label>
+    <select id="roundSelect"></select>
+    <small style="display:block;color:#aaa;margin-top:0.3rem;">Select number of cards to start with (Round 1)</small>
+  </div>
   <button id="startBtn" style="display:none;" onclick="startGame()">Start Game</button>
-  <button onclick="leaveLobby()">Leave</button>
 </div>
 
 <!-- ===== GAME SCREEN ===== -->
 <div id="game" class="screen">
   <h1 id="roundInfo"></h1>
+  <p id="playerName" style="color:var(--accent);font-size:1.2rem;font-weight:bold;margin:.5rem 0;"></p>
+  
+  <!-- Scoreboard -->
+  <div id="scoreboard"></div>
+  
+  <!-- Deal Button (only dealer sees this) -->
+  <button id="dealBtn" style="display:none;" onclick="dealCards()">Deal Cards</button>
+  
+  <!-- Bidding UI -->
+  <div id="biddingUI">
+    <p id="biddingPrompt"></p>
+    <div style="display:flex;gap:.5rem;justify-content:center;margin-top:.5rem;">
+      <select id="bidSelect"></select>
+      <button onclick="submitBid()">Submit Bid</button>
+    </div>
+  </div>
+  
   <div id="table"></div>
+  <div id="centerMsg"></div>
   <div class="hand" id="myHand"></div>
-  <div class="trick" id="currentTrick"></div>
   <div id="msg"></div>
-  <button onclick="resetGame()">New Game</button>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-database-compat.js"></script>
-
-<script>
-/* ---------- YOUR FIREBASE CONFIG (PASTED BY YOU) ---------- */
-const firebaseConfig = {
-  apiKey: "AIzaSy...",  // ← Your real values
-  authDomain: "judgement-game.firebaseapp.com",
-  databaseURL: "https://judgement-game-default-rtdb.firebaseio.com",
-  projectId: "judgement-game",
-  storageBucket: "judgement-game.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef123456"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-/* ---------- GLOBAL STATE ---------- */
-const storage = {
-  players: [],
-  hostId: null,
-  round: 1,
-  cardsPerRound: 0,
-  deck: [],
-  hands: {},
-  trick: [],
-  leadSuit: null,
-  trump: null,
-  bids: {},
-  tricksWon: {},
-  myId: null,
-  gameRef: null,
-  isHost: false
-};
-
-/* ---------- HELPERS ---------- */
-const suits = ['♠','♥','♦','♣'];
-const ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
-function makeDeck(){
-  const d = [];
-  for(const s of suits)for(const r of ranks) d.push({suit:s,rank:r,value: ranks.indexOf(r)+1});
-  return d.sort(()=>Math.random()-.5);
-}
-function suitColor(s){ return ['♠','♣'].includes(s)?'spades':'hearts'; }
-
-/* ---------- AVATAR PREVIEW ---------- */
-document.getElementById('avatarSelect').addEventListener('change',e=>{
-  document.getElementById('avatarPreview').src = e.target.value;
-});
-
-/* ---------- REGISTER ---------- */
-function registerPlayer(){
-  const name = document.getElementById('playerName').value.trim();
-  const avatar = document.getElementById('avatarSelect').value;
-  if(!name) return alert('Enter a name');
-  const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
-  const player = {id, name, avatar, joinedAt: Date.now()};
-  storage.myId = id;
-  
-  db.ref('players').child(id).set(player).then(()=>{
-    showScreen('lobby');
-    listenForPlayers();
-  }).catch(err => alert('Error: ' + err.message));
-}
-
-/* ---------- LOBBY SYNC ---------- */
-function listenForPlayers(){
-  db.ref('players').on('value', (snapshot) => {
-    const data = snapshot.val();
-    storage.players = data ? Object.values(data) : [];
-    storage.players.sort((a,b) => a.joinedAt - b.joinedAt);
-    refreshLobby();
-  });
-}
-
-function refreshLobby(){
-  const list = document.getElementById('lobbyList');
-  list.innerHTML = '';
-  storage.players.forEach(p => {
-    const div = document.createElement('div');
-    div.className = 'player-item';
-    div.innerHTML = `<img src="${p.avatar}" width="40" height="40" style="border-radius:50%;"> ${p.name}`;
-    list.appendChild(div);
-  });
-
-  const hostSel = document.getElementById('hostSelect');
-  const startBtn = document.getElementById('startBtn');
-  if(storage.players.length >= 2){
-    hostSel.style.display = 'block';
-    startBtn.style.display = 'block';
-    hostSel.innerHTML = '';
-    storage.players.forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = p.name + (p.id === storage.myId ? ' (You)' : '');
-      hostSel.appendChild(opt);
-    });
-  } else {
-    hostSel.style.display = 'none';
-    startBtn.style.display = 'none';
-  }
-}
-
-/* ---------- LEAVE LOBBY ---------- */
-function leaveLobby(){
-  if(storage.myId) db.ref('players').child(storage.myId).remove();
-  storage.myId = null;
-  showScreen('register');
-}
-
-/* ---------- START GAME ---------- */
-function startGame(){
-  const hostId = document.getElementById('hostSelect').value;
-  if(!hostId) return alert('Pick a host');
-  storage.hostId = hostId;
-  storage.isHost = (hostId === storage.myId);
-  const N = storage.players.length;
-  storage.cardsPerRound = Math.floor(52 / N);
-  storage.round = 1;
-  storage.players.forEach((p, i) => p.seat = i);
-
-  storage.gameRef = db.ref('game');
-  const initialState = {
-    hostId, players: storage.players, round: 1, cardsPerRound: storage.cardsPerRound,
-    hands: {}, trick: [], leadSuit: null, trump: suits[0], status: 'dealing'
-  };
-  storage.gameRef.set(initialState).then(() => {
-    dealRound();
-    showScreen('game');
-    listenForGameUpdates();
-  });
-}
-
-/* ---------- GAME SYNC ---------- */
-function listenForGameUpdates(){
-  storage.gameRef.on('value', (snapshot) => {
-    const data = snapshot.val();
-    if(!data) return;
-    Object.assign(storage, data);
-    renderTable();
-    renderMyHand();
-    renderCurrentTrick();
-    updateRoundInfo();
-    if(data.status === 'ended') endGame();
-  });
-}
-
-function updateRoundInfo(){
-  const cardsThisRound = storage.cardsPerRound - storage.round + 1;
-  document.getElementById('roundInfo').textContent =
-    `Round ${storage.round} – ${cardsThisRound > 0 ? cardsThisRound : 0} cards – Trump: ${storage.trump}`;
-}
-
-/* ---------- DEAL ROUND ---------- */
-function dealRound(){
-  if(!storage.isHost) return;
-  const N = storage.players.length;
-  const cardsThisRound = storage.cardsPerRound - storage.round + 1;
-  if(cardsThisRound <= 0) return endGame();
-
-  storage.deck = makeDeck();
-  storage.hands = {};
-  storage.trick = [];
-  storage.leadSuit = null;
-  storage.trump = suits[storage.round % suits.length];
-  storage.tricksWon = {};
-
-  let idx = 0;
-  for(let i = 0; i < cardsThisRound; i++){
-    storage.players.forEach(p => {
-      if(idx < 52){
-        const card = storage.deck[idx++];
-        if(!storage.hands[p.id]) storage.hands[p.id] = [];
-        storage.hands[p.id].push(card);
-      }
-    });
-  }
-
-  Object.keys(storage.hands).forEach(id => {
-    storage.hands[id].sort((a,b) => {
-      if(a.suit !== b.suit) return suits.indexOf(a.suit) - suits.indexOf(b.suit);
-      return a.value - b.value;
-    });
-  });
-
-  storage.gameRef.update({
-    hands: storage.hands,
-    trump: storage.trump,
-    trick: [],
-    leadSuit: null,
-    status: 'playing'
-  });
-}
-
-/* ---------- RENDER TABLE ---------- */
-function renderTable(){
-  const table = document.getElementById('table');
-  table.innerHTML = '';
-  const N = storage.players.length;
-  storage.players.forEach((p, i) => {
-    const angle = (i / N) * 2 * Math.PI - Math.PI / 2;
-    const radius = 38;
-    const x = 50 + radius * Math.cos(angle);
-    const y = 50 + radius * Math.sin(angle);
-    const seat = document.createElement('div');
-    seat.className = 'seat';
-    seat.style.left = x + '%';
-    seat.style.top = y + '%';
-    seat.innerHTML = `<img src="${p.avatar}" alt="${p.name}"><div class="name">${p.name}</div>`;
-    table.appendChild(seat);
-  });
-  updateRoundInfo();
-}
-
-/* ---------- RENDER MY HAND ---------- */
-function renderMyHand(){
-  const handDiv = document.getElementById('myHand');
-  handDiv.innerHTML = '';
-  const myCards = storage.hands[storage.myId] || [];
-  myCards.forEach(c => {
-    const el = document.createElement('div');
-    el.className = `card ${suitColor(c.suit)}`;
-    el.textContent = c.rank + c.suit;
-    el.onclick = () => playCard(c, el);
-    handDiv.appendChild(el);
-  });
-}
-
-/* ---------- PLAY CARD ---------- */
-function playCard(card, el){
-  if(!isMyTurn()) return;
-  storage.hands[storage.myId] = storage.hands[storage.myId].filter(x => x !== card);
-  el.remove();
-  storage.trick.push({playerId: storage.myId, card});
-  if(!storage.leadSuit) storage.leadSuit = card.suit;
-  storage.gameRef.update({ hands: storage.hands, trick: storage.trick, leadSuit: storage.leadSuit });
-  setTimeout(checkTrickComplete, 800);
-}
-
-function checkTrickComplete(){
-  if(storage.trick.length === storage.players.length){
-    setTimeout(resolveTrick, 1000);
-  } else if(isMyTurn()){
-    document.getElementById('msg').textContent = 'Your turn!';
-  }
-}
-
-function isMyTurn(){
-  if(storage.trick.length === 0) return storage.hostId === storage.myId;
-  const lastPlayer = storage.trick[storage.trick.length - 1].playerId;
-  const nextIdx = (storage.players.findIndex(p => p.id === lastPlayer) + 1) % storage.players.length;
-  return storage.players[nextIdx].id === storage.myId;
-}
-
-/* ---------- RESOLVE TRICK ---------- */
-function resolveTrick(){
-  let winner = null;
-  let bestVal = -1;
-  storage.trick.forEach(t => {
-    let val = t.card.value;
-    if(t.card.suit === storage.trump) val += 100;
-    else if(t.card.suit !== storage.leadSuit) val = -100;
-    if(val > bestVal){
-      bestVal = val;
-      winner = t.playerId;
-    }
-  });
-  if(!storage.tricksWon[winner]) storage.tricksWon[winner] = 0;
-  storage.tricksWon[winner]++;
-
-  storage.gameRef.update({ tricksWon: storage.tricksWon, trick: [], leadSuit: null });
-
-  const allEmpty = Object.values(storage.hands).every(h => h.length === 0);
-  if(allEmpty){
-    setTimeout(nextRound, 1500);
-  } else {
-    setTimeout(() => {
-      if(winner === storage.myId){
-        document.getElementById('msg').textContent = 'You won the trick – lead!';
-      }
-    }, 800);
-  }
-}
-
-/* ---------- NEXT ROUND ---------- */
-function nextRound(){
-  storage.round++;
-  const cardsNext = storage.cardsPerRound - storage.round + 1;
-  if(cardsNext <= 0 || !storage.isHost){
-    endGame();
-    return;
-  }
-  storage.gameRef.update({ round: storage.round, status: 'dealing' });
-  dealRound();
-}
-
-/* ---------- END GAME ---------- */
-function endGame(){
-  let scoreText = 'Game Over!\n\n';
-  storage.players.forEach(p => {
-    const won = storage.tricksWon[p.id] || 0;
-    scoreText += `${p.name}: ${won} tricks\n`;
-  });
-  alert(scoreText);
-  storage.gameRef.update({ status: 'ended' });
-  setTimeout(resetGame, 2000);
-}
-
-function resetGame(){
-  db.ref('players').remove();
-  db.ref('game').remove();
-  location.reload();
-}
-
-/* ---------- RENDER TRICK ---------- */
-function renderCurrentTrick(){
-  const div = document.getElementById('currentTrick');
-  div.innerHTML = '';
-  storage.trick.forEach(t => {
-    const el = document.createElement('div');
-    el.className = `card ${suitColor(t.card.suit)}`;
-    el.textContent = t.card.rank + t.card.suit;
-    div.appendChild(el);
-  });
-}
-
-/* ---------- SCREEN SWITCH ---------- */
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-/* ---------- INIT ---------- */
-listenForPlayers();
-
-/* ---------- AVATAR PREVIEW UPDATE ---------- */
-document.getElementById('avatarSelect').addEventListener('change', function() {
-  const selectedUrl = this.value;
-  document.getElementById('avatarPreview').src = selectedUrl;
-});
-</script>
+<script type="module" src="js/config.js"></script>
+<script src="js/state.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/register.js"></script>
+<script src="js/lobby.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/game.js"></script>
+<script src="js/userMenu.js"></script>
+<script src="js/scorecard.js"></script>
+<script src="js/init.js"></script>
 </body>
 </html>
