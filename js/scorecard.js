@@ -1,15 +1,10 @@
 /* ---------- SCORECARD FUNCTIONS ---------- */
 
 function toggleScorecard() {
-  console.log('toggleScorecard called');
   const overlay = document.getElementById('scorecardOverlay');
-  if (!overlay) {
-    console.error('scorecardOverlay not found');
-    return;
-  }
+  if (!overlay) return;
   
   const isShowing = overlay.classList.contains('show');
-  console.log('isShowing:', isShowing);
   
   if (isShowing) {
     overlay.classList.remove('show');
@@ -20,7 +15,6 @@ function toggleScorecard() {
 }
 
 function renderScorecard() {
-  console.log('renderScorecard called');
   const content = document.getElementById('scorecardContent');
   
   // Always show scorecard, even if no rounds completed yet

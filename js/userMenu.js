@@ -1,9 +1,7 @@
 /* ---------- USER MENU DROPDOWN ---------- */
 function toggleUserMenu(){
   const menu = document.getElementById('userMenu');
-  console.log('[toggleUserMenu] Called, menu:', menu, 'current classes:', menu?.className);
   menu.classList.toggle('show');
-  console.log('[toggleUserMenu] After toggle, classes:', menu?.className);
 }
 
 function leaveGame(){
@@ -31,8 +29,8 @@ window.addEventListener('click', function(event) {
   const userInfo = document.getElementById('userInfo');
   const userMenu = document.getElementById('userMenu');
   
-  // If clicking outside userInfo entirely, close the menu
-  if (userInfo && userMenu && !userInfo.contains(event.target)) {
+  // If clicking outside BOTH userInfo and userMenu, close the menu
+  if (userInfo && userMenu && !userInfo.contains(event.target) && !userMenu.contains(event.target)) {
     userMenu.classList.remove('show');
   }
 });

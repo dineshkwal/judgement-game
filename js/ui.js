@@ -19,7 +19,6 @@ function updateUI(){
   }
   // Show bidding UI during bidding phase
   else if(storage.status === 'bidding'){
-    console.log('[updateUI] Bidding phase - currentBidder:', storage.currentBidder, 'myId:', storage.myId);
     dealBtn.style.display = 'none';
     if(storage.currentBidder === storage.myId){
       biddingUI.classList.add('active');
@@ -96,10 +95,7 @@ function renderScoreboard(){
   // Show scorecard button when game is active
   const scorecardBtn = document.getElementById('scorecardBtn');
   if (scorecardBtn) {
-    console.log('Showing scorecard button');
     scorecardBtn.style.display = 'block';
-  } else {
-    console.error('scorecardBtn not found in DOM');
   }
 }
 
@@ -142,8 +138,6 @@ function renderMyHand(){
   
   // Check if it's my turn - also check cardPlaying flag
   const myTurn = isMyTurn() && !storage.cardPlaying;
-  
-  console.log('[renderMyHand] isMyTurn:', isMyTurn(), 'cardPlaying:', storage.cardPlaying, 'myTurn:', myTurn, 'currentPlayer:', storage.currentPlayer, 'myId:', storage.myId);
   
   // Determine which cards are playable based on follow-suit rules
   const playableCards = myTurn ? getPlayableCards(myCards) : [];

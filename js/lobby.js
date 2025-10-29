@@ -20,8 +20,6 @@ function listenForPlayers(){
       const wasResolving = storage.trickResolving;
       const prevCurrentPlayer = storage.currentPlayer;
       
-      console.log('[Firebase sync] Received bids:', gameData.bids, 'tricksWon:', gameData.tricksWon, 'Status:', gameData.status);
-      
       // Clear these before Object.assign in case Firebase doesn't send them (empty objects become null)
       if(gameData.bids === null || gameData.bids === undefined) {
         gameData.bids = {};
@@ -46,8 +44,6 @@ function listenForPlayers(){
         storage.hands = {};
       }
       
-      console.log('[Firebase sync] After normalization - bids:', storage.bids, 'tricksWon:', storage.tricksWon);
-      
       const trickNowFull = gameData.trick && gameData.trick.length === gameData.players.length;
       const currentPlayerNowNull = !gameData.currentPlayer;
       const currentPlayerChangedToNull = prevCurrentPlayer && !gameData.currentPlayer;
@@ -57,7 +53,6 @@ function listenForPlayers(){
       // This ensures flag doesn't get stuck if network fails
       // Clear if it's not my turn OR if trick is empty (new trick starting)
       if(gameData.currentPlayer !== storage.myId || !gameData.trick || gameData.trick.length === 0) {
-        console.log('[Firebase sync] Clearing cardPlaying flag - currentPlayer:', gameData.currentPlayer, 'myId:', storage.myId, 'trick length:', gameData.trick?.length);
         storage.cardPlaying = false;
       }
       
