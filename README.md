@@ -1,4 +1,4 @@
-# Judgement Card Game - Online Multiplayer
+# Judgement - Online Multiplayer Card Game
 
 A minimalist, intuitive online multiplayer implementation of the Judgement card game using Firebase Realtime Database.
 
