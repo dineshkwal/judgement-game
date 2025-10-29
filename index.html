@@ -620,6 +620,12 @@ function showScreen(id){
 
 /* ---------- INIT ---------- */
 listenForPlayers();
+
+/* ---------- AVATAR PREVIEW UPDATE ---------- */
+document.getElementById('avatarSelect').addEventListener('change', function() {
+  const selectedUrl = this.value;
+  document.getElementById('avatarPreview').src = selectedUrl;
+});
 </script>
 </body>
 </html>
