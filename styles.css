@@ -1,0 +1,528 @@
+/* ========================================
+   Judgement Card Game - Styles
+   ======================================== */
+
+/* CSS Variables */
+:root {
+  --bg: #0a1a0a;
+  --card: #fff;
+  --accent: #ffcc00;
+  --table: #2c5f2c;
+  --radius: 12px;
+  --gap: 1rem;
+}
+
+/* Reset & Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: #eee;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: .5rem;
+  text-align: center;
+}
+
+/* Screen System */
+.screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 800px;
+}
+
+.screen.active {
+  display: flex;
+}
+
+/* Form Elements */
+input, button, select {
+  padding: .6rem 1rem;
+  margin: .3rem;
+  border-radius: var(--radius);
+  font-size: 1rem;
+}
+
+input, select {
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+button {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  cursor: pointer;
+  transition: .2s;
+}
+
+button:hover {
+  transform: scale(1.04);
+}
+
+/* Avatar Preview */
+.avatar-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: .8rem 0;
+}
+
+/* Lobby */
+#lobbyList, #hostSelect {
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.player-item {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .4rem;
+  background: #222;
+  border-radius: var(--radius);
+  margin: .3rem 0;
+}
+
+/* Game Table */
+#table {
+  position: relative;
+  width: 90vmin;
+  height: 90vmin;
+  max-width: 600px;
+  max-height: 600px;
+  background: var(--table);
+  border-radius: 50%;
+  margin: 2rem 0;
+  box-shadow: 0 0 30px rgba(0, 0, 0, .7);
+}
+
+.seat {
+  position: absolute;
+  width: 80px;
+  height: 110px;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.seat img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.seat .name {
+  margin-top: .3rem;
+  font-size: .9rem;
+}
+
+/* Player Hand */
+.hand {
+  display: flex;
+  gap: .4rem;
+  flex-wrap: nowrap;
+  justify-content: center;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  padding: .5rem 0;
+}
+
+/* Playing Cards */
+.card {
+  width: 70px;
+  height: 100px;
+  background: var(--card);
+  color: #000;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .4);
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  padding: .3rem;
+}
+
+.card .card-corner {
+  position: absolute;
+  font-size: .85rem;
+  line-height: 1;
+  font-weight: bold;
+}
+
+.card .card-corner.top-left {
+  top: .25rem;
+  left: .3rem;
+}
+
+.card .card-corner.top-right {
+  top: .25rem;
+  right: .3rem;
+}
+
+.card .card-corner.bottom-left {
+  bottom: .25rem;
+  left: .3rem;
+  transform: rotate(180deg);
+}
+
+.card .card-corner.bottom-right {
+  bottom: .25rem;
+  right: .3rem;
+  transform: rotate(180deg);
+}
+
+.card .card-center {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Card Suit Colors */
+.card.spades, .card.clubs {
+  color: #000;
+}
+
+.card.hearts, .card.diamonds {
+  color: #d00;
+}
+
+/* Trick Display (Center of Table) */
+.trick {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+}
+
+.trick .card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, .6);
+  transform: scale(1.1);
+  margin-left: -30px;
+}
+
+.trick .card:first-child {
+  margin-left: 0;
+}
+
+/* Center Message (modern coachmark style) */
+#centerMsg {
+  position: fixed;
+  top: 1rem;
+  right: 280px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem 2.5rem;
+  border-radius: 20px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  z-index: 900;
+  min-width: 250px;
+  text-align: center;
+  display: none;
+  animation: slideIn 0.3s ease-out;
+  letter-spacing: 0.5px;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#centerMsg.show {
+  display: block;
+}
+
+/* Messages */
+#msg {
+  color: var(--accent);
+  margin-top: .5rem;
+}
+
+/* Scoreboard */
+#scoreboard {
+  background: #222;
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin: 1rem 0;
+  width: 100%;
+  max-width: 600px;
+}
+
+#scoreboard table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #eee;
+}
+
+#scoreboard th, #scoreboard td {
+  padding: .5rem;
+  text-align: center;
+  border-bottom: 1px solid #444;
+}
+
+#scoreboard th {
+  background: #333;
+  font-weight: bold;
+}
+
+.dealer-indicator {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.active-turn {
+  background: #3a3a00 !important;
+}
+
+/* Bidding UI */
+#biddingUI {
+  background: #222;
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin: 1rem 0;
+  display: none;
+}
+
+#biddingUI.active {
+  display: block;
+}
+
+/* User Info (Top Right) */
+#userInfo {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: #222;
+  padding: .8rem;
+  border-radius: var(--radius);
+  display: none;
+  align-items: center;
+  gap: .5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .5);
+  z-index: 1000;
+  cursor: pointer;
+}
+
+#userInfo.active {
+  display: flex;
+}
+
+#userInfo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+#userInfo .userName {
+  font-weight: bold;
+  color: var(--accent);
+}
+
+/* User Dropdown Menu */
+#userMenu {
+  position: fixed;
+  top: 4.5rem; /* Below the userInfo button */
+  right: 1rem;
+  background: #222;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .6);
+  display: none;
+  flex-direction: column;
+  min-width: 150px;
+  overflow: hidden;
+  z-index: 1001;
+}
+
+#userMenu.show {
+  display: flex;
+}
+
+#userMenu button {
+  background: #333;
+  color: #eee;
+  border: none;
+  padding: .8rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 0;
+  margin: 0;
+  transition: background .2s;
+}
+
+#userMenu button:hover {
+  background: #444;
+  transform: none;
+}
+
+/* ===================== Scorecard ===================== */
+#scorecardBtn {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #333;
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s;
+  z-index: 50;
+  display: none; /* Hidden by default, shown during game */
+}
+
+#scorecardBtn:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+#scorecardOverlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+#scorecardOverlay.show {
+  display: flex;
+}
+
+#scorecardModal {
+  background: white;
+  border-radius: 20px;
+  padding: 3rem;
+  max-width: 95%;
+  max-height: 90%;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  position: relative;
+}
+
+#scorecardModal h2 {
+  margin: 0 0 2rem 0;
+  color: #333;
+  font-size: 2.2rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+#scorecardModal .close-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: all 0.2s;
+}
+
+#scorecardModal .close-btn:hover {
+  background: #d32f2f;
+  transform: rotate(90deg);
+}
+
+#scorecardContent table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+}
+
+#scorecardContent th,
+#scorecardContent td {
+  border: 1px solid #ddd;
+  padding: 1.2rem 1.5rem;
+  text-align: center;
+}
+
+#scorecardContent th {
+  background: #4CAF50;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 1.5rem;
+}
+
+#scorecardContent td {
+  background: white;
+  line-height: 1.6;
+  color: #333;
+  font-size: 1.05rem;
+}
+
+#scorecardContent tr:hover td {
+  background: #f0f7f0;
+}
+
+#scorecardContent .player-name {
+  font-weight: bold;
+  text-align: left;
+  background: #f9f9f9;
+}
+
+#scorecardContent .total-score {
+  font-weight: bold;
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 1.3rem;
+}
+
+#scorecardContent .score-positive {
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+#scorecardContent .score-negative {
+  color: #c62828;
+  font-weight: bold;
+}
