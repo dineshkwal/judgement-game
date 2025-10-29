@@ -46,6 +46,13 @@
   .card.hearts,.card.diamonds{color:#d00;}
   .trick{display:flex;gap:.5rem;justify-content:center;margin:1rem 0;}
   #msg{color:var(--accent);margin-top:.5rem;}
+.avatar-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: .8rem 0;
+}
 </style>
 <!-- Add this INSIDE <head>, before </head> -->
 <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
@@ -240,13 +247,23 @@ listenForPlayers();  // Start listening on load
 <div id="register" class="screen active">
   <h1>Judgement</h1>
   <input type="text" id="playerName" placeholder="Your name" maxlength="20">
+
   <select id="avatarSelect">
-    <option value="avatar1.jpg">Avatar 1</option>
-    <option value="avatar2.jpg">Avatar 2</option>
-    <option value="avatar3.jpg">Avatar 3</option>
-    <option value="avatar4.jpg">Avatar 4</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar1">Avatar 1 – Short hair</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar2">Avatar 2 – Beard</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar3">Avatar 3 – Glasses</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar4">Avatar 4 – Ponytail</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar5">Avatar 5 – Hat</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar6">Avatar 6 – Curly</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar7">Avatar 7 – Bob</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar8">Avatar 8 – Dreadlocks</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar9">Avatar 9 – Mohawk</option>
+    <option value="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar10">Avatar 10 – Bald</option>
   </select>
-  <img id="avatarPreview" class="avatar-preview" src="avatar1.jpg" alt="preview">
+
+  <img id="avatarPreview" class="avatar-preview"
+       src="https://api.dicebear.com/7.x/avataaars/svg?seed=avatar1" alt="preview">
+
   <button onclick="registerPlayer()">Join Game</button>
 </div>
 
