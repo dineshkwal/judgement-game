@@ -5,8 +5,6 @@ function dealCards(){
   // Clear any lingering messages from previous round
   hideCenterMessage();
   
-  console.log('[dealCards] Starting new round - clearing bids');
-  
   const N = storage.players.length;
   const cardsThisRound = storage.cardsPerRound - storage.round + 1;
   if(cardsThisRound <= 0) return endGame();
@@ -87,10 +85,6 @@ function submitBid(){
   const bid = parseInt(document.getElementById('bidSelect').value);
   const cardsThisRound = storage.cardsPerRound - storage.round + 1;
   
-  console.log('[submitBid] Current bids:', storage.bids);
-  console.log('[submitBid] Players:', storage.players.map(p => p.id));
-  console.log('[submitBid] Current bidder:', storage.currentBidder);
-  
   // Validate anti-sum rule for last bidder
   const totalBids = Object.keys(storage.bids).length;
   const isLastBidder = (totalBids === storage.players.length - 1);
@@ -98,7 +92,7 @@ function submitBid(){
   if(isLastBidder){
     const currentSum = Object.values(storage.bids).reduce((a,b) => a+b, 0);
     if(currentSum + bid === cardsThisRound){
-      return alert('Invalid bid! Total bids cannot equal total tricks (anti-sum rule).');
+      return alert('Invalid bid! Total bids cannot equal total hands (anti-sum rule).');
     }
   }
   
@@ -110,8 +104,6 @@ function submitBid(){
   const currentIdx = storage.players.findIndex(p => p.id === storage.currentBidder);
   const nextIdx = (currentIdx + 1) % storage.players.length;
   const nextBidder = storage.players[nextIdx].id;
-  
-  console.log('[submitBid] Current index:', currentIdx, 'Next index:', nextIdx, 'Next bidder:', nextBidder);
   
   // Check if bidding is complete
   const allBidded = Object.keys(newBids).length === storage.players.length;
@@ -130,16 +122,11 @@ function submitBid(){
     currentPlayer: allBidded ? firstPlayer : null,
     status: allBidded ? 'playing' : 'bidding'
   });
-  
-  console.log('[submitBid] Updated Firebase - allBidded:', allBidded, 'nextBidder:', nextBidder);
 }
 
 function playCard(card, el){
-  // Prevent double-playing due to race condition - check this FIRST
-  if(storage.cardPlaying) {
-    console.log('Card play already in progress, ignoring click');
-    return;
-  }
+  // Prevent double-playing due to race condition
+  if(storage.cardPlaying) return;
   
   if(!isMyTurn()) return;
   if(storage.currentPlayer === null) return;
@@ -171,9 +158,6 @@ function playCard(card, el){
   
   // Check if trick is complete
   const trickComplete = storage.trick.length === storage.players.length;
-  
-  console.log('[playCard] Trick complete?', trickComplete, 'Trick length:', storage.trick.length, 'Players:', storage.players.length);
-  console.log('[playCard] My hand after play:', storage.hands[storage.myId]);
   
   if(trickComplete){
     // Update Firebase - Firebase listener will detect trick completion and trigger resolveTrick
@@ -242,8 +226,6 @@ function resolveTrick(){
   setTimeout(() => {
     storage.trickResolving = false;
     const allEmpty = Object.values(storage.hands).every(h => !h || h.length === 0);
-    
-    console.log('[resolveTrick] All hands empty?', allEmpty, 'Hands:', Object.keys(storage.hands).map(id => `${id}: ${storage.hands[id]?.length || 0}`));
     
     // Only dealer updates Firebase
     if(storage.dealerId === storage.myId) {

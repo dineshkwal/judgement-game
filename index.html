@@ -24,10 +24,12 @@
 <div id="userInfo" onclick="toggleUserMenu()">
   <img id="userInfoAvatar" src="" alt="avatar">
   <span class="userName" id="userInfoName"></span>
-  <div id="userMenu" onclick="event.stopPropagation()">
-    <button onclick="leaveGame()">Leave Game</button>
-    <button onclick="newGame()">New Game</button>
-  </div>
+</div>
+
+<!-- User Dropdown Menu (Outside userInfo) -->
+<div id="userMenu">
+  <button onclick="leaveGame()">Leave Game</button>
+  <button onclick="newGame()">New Game</button>
 </div>
 
 <!-- Scorecard Button (Top Left) -->
