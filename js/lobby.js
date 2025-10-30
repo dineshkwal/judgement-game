@@ -96,29 +96,26 @@ function updateLobbyInfo(){
   const lobbyInfo = document.getElementById('lobbyInfo');
   const shareUrl = `${window.location.origin}${window.location.pathname}?lobby=${storage.lobbyId}`;
   lobbyInfo.innerHTML = `
-    <strong>Lobby ID:</strong> ${storage.lobbyId}<br>
-    <strong>Share link:</strong> <input id="lobbyLinkInput" type="text" value="${shareUrl}" readonly 
-      style="width:100%;margin-top:0.3rem;cursor:pointer;" title="Click to copy">
-    <span id="copyMessage" style="color:var(--accent);font-size:0.9rem;margin-left:0.5rem;display:none;">✓ Link copied!</span>
+    <div class="lobby-share-row">
+      <div class="lobby-code-display">
+        <span class="code-label">Lobby Code</span>
+        <span class="code-value">${storage.lobbyId}</span>
+      </div>
+      <button id="copyLinkBtn" class="copy-link-btn">📋 Copy Link</button>
+    </div>
   `;
   
-  // Add click handler for copy functionality
-  const input = document.getElementById('lobbyLinkInput');
-  input.onclick = function(e){
-    e.preventDefault();
-    this.select();
-    navigator.clipboard.writeText(this.value);
-    const msg = document.getElementById('copyMessage');
-    msg.style.display = 'inline';
-    setTimeout(() => {
-      msg.style.display = 'none';
-    }, 2000);
-  };
+  // Add click handler for copy button
+  const copyBtn = document.getElementById('copyLinkBtn');
   
-  // Prevent context menu on right-click
-  input.oncontextmenu = function(e){
-    e.preventDefault();
-    return false;
+  copyBtn.onclick = function(){
+    navigator.clipboard.writeText(shareUrl);
+    this.innerHTML = '✓ Copied!';
+    this.classList.add('copied');
+    setTimeout(() => {
+      this.innerHTML = '📋 Copy Link';
+      this.classList.remove('copied');
+    }, 2000);
   };
 }
 
