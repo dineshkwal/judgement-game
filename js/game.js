@@ -8,10 +8,12 @@ function dealCards(){
   const N = storage.players.length;
   const cardsThisRound = storage.cardsPerRound - storage.round + 1;
   console.log(`DEBUG dealCards: round=${storage.round}, cardsPerRound=${storage.cardsPerRound}, cardsThisRound=${cardsThisRound}`);
+  console.log(`DEBUG dealCards check: cardsThisRound <= 0? ${cardsThisRound <= 0}`);
   if(cardsThisRound <= 0) {
     console.log('DEBUG: dealCards ending game because cardsThisRound <= 0');
     return endGame();
   }
+  console.log('DEBUG: dealCards proceeding with dealing', cardsThisRound, 'cards');
 
   storage.deck = makeDeck();
   const hands = {};
@@ -258,9 +260,10 @@ function resolveTrick(){
     renderMyHand();
     
     if(allEmpty){
-      hideCenterMessage();
+      // Show round ending message
+      showCenterMessage('Round complete!', 2000);
       if(storage.dealerId === storage.myId) {
-        setTimeout(nextRound, 1000);
+        setTimeout(nextRound, 2000);
       }
     } else {
       // Small delay to let trick clear message show, then update to new turn message
@@ -348,6 +351,13 @@ function nextRound(){
 
 function endGame(){
   console.log('DEBUG: endGame() called');
+  console.log('DEBUG: storage state:', {
+    round: storage.round,
+    cardsPerRound: storage.cardsPerRound,
+    status: storage.status,
+    dealerId: storage.dealerId,
+    myId: storage.myId
+  });
   console.trace('Stack trace:');
   
   // Sort players by score (descending)

@@ -2,7 +2,9 @@
 function updateUI(){
   const dealBtn = document.getElementById('dealBtn');
   const biddingUI = document.getElementById('biddingUI');
-  const msg = document.getElementById('msg');
+  
+  // Update round info
+  updateRoundInfo();
   
   // Show player name
   const myPlayer = storage.players.find(p => p.id === storage.myId);
@@ -15,7 +17,6 @@ function updateUI(){
     hideCenterMessage(); // Clear any lingering messages
     dealBtn.style.display = (storage.dealerId === storage.myId) ? 'inline-block' : 'none';
     biddingUI.classList.remove('active');
-    msg.textContent = '';
     
     // Show consistent center message
     if(storage.dealerId === storage.myId) {
@@ -36,7 +37,6 @@ function updateUI(){
       const bidderName = storage.players.find(p => p.id === storage.currentBidder)?.name || 'Player';
       showCenterMessage(`Waiting for ${bidderName} to bid...`, 0); // Persistent
     }
-    msg.textContent = '';
   }
   // Playing phase
   else if(storage.status === 'playing'){
@@ -46,22 +46,40 @@ function updateUI(){
     // Check if round is ending (no current player means all cards played)
     if(!storage.currentPlayer){
       hideCenterMessage();
-      msg.textContent = 'Round ending...';
     } else if(isMyTurn()){
       showCenterMessage('Your turn – play a card', 0); // Persistent
-      msg.textContent = '';
     } else {
       const currentPlayerName = storage.players.find(p => p.id === storage.currentPlayer)?.name || 'Player';
       showCenterMessage(`Waiting for ${currentPlayerName} to play...`, 0); // Persistent
-      msg.textContent = '';
     }
   }
 }
 
 function updateRoundInfo(){
-  const cardsThisRound = storage.cardsPerRound - storage.round + 1;
-  document.getElementById('roundInfo').textContent =
-    `Round ${storage.round} – ${cardsThisRound > 0 ? cardsThisRound : 0} cards – Trump: ${storage.trump}`;
+  const round = storage.round || 1;
+  const cardsPerRound = storage.cardsPerRound || 0;
+  const trump = storage.trump || '♠';
+  const cardsThisRound = cardsPerRound - round + 1;
+  const roundInfoEl = document.getElementById('roundInfo');
+  
+  // Map suit symbols to names
+  const suitNames = {
+    '♠': 'Spades',
+    '♥': 'Hearts',
+    '♦': 'Diamonds',
+    '♣': 'Clubs'
+  };
+  
+  const trumpName = suitNames[trump] || 'Spades';
+  
+  console.log('DEBUG updateRoundInfo:', {round, cardsPerRound, trump, cardsThisRound});
+  
+  if(roundInfoEl) {
+    roundInfoEl.innerHTML = `Round ${round} <span style="font-size: 1.8em; color: #ffd700; margin: 0 0.5rem;">${trump}</span> ${cardsThisRound > 0 ? cardsThisRound : 0} Cards <span style="font-size: 1.8em; color: #ffd700; margin: 0 0.5rem;">${trump}</span> ${trumpName}`;
+    console.log('DEBUG roundInfo updated:', roundInfoEl.textContent);
+  } else {
+    console.log('DEBUG roundInfo element not found!');
+  }
 }
 
 function showCenterMessage(text, duration = 2000){

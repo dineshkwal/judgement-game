@@ -49,6 +49,17 @@ function listenForPlayers(){
       const currentPlayerChangedToNull = prevCurrentPlayer && !gameData.currentPlayer;
       const trickJustCompleted = trickNowFull && currentPlayerNowNull && currentPlayerChangedToNull;
       
+      console.log('DEBUG trick completion check:', {
+        trickNowFull,
+        currentPlayerNowNull,
+        currentPlayerChangedToNull,
+        trickJustCompleted,
+        prevCurrentPlayer,
+        newCurrentPlayer: gameData.currentPlayer,
+        trickLength: gameData.trick?.length,
+        playersLength: gameData.players?.length
+      });
+      
       // Reset cardPlaying flag when state updates from Firebase
       // This ensures flag doesn't get stuck if network fails
       // Clear if it's not my turn OR if trick is empty (new trick starting)
