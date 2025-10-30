@@ -323,7 +323,14 @@ function nextRound(){
   console.log('DEBUG: Checking if should end game. cardsNext <= 0?', cardsNext <= 0);
   if(cardsNext <= 0){
     console.log('DEBUG: YES - Ending game because cardsNext <= 0');
-    endGame();
+    // Update Firebase with final round data before ending
+    storage.gameRef.update({ 
+      scores: storage.scores,
+      roundHistory: storage.roundHistory,
+      status: 'ended'
+    }).then(() => {
+      endGame();
+    });
     return;
   }
   console.log('DEBUG: NO - Continuing to next round with', cardsNext, 'cards');

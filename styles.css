@@ -942,64 +942,72 @@ button:active {
 
 /* Playing Cards */
 .card {
-  width: 70px;
-  height: 100px;
-  background: var(--card);
+  width: 90px;
+  height: 130px;
+  background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
   color: #000;
-  border-radius: 8px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .4);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .3), 0 2px 4px rgba(0, 0, 0, .2);
   cursor: pointer;
   flex-shrink: 0;
   position: relative;
-  padding: .3rem;
+  padding: .5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.card:hover:not([style*="opacity: 0.4"]) {
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .4), 0 4px 8px rgba(0, 0, 0, .3);
 }
 
 .card .card-corner {
   position: absolute;
-  font-size: .85rem;
+  font-size: 1rem;
   line-height: 1;
   font-weight: bold;
 }
 
 .card .card-corner.top-left {
-  top: .25rem;
-  left: .3rem;
+  top: .4rem;
+  left: .5rem;
 }
 
 .card .card-corner.top-right {
-  top: .25rem;
-  right: .3rem;
+  top: .4rem;
+  right: .5rem;
 }
 
 .card .card-corner.bottom-left {
-  bottom: .25rem;
-  left: .3rem;
+  bottom: .4rem;
+  left: .5rem;
   transform: rotate(180deg);
 }
 
 .card .card-corner.bottom-right {
-  bottom: .25rem;
-  right: .3rem;
+  bottom: .4rem;
+  right: .5rem;
   transform: rotate(180deg);
 }
 
 .card .card-center {
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 /* Card Suit Colors */
 .card.spades, .card.clubs {
-  color: #000;
+  color: #1a1a1a;
 }
 
 .card.hearts, .card.diamonds {
-  color: #d00;
+  color: #e63946;
 }
 
 /* Trick Display (Center of Table) */
@@ -1015,9 +1023,9 @@ button:active {
 }
 
 .trick .card {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, .6);
-  transform: scale(1.1);
-  margin-left: -30px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .5), 0 3px 6px rgba(0, 0, 0, .3);
+  transform: scale(1.15);
+  margin-left: -40px;
 }
 
 .trick .card:first-child {
@@ -1500,9 +1508,16 @@ button:active {
   }
   
   .card {
-    width: 60px;
-    height: 84px;
-    font-size: 1.2rem;
+    width: 70px;
+    height: 100px;
+  }
+  
+  .card .card-corner {
+    font-size: 0.9rem;
+  }
+  
+  .card .card-center {
+    font-size: 2rem;
   }
   
   /* Messages */
@@ -1531,8 +1546,15 @@ button:active {
   }
   
   .card {
-    width: 50px;
-    height: 70px;
-    font-size: 1rem;
+    width: 60px;
+    height: 85px;
+  }
+  
+  .card .card-corner {
+    font-size: 0.8rem;
+  }
+  
+  .card .card-center {
+    font-size: 1.8rem;
   }
 }
