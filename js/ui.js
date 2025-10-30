@@ -167,8 +167,11 @@ function renderMyHand(){
   handDiv.innerHTML = '';
   const myCards = storage.hands[storage.myId] || [];
   
+  // Cards should be disabled during bidding phase
+  const isBidding = storage.status === 'bidding';
+  
   // Check if it's my turn - also check cardPlaying flag
-  const myTurn = isMyTurn() && !storage.cardPlaying;
+  const myTurn = isMyTurn() && !storage.cardPlaying && !isBidding;
   
   // Determine which cards are playable based on follow-suit rules
   const playableCards = myTurn ? getPlayableCards(myCards) : [];
@@ -178,8 +181,12 @@ function renderMyHand(){
     const el = document.createElement('div');
     el.className = `card ${suitColor(c.suit)}`;
     
-    // Gray out cards if not my turn OR if card is unplayable due to follow-suit OR if card being played
-    if(!myTurn){
+    // Gray out cards if bidding, not my turn, card is unplayable due to follow-suit, or card being played
+    if(isBidding){
+      el.style.opacity = '0.4';
+      el.style.cursor = 'not-allowed';
+      el.title = 'Wait for bidding to complete';
+    } else if(!myTurn){
       el.style.opacity = '0.4';
       el.style.cursor = 'not-allowed';
       if(storage.cardPlaying){
@@ -202,12 +209,15 @@ function renderMyHand(){
       <span class="card-corner bottom-right">${cardLabel}</span>
     `;
     
-    // Only allow clicking playable cards on my turn
-    if(myTurn && isPlayable){
+    // Only allow clicking playable cards on my turn (not during bidding)
+    if(myTurn && isPlayable && !isBidding){
       el.onclick = () => playCard(c, el);
     } else {
       el.onclick = () => {
-        if(!myTurn){
+        if(isBidding){
+          // Silent - just don't allow click during bidding
+          return;
+        } else if(!myTurn){
           // Silent - just don't allow click when not player's turn
           return;
         } else if(!isPlayable){

@@ -60,10 +60,10 @@ function listenForPlayers(){
         playersLength: gameData.players?.length
       });
       
-      // Reset cardPlaying flag when state updates from Firebase
-      // This ensures flag doesn't get stuck if network fails
-      // Clear if it's not my turn OR if trick is empty (new trick starting)
-      if(gameData.currentPlayer !== storage.myId || !gameData.trick || gameData.trick.length === 0) {
+      // Don't clear cardPlaying flag here - let playCard() promises handle it
+      // This prevents cards from re-enabling too quickly after playing
+      // Only clear when trick is completely empty (new trick starting)
+      if(!gameData.trick || gameData.trick.length === 0) {
         storage.cardPlaying = false;
       }
       
@@ -83,6 +83,12 @@ function listenForPlayers(){
       renderCurrentTrick();
       updateRoundInfo();
       updateUI();
+      
+      // If scorecard modal is open, refresh it with latest data
+      const scorecardOverlay = document.getElementById('scorecardOverlay');
+      if (scorecardOverlay && scorecardOverlay.classList.contains('show')) {
+        renderScorecard();
+      }
       
       // If trick just completed and we haven't started resolving yet, trigger resolution
       if(trickJustCompleted && !storage.trickResolving && !wasResolving){
