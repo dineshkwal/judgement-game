@@ -461,8 +461,9 @@ button:active {
 .footer {
   position: fixed;
   bottom: 10px;
-  right: 15px;
-  text-align: right;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
   padding: 0.6rem 1rem;
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.5);
@@ -473,12 +474,18 @@ button:active {
   font-weight: 400;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
+  display: none; /* Hidden by default */
+}
+
+/* Only show on register screen */
+#register.active ~ .footer {
+  display: block;
 }
 
 .footer:hover {
   color: rgba(255, 255, 255, 0.8);
   background: rgba(10, 26, 10, 0.85);
-  transform: translateY(-2px);
+  transform: translateX(-50%) translateY(-2px);
 }
 
 .footer .heart {
