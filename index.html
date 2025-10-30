@@ -90,19 +90,37 @@
 
 <!-- ===== LOBBY SCREEN ===== -->
 <div id="lobby" class="screen">
-  <h1>Lobby</h1>
-  <div id="lobbyInfo" style="background:#222;padding:1rem;border-radius:var(--radius);margin-bottom:1rem;"></div>
-  <div id="lobbyList"></div>
-  <div id="hostSelectContainer" style="display:none;margin-top:1rem;">
-    <label style="display:block;margin-bottom:0.3rem;font-weight:bold;">Select Starting Player (Host):</label>
-    <select id="hostSelect"></select>
+  <div class="lobby-container">
+    <div class="lobby-header">
+      <h1>Lobby</h1>
+    </div>
+    
+    <div id="lobbyInfo" class="lobby-info-card"></div>
+    
+    <div class="players-section">
+      <h3 class="section-title">Players</h3>
+      <div id="lobbyList" class="lobby-list"></div>
+    </div>
+    
+    <div id="hostSelectContainer" class="game-settings" style="display:none;">
+      <div class="input-group">
+        <label>Select Starting Player (Host)</label>
+        <select id="hostSelect"></select>
+      </div>
+    </div>
+    
+    <div id="roundSelectContainer" class="game-settings" style="display:none;">
+      <div class="input-group">
+        <label>Starting Cards</label>
+        <select id="roundSelect"></select>
+        <small class="helper-text">Select number of cards to start with (Round 1)</small>
+      </div>
+    </div>
+    
+    <button id="startBtn" class="start-game-btn" style="display:none;" onclick="startGame()">
+      <span>Start Game</span>
+    </button>
   </div>
-  <div id="roundSelectContainer" style="display:none;margin-top:1rem;">
-    <label style="display:block;margin-bottom:0.3rem;font-weight:bold;">Starting Cards:</label>
-    <select id="roundSelect"></select>
-    <small style="display:block;color:#aaa;margin-top:0.3rem;">Select number of cards to start with (Round 1)</small>
-  </div>
-  <button id="startBtn" style="display:none;" onclick="startGame()">Start Game</button>
 </div>
 
 <!-- ===== GAME SCREEN ===== -->
