@@ -459,22 +459,22 @@ button:active {
 
 /* Footer */
 .footer {
-  position: fixed;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: static;
   text-align: center;
-  padding: 0.6rem 1rem;
+  padding: 0.8rem 1.5rem;
+  margin-top: 1.5rem;
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.5);
   background: rgba(10, 26, 10, 0.7);
   backdrop-filter: blur(8px);
   border-radius: 20px;
-  z-index: 1000;
   font-weight: 400;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
   display: none; /* Hidden by default */
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Only show on register screen */
@@ -485,7 +485,6 @@ button:active {
 .footer:hover {
   color: rgba(255, 255, 255, 0.8);
   background: rgba(10, 26, 10, 0.85);
-  transform: translateX(-50%) translateY(-2px);
 }
 
 .footer .heart {
