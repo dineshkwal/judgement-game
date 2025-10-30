@@ -1279,8 +1279,7 @@ button:active {
   background: #222;
   border: none;
   border-radius: 50%;
-  padding: 0.5rem;
-  font-size: 1.5rem;
+  padding: 0;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
@@ -1290,6 +1289,13 @@ button:active {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+#scorecardBtn .trophy-icon {
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.4));
+  display: block;
 }
 
 #scorecardBtn .scorecard-label {
