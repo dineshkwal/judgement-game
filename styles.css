@@ -460,17 +460,25 @@ button:active {
 /* Footer */
 .footer {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.6);
-  background: linear-gradient(to top, rgba(10, 26, 10, 0.95), transparent);
-  backdrop-filter: blur(5px);
+  bottom: 10px;
+  right: 15px;
+  text-align: right;
+  padding: 0.6rem 1rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(10, 26, 10, 0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
   z-index: 1000;
   font-weight: 400;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.footer:hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(10, 26, 10, 0.85);
+  transform: translateY(-2px);
 }
 
 .footer .heart {
@@ -505,34 +513,71 @@ button:active {
 /* Game Table */
 #table {
   position: relative;
-  width: 90vmin;
-  height: 90vmin;
-  max-width: 600px;
-  max-height: 600px;
-  background: var(--table);
+  width: 65vmin;
+  height: 65vmin;
+  max-width: 450px;
+  max-height: 450px;
+  background: radial-gradient(circle at center, #2c5f2c 0%, #1e4520 100%);
   border-radius: 50%;
-  margin: 2rem 0;
-  box-shadow: 0 0 30px rgba(0, 0, 0, .7);
+  margin: 1.5rem auto;
+  box-shadow: 
+    0 0 0 8px rgba(76, 175, 80, 0.15),
+    0 0 0 12px rgba(76, 175, 80, 0.08),
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    inset 0 0 60px rgba(0, 0, 0, 0.3);
+  border: 3px solid rgba(76, 175, 80, 0.2);
 }
 
 .seat {
   position: absolute;
-  width: 80px;
-  height: 110px;
+  width: 70px;
+  height: 95px;
   text-align: center;
   transform: translate(-50%, -50%);
 }
 
 .seat img {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid rgba(76, 175, 80, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.seat.active-turn img {
+  border: 3px solid #ffd700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.4);
+  animation: activePulse 2s ease-in-out infinite;
+}
+
+@keyframes activePulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 215, 0, 0.6);
+  }
+}
+
+.seat.active-turn .name {
+  color: #ffd700;
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.seat img:hover {
+  transform: scale(1.1);
+  border-color: var(--primary);
 }
 
 .seat .name {
-  margin-top: .3rem;
-  font-size: .9rem;
+  margin-top: .4rem;
+  font-size: .85rem;
+  font-weight: 500;
+  color: #e0e0e0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* Player Hand */
@@ -635,25 +680,27 @@ button:active {
   position: fixed;
   top: 1rem;
   right: 280px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: rgba(102, 126, 234, 0.95);
+  backdrop-filter: blur(10px);
   color: white;
-  padding: 1.5rem 2.5rem;
-  border-radius: 20px;
-  font-size: 1.5rem;
-  font-weight: 600;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   z-index: 900;
-  min-width: 250px;
+  min-width: 180px;
   text-align: center;
   display: none;
   animation: slideIn 0.3s ease-out;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 @keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-10px);
   }
   to {
     opacity: 1;
@@ -709,15 +756,103 @@ button:active {
 
 /* Bidding UI */
 #biddingUI {
-  background: #222;
-  border-radius: var(--radius);
-  padding: 1rem;
-  margin: 1rem 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(76, 175, 80, 0.3);
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem auto;
+  max-width: 700px;
   display: none;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  /* Single row layout */
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 #biddingUI.active {
-  display: block;
+  display: flex;
+  animation: fadeInScale 0.4s ease-out;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+#biddingPrompt {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  letter-spacing: 0.3px;
+  flex: 1;
+  min-width: 0;
+}
+
+#bidSelect {
+  flex: 0 0 70px;
+  padding: 0.7rem 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+#bidSelect:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+#bidSelect:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+#bidSelect option {
+  background: #1a1a1a;
+  padding: 0.8rem;
+  font-size: 1.1rem;
+}
+
+#biddingUI button {
+  padding: 0.7rem 1.8rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffd700 0%, #ffb900 100%);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  white-space: nowrap;
+}
+
+#biddingUI button:hover {
+  background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
+}
+
+#biddingUI button:active {
+  transform: translateY(0);
 }
 
 /* User Info (Top Right) */
