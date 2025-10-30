@@ -1292,10 +1292,12 @@ button:active {
 }
 
 #scorecardBtn .trophy-icon {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.4));
   display: block;
+  object-fit: contain;
+  object-position: center;
 }
 
 #scorecardBtn .scorecard-label {
