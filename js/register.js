@@ -1,7 +1,7 @@
 /* ---------- REGISTER ---------- */
 function registerPlayer(){
   const name = document.getElementById('playerName').value.trim();
-  const avatar = document.getElementById('avatarSelect').value;
+  const avatar = getSelectedAvatarURL();
   if(!name) return alert('Enter a name');
   const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
   const player = {id, name, avatar, joinedAt: Date.now()};
