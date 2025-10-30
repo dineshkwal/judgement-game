@@ -1289,15 +1289,7 @@ button:active {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-}
-
-#scorecardBtn .trophy-icon {
-  width: 32px;
-  height: 32px;
-  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.4));
-  display: block;
-  object-fit: contain;
-  object-position: center;
+  font-size: 1.5rem;
 }
 
 #scorecardBtn .scorecard-label {
