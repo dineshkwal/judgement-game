@@ -342,16 +342,16 @@ button:active {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.8rem;
-  margin: 1.5rem 0;
+  gap: 0.5rem;
+  margin: 1rem 0;
 }
 
 .avatar-preview {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid var(--primary);
+  border: 3px solid var(--primary);
   box-shadow: 0 4px 20px rgba(76, 175, 80, 0.4);
   transition: all 0.3s ease;
 }
@@ -368,7 +368,7 @@ button:active {
 }
 
 .avatar-name {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: #a8e6a8;
   text-align: center;
