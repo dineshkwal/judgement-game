@@ -83,7 +83,11 @@ function listenForPlayers(){
         }, 1000);
       }
       
-      if(gameData.status === 'ended') endGame();
+      if(gameData.status === 'ended') {
+        console.log('DEBUG: Firebase listener detected status=ended, calling endGame()');
+        console.log('DEBUG: gameData.round=', gameData.round, 'gameData.cardsPerRound=', gameData.cardsPerRound);
+        endGame();
+      }
     }
   });
 }

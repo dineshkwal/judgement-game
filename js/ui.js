@@ -15,7 +15,14 @@ function updateUI(){
     hideCenterMessage(); // Clear any lingering messages
     dealBtn.style.display = (storage.dealerId === storage.myId) ? 'inline-block' : 'none';
     biddingUI.classList.remove('active');
-    msg.textContent = storage.dealerId === storage.myId ? 'Click Deal Cards to start the round' : 'Waiting for dealer to deal cards...';
+    msg.textContent = '';
+    
+    // Show consistent center message
+    if(storage.dealerId === storage.myId) {
+      showCenterMessage('Click Deal Cards to start the round', 0);
+    } else {
+      showCenterMessage('Waiting for dealer to deal cards...', 0);
+    }
   }
   // Show bidding UI during bidding phase
   else if(storage.status === 'bidding'){
@@ -115,6 +122,12 @@ function renderTable(){
     const y = 50 + radius * Math.sin(angle);
     const seat = document.createElement('div');
     seat.className = 'seat';
+    
+    // Highlight current player's turn
+    if(storage.currentPlayer && p.id === storage.currentPlayer) {
+      seat.classList.add('active-turn');
+    }
+    
     seat.style.left = x + '%';
     seat.style.top = y + '%';
     seat.innerHTML = `<img src="${p.avatar}" alt="${p.name}"><div class="name">${p.name}</div>`;

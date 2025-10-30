@@ -7,7 +7,11 @@ function dealCards(){
   
   const N = storage.players.length;
   const cardsThisRound = storage.cardsPerRound - storage.round + 1;
-  if(cardsThisRound <= 0) return endGame();
+  console.log(`DEBUG dealCards: round=${storage.round}, cardsPerRound=${storage.cardsPerRound}, cardsThisRound=${cardsThisRound}`);
+  if(cardsThisRound <= 0) {
+    console.log('DEBUG: dealCards ending game because cardsThisRound <= 0');
+    return endGame();
+  }
 
   storage.deck = makeDeck();
   const hands = {};
@@ -246,10 +250,10 @@ function resolveTrick(){
       }
     }
     
-    // All players update local UI
+    // All players clear local trick UI
     storage.trick = [];
     storage.leadSuit = null;
-    storage.currentPlayer = allEmpty ? null : winner;
+    // Note: currentPlayer is updated via Firebase sync, not locally
     renderCurrentTrick();
     renderMyHand();
     
@@ -268,6 +272,7 @@ function resolveTrick(){
 }
 
 function nextRound(){
+  console.log('DEBUG: nextRound() called by player:', storage.myId, 'dealerId:', storage.dealerId, 'isDealer:', storage.dealerId === storage.myId);
   if(storage.dealerId !== storage.myId) return;
   
   // Calculate scores for the completed round
@@ -311,17 +316,22 @@ function nextRound(){
   // Move to next round
   storage.round++;
   const cardsNext = storage.cardsPerRound - storage.round + 1;
+  console.log(`DEBUG nextRound: round=${storage.round}, cardsPerRound=${storage.cardsPerRound}, cardsNext=${cardsNext}`);
+  console.log('DEBUG: Checking if should end game. cardsNext <= 0?', cardsNext <= 0);
   if(cardsNext <= 0){
+    console.log('DEBUG: YES - Ending game because cardsNext <= 0');
     endGame();
     return;
   }
+  console.log('DEBUG: NO - Continuing to next round with', cardsNext, 'cards');
   
   const dealerIdx = storage.players.findIndex(p => p.id === storage.dealerId);
   const nextDealerIdx = (dealerIdx + 1) % storage.players.length;
   const nextDealer = storage.players[nextDealerIdx].id;
   
   storage.gameRef.update({ 
-    round: storage.round, 
+    round: storage.round,
+    cardsPerRound: storage.cardsPerRound, // CRITICAL: Must persist this!
     dealerId: nextDealer,
     status: 'waiting_deal',
     bids: {},
@@ -337,6 +347,9 @@ function nextRound(){
 }
 
 function endGame(){
+  console.log('DEBUG: endGame() called');
+  console.trace('Stack trace:');
+  
   // Sort players by score (descending)
   const sortedPlayers = [...storage.players].sort((a, b) => {
     const scoreA = storage.scores[a.id] || 0;
