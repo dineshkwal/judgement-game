@@ -885,6 +885,65 @@ button:active {
   height: 95px;
   text-align: center;
   transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Mini card badge showing what player played */
+.seat .mini-card {
+  position: absolute;
+  width: 32px;
+  height: 46px;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
+}
+
+.seat .mini-card.show {
+  display: flex;
+  opacity: 1;
+}
+
+@keyframes miniCardPopIn {
+  0% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.seat .mini-card .mini-rank {
+  font-size: 0.7rem;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.seat .mini-card .mini-suit {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.seat .mini-card.spades,
+.seat .mini-card.clubs {
+  color: #1a1a1a;
+}
+
+.seat .mini-card.hearts,
+.seat .mini-card.diamonds {
+  color: #e63946;
 }
 
 .seat img {

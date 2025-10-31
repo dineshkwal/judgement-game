@@ -173,7 +173,7 @@ function playCard(card, el){
       leadSuit: storage.leadSuit,
       currentPlayer: null
     }).then(() => {
-      storage.cardPlaying = false;
+      // Don't clear cardPlaying here - it will be cleared when new trick starts
     }).catch((err) => {
       console.error('Firebase update failed:', err);
       storage.cardPlaying = false;
@@ -227,15 +227,26 @@ function resolveTrick(){
   }
 
   const winnerName = storage.players.find(p => p.id === winner)?.name || 'Player';
+  console.log('DEBUG: resolveTrick showing winner message:', winnerName);
   showCenterMessage(`${winnerName} won the hand!`, 2000); // Show for 2 seconds
+  
+  // Set flag to prevent updateUI from changing message during winner display
+  storage.showingWinnerMessage = true;
+  console.log('DEBUG: Set showingWinnerMessage = true');
 
   setTimeout(() => {
+    console.log('DEBUG: resolveTrick 2s timeout fired');
     storage.trickResolving = false;
+    console.log('DEBUG: Set trickResolving = false (keeping showingWinnerMessage = true for now)');
     const allEmpty = Object.values(storage.hands).every(h => !h || h.length === 0);
+    
+    console.log('DEBUG: After trick resolution - allEmpty:', allEmpty, 'dealerId:', storage.dealerId, 'myId:', storage.myId);
     
     // Only dealer updates Firebase
     if(storage.dealerId === storage.myId) {
+      console.log('DEBUG: I am dealer, updating Firebase...');
       if(allEmpty){
+        console.log('DEBUG: All hands empty - setting currentPlayer to null');
         // Update Firebase to signal trick is over and round is ending
         storage.gameRef.update({ 
           trick: [], 
@@ -243,6 +254,7 @@ function resolveTrick(){
           currentPlayer: null
         });
       } else {
+        console.log('DEBUG: Hands not empty - setting currentPlayer to winner:', winner);
         // Update Firebase to signal trick is over and next player leads
         storage.gameRef.update({ 
           trick: [], 
@@ -250,6 +262,8 @@ function resolveTrick(){
           currentPlayer: winner
         });
       }
+    } else {
+      console.log('DEBUG: I am NOT dealer, waiting for dealer to update Firebase');
     }
     
     // All players clear local trick UI
@@ -260,23 +274,27 @@ function resolveTrick(){
     renderMyHand();
     
     if(allEmpty){
-      // Show round ending message
+      // Show round ending message and keep the flag set to prevent other messages
       showCenterMessage('Round complete!', 2000);
+      // Keep showingWinnerMessage = true to protect the "Round complete!" message
+      // It will be cleared by the message timeout in showCenterMessage()
       if(storage.dealerId === storage.myId) {
         setTimeout(nextRound, 2000);
       }
-    } else {
-      // Small delay to let trick clear message show, then update to new turn message
-      setTimeout(() => {
-        updateUI();
-      }, 100);
     }
+    // Don't call updateUI() manually - the Firebase listener will call it
+    // when currentPlayer actually updates, ensuring correct synchronization
   }, 2000);
 }
 
 function nextRound(){
   console.log('DEBUG: nextRound() called by player:', storage.myId, 'dealerId:', storage.dealerId, 'isDealer:', storage.dealerId === storage.myId);
   if(storage.dealerId !== storage.myId) return;
+  
+  // Clear any lingering messages and flags from previous round
+  hideCenterMessage();
+  storage.showingWinnerMessage = false;
+  storage.trickResolving = false;
   
   // Calculate scores for the completed round
   const roundData = {
