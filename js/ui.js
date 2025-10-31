@@ -191,9 +191,9 @@ function renderTable(){
     seat.className = 'seat';
     seat.setAttribute('data-player-id', p.id);
     
-    // Highlight current player's turn during trick play
-    // currentPlayer is only set during active trick play, not during bidding
-    if(storage.currentPlayer && p.id === storage.currentPlayer) {
+    // Highlight current player's turn ONLY during active trick play
+    // Not during dealing (waiting_deal), bidding, or after game ends
+    if(storage.currentPlayer && p.id === storage.currentPlayer && storage.status === 'playing') {
       seat.classList.add('active-turn');
     }
     
