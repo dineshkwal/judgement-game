@@ -796,6 +796,8 @@ button:active {
   flex-direction: column;
   align-items: center;
   flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* Scoreboard - Below Round Info */
@@ -934,10 +936,33 @@ button:active {
   display: flex;
   gap: .4rem;
   flex-wrap: nowrap;
-  justify-content: center;
+  justify-content: flex-start;
   margin: 1.5rem 0;
   overflow-x: auto;
-  padding: .5rem 0;
+  overflow-y: visible;
+  padding: .5rem;
+  width: 100%;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.hand::-webkit-scrollbar {
+  height: 8px;
+}
+
+.hand::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.hand::-webkit-scrollbar-thumb {
+  background: rgba(76, 175, 80, 0.5);
+  border-radius: 10px;
+}
+
+.hand::-webkit-scrollbar-thumb:hover {
+  background: rgba(76, 175, 80, 0.7);
 }
 
 /* Playing Cards */
@@ -1542,7 +1567,9 @@ button:active {
   
   /* Cards */
   .hand {
-    justify-content: center;
+    justify-content: flex-start;
+    padding: 0.5rem;
+    margin: 1rem 0;
   }
   
   .card {
