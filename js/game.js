@@ -7,13 +7,13 @@ function dealCards(){
   
   const N = storage.players.length;
   const cardsThisRound = storage.cardsPerRound - storage.round + 1;
-  console.log(`DEBUG dealCards: round=${storage.round}, cardsPerRound=${storage.cardsPerRound}, cardsThisRound=${cardsThisRound}`);
-  console.log(`DEBUG dealCards check: cardsThisRound <= 0? ${cardsThisRound <= 0}`);
+  debugLog(`DEBUG dealCards: round=${storage.round}, cardsPerRound=${storage.cardsPerRound}, cardsThisRound=${cardsThisRound}`);
+  debugLog(`DEBUG dealCards check: cardsThisRound <= 0? ${cardsThisRound <= 0}`);
   if(cardsThisRound <= 0) {
-    console.log('DEBUG: dealCards ending game because cardsThisRound <= 0');
+    debugLog('DEBUG: dealCards ending game because cardsThisRound <= 0');
     return endGame();
   }
-  console.log('DEBUG: dealCards proceeding with dealing', cardsThisRound, 'cards');
+  debugLog('DEBUG: dealCards proceeding with dealing', cardsThisRound, 'cards');
 
   storage.deck = makeDeck();
   const hands = {};
@@ -340,26 +340,26 @@ function resolveTrick(){
   }
 
   const winnerName = storage.players.find(p => p.id === winner)?.name || 'Player';
-  console.log('DEBUG: resolveTrick showing winner message:', winnerName);
+  debugLog('DEBUG: resolveTrick showing winner message:', winnerName);
   showCenterMessage(`${winnerName} won the hand!`, 2000); // Show for 2 seconds
   
   // Set flag to prevent updateUI from changing message during winner display
   storage.showingWinnerMessage = true;
-  console.log('DEBUG: Set showingWinnerMessage = true');
+  debugLog('DEBUG: Set showingWinnerMessage = true');
 
   setTimeout(() => {
-    console.log('DEBUG: resolveTrick 2s timeout fired');
+    debugLog('DEBUG: resolveTrick 2s timeout fired');
     storage.trickResolving = false;
-    console.log('DEBUG: Set trickResolving = false (keeping showingWinnerMessage = true for now)');
+    debugLog('DEBUG: Set trickResolving = false (keeping showingWinnerMessage = true for now)');
     const allEmpty = Object.values(storage.hands).every(h => !h || h.length === 0);
     
-    console.log('DEBUG: After trick resolution - allEmpty:', allEmpty, 'dealerId:', storage.dealerId, 'myId:', storage.myId);
+    debugLog('DEBUG: After trick resolution - allEmpty:', allEmpty, 'dealerId:', storage.dealerId, 'myId:', storage.myId);
     
     // Only dealer updates Firebase
     if(storage.dealerId === storage.myId) {
-      console.log('DEBUG: I am dealer, updating Firebase...');
+      debugLog('DEBUG: I am dealer, updating Firebase...');
       if(allEmpty){
-        console.log('DEBUG: All hands empty - setting currentPlayer to null');
+        debugLog('DEBUG: All hands empty - setting currentPlayer to null');
         // Update Firebase to signal trick is over and round is ending
         storage.gameRef.update({ 
           trick: [], 
@@ -367,7 +367,7 @@ function resolveTrick(){
           currentPlayer: null
         });
       } else {
-        console.log('DEBUG: Hands not empty - setting currentPlayer to winner:', winner);
+        debugLog('DEBUG: Hands not empty - setting currentPlayer to winner:', winner);
         // Update Firebase to signal trick is over and next player leads
         storage.gameRef.update({ 
           trick: [], 
@@ -376,7 +376,7 @@ function resolveTrick(){
         });
       }
     } else {
-      console.log('DEBUG: I am NOT dealer, waiting for dealer to update Firebase');
+      debugLog('DEBUG: I am NOT dealer, waiting for dealer to update Firebase');
     }
     
     // All players clear local trick UI
@@ -401,7 +401,7 @@ function resolveTrick(){
 }
 
 function nextRound(){
-  console.log('DEBUG: nextRound() called by player:', storage.myId, 'dealerId:', storage.dealerId, 'isDealer:', storage.dealerId === storage.myId);
+  debugLog('DEBUG: nextRound() called by player:', storage.myId, 'dealerId:', storage.dealerId, 'isDealer:', storage.dealerId === storage.myId);
   if(storage.dealerId !== storage.myId) return;
   
   // Clear any lingering messages and flags from previous round
@@ -450,10 +450,10 @@ function nextRound(){
   // Move to next round
   storage.round++;
   const cardsNext = storage.cardsPerRound - storage.round + 1;
-  console.log(`DEBUG nextRound: round=${storage.round}, cardsPerRound=${storage.cardsPerRound}, cardsNext=${cardsNext}`);
-  console.log('DEBUG: Checking if should end game. cardsNext <= 0?', cardsNext <= 0);
+  debugLog(`DEBUG nextRound: round=${storage.round}, cardsPerRound=${storage.cardsPerRound}, cardsNext=${cardsNext}`);
+  debugLog('DEBUG: Checking if should end game. cardsNext <= 0?', cardsNext <= 0);
   if(cardsNext <= 0){
-    console.log('DEBUG: YES - Ending game because cardsNext <= 0');
+    debugLog('DEBUG: YES - Ending game because cardsNext <= 0');
     // Update Firebase with final round data before ending
     storage.gameRef.update({ 
       scores: storage.scores,
@@ -464,7 +464,7 @@ function nextRound(){
     });
     return;
   }
-  console.log('DEBUG: NO - Continuing to next round with', cardsNext, 'cards');
+  debugLog('DEBUG: NO - Continuing to next round with', cardsNext, 'cards');
   
   const dealerIdx = storage.players.findIndex(p => p.id === storage.dealerId);
   const nextDealerIdx = (dealerIdx + 1) % storage.players.length;
@@ -488,15 +488,15 @@ function nextRound(){
 }
 
 function endGame(){
-  console.log('DEBUG: endGame() called');
-  console.log('DEBUG: storage state:', {
+  debugLog('DEBUG: endGame() called');
+  debugLog('DEBUG: storage state:', {
     round: storage.round,
     cardsPerRound: storage.cardsPerRound,
     status: storage.status,
     dealerId: storage.dealerId,
     myId: storage.myId
   });
-  console.trace('Stack trace:');
+  if (DEBUG) console.trace('Stack trace:');
   
   // Sort players by score (descending)
   const sortedPlayers = [...storage.players].sort((a, b) => {

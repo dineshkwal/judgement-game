@@ -20,7 +20,7 @@ let selectedAvatar = avatars[0];
 
 // Initialize app
 window.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM loaded, initializing...');
+  debugLog('DOM loaded, initializing...');
   showScreen('register');
   
   // Initialize custom dropdown
@@ -42,11 +42,11 @@ window.addEventListener('DOMContentLoaded', () => {
     const avatarPreview = document.getElementById('avatarPreview');
     const avatarName = document.getElementById('avatarName');
     
-    console.log('Avatar grid element:', avatarGrid);
-    console.log('Avatar preview element:', avatarPreview);
+    debugLog('Avatar grid element:', avatarGrid);
+    debugLog('Avatar preview element:', avatarPreview);
     
     if (avatarGrid && avatarPreview && avatarName) {
-      console.log('Generating avatars...');
+      debugLog('Generating avatars...');
       avatars.forEach((avatar, index) => {
         const avatarBtn = document.createElement('button');
         avatarBtn.className = 'avatar-option' + (index === 0 ? ' selected' : '');
@@ -60,7 +60,7 @@ window.addEventListener('DOMContentLoaded', () => {
         avatarBtn.appendChild(img);
         avatarGrid.appendChild(avatarBtn);
       });
-      console.log('Avatar grid populated with', avatars.length, 'avatars');
+      debugLog('Avatar grid populated with', avatars.length, 'avatars');
       
       // Setup navigation buttons
       setupAvatarScroll();

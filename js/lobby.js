@@ -50,7 +50,7 @@ function listenForPlayers(){
       const currentPlayerChangedToNull = prevCurrentPlayer && !gameData.currentPlayer;
       const trickJustCompleted = trickNowFull && currentPlayerNowNull && currentPlayerChangedToNull;
       
-      console.log('DEBUG trick completion check:', {
+      debugLog('DEBUG trick completion check:', {
         trickNowFull,
         currentPlayerNowNull,
         currentPlayerChangedToNull,
@@ -78,19 +78,19 @@ function listenForPlayers(){
         storage.trickResolving = false;
         storage.cardPlaying = false;
         
-        console.log('DEBUG: Firebase listener - trick cleared, wasJustResolving:', wasJustResolving);
+        debugLog('DEBUG: Firebase listener - trick cleared, wasJustResolving:', wasJustResolving);
         
         // Track that trick was just cleared - but ONLY if it transitioned from non-empty to empty
         // This prevents false triggers during initial game setup when trick is always empty
         const trickJustTransitionedToEmpty = prevTrickLength > 0 && (!gameData.trick || gameData.trick.length === 0);
         if(trickJustTransitionedToEmpty) {
-          console.log('DEBUG: Setting trickJustCleared=true (trick went from', prevTrickLength, 'cards to 0)');
+          debugLog('DEBUG: Setting trickJustCleared=true (trick went from', prevTrickLength, 'cards to 0)');
           // Only set the flag for non-dealers to prevent showing stale currentPlayer
           // Dealer already knows the correct next player since they just set it
           if(storage.dealerId !== storage.myId) {
             storage.trickJustCleared = true;
           } else {
-            console.log('DEBUG: I am dealer, NOT setting trickJustCleared');
+            debugLog('DEBUG: I am dealer, NOT setting trickJustCleared');
           }
         }
         
@@ -100,7 +100,7 @@ function listenForPlayers(){
         const winnerMessageShowing = centerMsg && centerMsg.isTimedMessage;
         
         if(wasJustResolving || winnerMessageShowing) {
-          console.log('DEBUG: Skipping updateUI() because wasJustResolving:', wasJustResolving, 'or winnerMessageShowing:', winnerMessageShowing);
+          debugLog('DEBUG: Skipping updateUI() because wasJustResolving:', wasJustResolving, 'or winnerMessageShowing:', winnerMessageShowing);
           renderScoreboard();
           renderTable();
           renderMyHand();
@@ -112,10 +112,10 @@ function listenForPlayers(){
           // to show the correct turn message after Firebase sync completes
           // Wait 2100ms to ensure winner message (2000ms) has fully cleared
           if(storage.trickJustCleared) {
-            console.log('DEBUG: Scheduling delayed updateUI() for trickJustCleared case');
+            debugLog('DEBUG: Scheduling delayed updateUI() for trickJustCleared case');
             setTimeout(() => {
               storage.trickJustCleared = false;
-              console.log('DEBUG: Delayed updateUI() after trickJustCleared');
+              debugLog('DEBUG: Delayed updateUI() after trickJustCleared');
               updateUI();
             }, 2100);
           }
@@ -132,7 +132,7 @@ function listenForPlayers(){
         storage.trickJustCleared = false;
       }
       
-      console.log('DEBUG: Firebase listener calling updateUI()');
+      debugLog('DEBUG: Firebase listener calling updateUI()');
       renderScoreboard();
       renderTable();
       renderMyHand();
@@ -157,8 +157,8 @@ function listenForPlayers(){
       }
       
       if(gameData.status === 'ended') {
-        console.log('DEBUG: Firebase listener detected status=ended, calling endGame()');
-        console.log('DEBUG: gameData.round=', gameData.round, 'gameData.cardsPerRound=', gameData.cardsPerRound);
+        debugLog('DEBUG: Firebase listener detected status=ended, calling endGame()');
+        debugLog('DEBUG: gameData.round=', gameData.round, 'gameData.cardsPerRound=', gameData.cardsPerRound);
         endGame();
       }
     }
