@@ -43,7 +43,7 @@ function updateUI(){
     dealBtn.style.display = 'none';
     biddingUI.classList.remove('active');
     
-    console.log('DEBUG updateUI playing phase:', {
+    debugLog('DEBUG updateUI playing phase:', {
       showingWinnerMessage: storage.showingWinnerMessage,
       trickResolving: storage.trickResolving,
       trickJustCleared: storage.trickJustCleared,
@@ -55,7 +55,7 @@ function updateUI(){
     // Don't overwrite timed messages (like "X won the hand!" or "Round complete!")
     const centerMsg = document.getElementById('centerMsg');
     if(centerMsg && centerMsg.isTimedMessage){
-      console.log('DEBUG: Skipping updateUI - timed message is showing');
+      debugLog('DEBUG: Skipping updateUI - timed message is showing');
       return;
     }
     
@@ -63,12 +63,12 @@ function updateUI(){
     // This prevents showing stale currentPlayer values before Firebase fully syncs
     // The flag is cleared here so the retry will show the correct message
     if(storage.trickJustCleared){
-      console.log('DEBUG: Skipping updateUI - trick just cleared, will retry after sync delay');
+      debugLog('DEBUG: Skipping updateUI - trick just cleared, will retry after sync delay');
       storage.trickJustCleared = false; // Clear the flag BEFORE returning
       hideCenterMessage(); // Clear any lingering message
       // Schedule another updateUI() call after 100ms to let Firebase sync complete
       setTimeout(() => {
-        console.log('DEBUG: Retry updateUI after trickJustCleared delay');
+        debugLog('DEBUG: Retry updateUI after trickJustCleared delay');
         updateUI();
       }, 100);
       return;
@@ -77,7 +77,7 @@ function updateUI(){
     // Check if round is ending (all hands empty) - don't show turn messages
     const allHandsEmpty = storage.hands && Object.values(storage.hands).every(h => !h || h.length === 0);
     if(allHandsEmpty){
-      console.log('DEBUG: Skipping updateUI - round ending, all hands empty');
+      debugLog('DEBUG: Skipping updateUI - round ending, all hands empty');
       return;
     }
     
@@ -85,11 +85,11 @@ function updateUI(){
     if(!storage.currentPlayer){
       hideCenterMessage();
     } else if(isMyTurn()){
-      console.log('DEBUG: Showing "Your turn to play"');
+      debugLog('DEBUG: Showing "Your turn to play"');
       showCenterMessage('Your turn – play a card', 0); // Persistent
     } else {
       const currentPlayerName = storage.players.find(p => p.id === storage.currentPlayer)?.name || 'Player';
-      console.log('DEBUG: Showing "Waiting for ' + currentPlayerName + '"');
+      debugLog('DEBUG: Showing "Waiting for ' + currentPlayerName + '"');
       showCenterMessage(`Waiting for ${currentPlayerName} to play...`, 0); // Persistent
     }
   }
@@ -112,13 +112,13 @@ function updateRoundInfo(){
   
   const trumpName = suitNames[trump] || 'Spades';
   
-  console.log('DEBUG updateRoundInfo:', {round, cardsPerRound, trump, cardsThisRound});
+  debugLog('DEBUG updateRoundInfo:', {round, cardsPerRound, trump, cardsThisRound});
   
   if(roundInfoEl) {
     roundInfoEl.innerHTML = `Round ${round} <span style="font-size: 1.8em; color: #ffd700; margin: 0 0.5rem;">${trump}</span> ${cardsThisRound > 0 ? cardsThisRound : 0} Cards <span style="font-size: 1.8em; color: #ffd700; margin: 0 0.5rem;">${trump}</span> ${trumpName}`;
-    console.log('DEBUG roundInfo updated:', roundInfoEl.textContent);
+    debugLog('DEBUG roundInfo updated:', roundInfoEl.textContent);
   } else {
-    console.log('DEBUG roundInfo element not found!');
+    debugLog('DEBUG roundInfo element not found!');
   }
 }
 
@@ -138,7 +138,7 @@ function showCenterMessage(text, duration = 2000){
       // Clear the showingWinnerMessage flag when the winner message timeout completes
       if(storage && storage.showingWinnerMessage){
         storage.showingWinnerMessage = false;
-        console.log('DEBUG: Cleared showingWinnerMessage after message timeout');
+        debugLog('DEBUG: Cleared showingWinnerMessage after message timeout');
       }
     }, duration);
   } else {

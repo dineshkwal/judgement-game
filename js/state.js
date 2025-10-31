@@ -1,4 +1,15 @@
 /* ---------- GLOBAL STATE ---------- */
+
+// Debug flag - set to true for development, false for production
+const DEBUG = false;
+
+// Debug logging helper - only logs when DEBUG is true
+function debugLog(...args) {
+  if (DEBUG) {
+    console.log(...args);
+  }
+}
+
 const storage = {
   players: [],
   hostId: null,
@@ -22,3 +33,4 @@ const storage = {
   trickResolving: false,
   cardPlaying: false  // Flag to prevent double-playing cards
 };
+
