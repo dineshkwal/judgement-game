@@ -40,7 +40,7 @@ function renderScorecard() {
   // Add row for each round (1 to totalRounds)
   for (let roundNum = 1; roundNum <= totalRounds; roundNum++) {
     html += '<tr>';
-    html += `<td style="font-weight:bold; background:#f9f9f9;">Round ${roundNum}</td>`;
+    html += `<td>Round ${roundNum}</td>`;
     
     // Find this round's data in history
     const roundData = storage.roundHistory ? storage.roundHistory.find(r => r.round === roundNum) : null;
@@ -50,14 +50,14 @@ function renderScorecard() {
       if (roundData && roundData.players[player.id]) {
         const data = roundData.players[player.id];
         const pointsClass = data.points >= 0 ? 'score-positive' : 'score-negative';
-        html += `<td style="color:#333; font-size:1.05rem;">`;
-        html += `<div style="margin-bottom:0.3rem;"><strong>Bid:</strong> ${data.bid}</div>`;
-        html += `<div style="margin-bottom:0.3rem;"><strong>Won:</strong> ${data.won}</div>`;
-        html += `<div class="${pointsClass}" style="font-weight:bold; font-size:1.1rem;">Pts: ${data.points > 0 ? '+' : ''}${data.points}</div>`;
+        html += `<td>`;
+        html += `<div style="margin-bottom:0.5rem; color: rgba(255,255,255,0.75); font-size:1.15rem; font-weight:500;">Bid: ${data.bid}</div>`;
+        html += `<div style="margin-bottom:0.5rem; color: rgba(255,255,255,0.75); font-size:1.15rem; font-weight:500;">Won: ${data.won}</div>`;
+        html += `<div class="${pointsClass}" style="font-size:1.35rem; font-weight:700;">Pts: ${data.points > 0 ? '+' : ''}${data.points}</div>`;
         html += `</td>`;
       } else {
         // Round not completed yet
-        html += '<td style="color:#666; font-weight:500; font-size:1.4rem;">–</td>';
+        html += '<td style="color: rgba(255,255,255,0.4); font-weight:500; font-size:1.6rem;">–</td>';
       }
     });
     
@@ -65,7 +65,7 @@ function renderScorecard() {
   }
   
   // Add total score row at bottom
-  html += '<tr style="background:#e8f5e9; font-weight:bold;">';
+  html += '<tr>';
   html += '<td>Total Score</td>';
   storage.players.forEach(player => {
     const totalScore = storage.scores[player.id] || 0;

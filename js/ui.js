@@ -159,9 +159,8 @@ function renderScoreboard(){
   storage.players.forEach(p => {
     const bid = storage.bids[p.id] !== undefined ? storage.bids[p.id] : '–';
     const won = storage.tricksWon[p.id] || 0;
-    const isDealer = p.id === storage.dealerId ? ' 🃏' : '';
     const isActive = p.id === storage.currentBidder ? ' class="active-turn"' : '';
-    html += `<tr${isActive}><td>${p.name}${isDealer}</td><td>${bid}</td><td>${won}</td></tr>`;
+    html += `<tr${isActive}><td>${p.name}</td><td>${bid}</td><td>${won}</td></tr>`;
   });
   
   html += '</tbody></table>';
@@ -192,7 +191,8 @@ function renderTable(){
     seat.className = 'seat';
     seat.setAttribute('data-player-id', p.id);
     
-    // Highlight current player's turn
+    // Highlight current player's turn during trick play
+    // currentPlayer is only set during active trick play, not during bidding
     if(storage.currentPlayer && p.id === storage.currentPlayer) {
       seat.classList.add('active-turn');
     }
