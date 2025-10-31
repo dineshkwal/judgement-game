@@ -323,6 +323,25 @@ function renderMyHand(){
     
     handDiv.appendChild(el);
   });
+  
+  // Adjust alignment based on whether scrolling is needed
+  adjustHandAlignment();
+}
+
+// Adjust hand alignment based on overflow
+function adjustHandAlignment() {
+  const handDiv = document.getElementById('myHand');
+  
+  // Small delay to ensure cards are fully rendered
+  setTimeout(() => {
+    const needsScroll = handDiv.scrollWidth > handDiv.clientWidth;
+    
+    if (needsScroll) {
+      handDiv.style.justifyContent = 'flex-start';
+    } else {
+      handDiv.style.justifyContent = 'center';
+    }
+  }, 50);
 }
 
 // Determine which cards can be legally played

@@ -23,6 +23,18 @@ window.addEventListener('DOMContentLoaded', () => {
   console.log('DOM loaded, initializing...');
   showScreen('register');
   
+  // Initialize custom dropdown
+  if (typeof initCustomDropdown === 'function') {
+    initCustomDropdown();
+  }
+  
+  // Adjust hand alignment on window resize
+  window.addEventListener('resize', () => {
+    if (typeof adjustHandAlignment === 'function') {
+      adjustHandAlignment();
+    }
+  });
+  
   // Small delay to ensure DOM is ready
   setTimeout(() => {
     // Generate avatar grid

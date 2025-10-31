@@ -55,15 +55,126 @@ function dealCards(){
   });
 }
 
+// Custom dropdown functionality
+let selectedBidValue = 0;
+let maxBidValue = 0;
+
+function initCustomDropdown() {
+  const dropdown = document.getElementById('customDropdown');
+  const selected = document.getElementById('dropdownSelected');
+  const options = document.getElementById('dropdownOptions');
+  
+  // Make dropdown focusable
+  dropdown.setAttribute('tabindex', '0');
+  
+  // Toggle dropdown
+  dropdown.addEventListener('click', function(e) {
+    if (e.target.classList.contains('dropdown-option')) return;
+    dropdown.classList.toggle('open');
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!dropdown.contains(e.target)) {
+      dropdown.classList.remove('open');
+    }
+  });
+  
+  // Handle option selection
+  options.addEventListener('click', function(e) {
+    if (e.target.classList.contains('dropdown-option') && !e.target.classList.contains('disabled')) {
+      const value = e.target.dataset.value;
+      selectedBidValue = parseInt(value);
+      selected.textContent = value;
+      
+      // Update selected state
+      options.querySelectorAll('.dropdown-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      e.target.classList.add('selected');
+      
+      dropdown.classList.remove('open');
+    }
+  });
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    // Only handle if bidding UI is active
+    const biddingUI = document.getElementById('biddingUI');
+    if (!biddingUI.classList.contains('active')) return;
+    
+    if (e.key === 'Escape') {
+      dropdown.classList.remove('open');
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      dropdown.classList.toggle('open');
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      // Check if option is disabled
+      const allOptions = Array.from(options.querySelectorAll('.dropdown-option'));
+      let newValue = selectedBidValue + 1;
+      while (newValue <= maxBidValue) {
+        const option = allOptions.find(opt => parseInt(opt.dataset.value) === newValue);
+        if (option && !option.classList.contains('disabled')) {
+          selectedBidValue = newValue;
+          selected.textContent = newValue;
+          updateSelectedOption();
+          break;
+        }
+        newValue++;
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      // Check if option is disabled
+      const allOptions = Array.from(options.querySelectorAll('.dropdown-option'));
+      let newValue = selectedBidValue - 1;
+      while (newValue >= 0) {
+        const option = allOptions.find(opt => parseInt(opt.dataset.value) === newValue);
+        if (option && !option.classList.contains('disabled')) {
+          selectedBidValue = newValue;
+          selected.textContent = newValue;
+          updateSelectedOption();
+          break;
+        }
+        newValue--;
+      }
+    }
+  });
+}
+
+function updateSelectedOption() {
+  const options = document.getElementById('dropdownOptions');
+  options.querySelectorAll('.dropdown-option').forEach(opt => {
+    opt.classList.remove('selected');
+    if (parseInt(opt.dataset.value) === selectedBidValue) {
+      opt.classList.add('selected');
+    }
+  });
+}
+
 function updateBiddingUI(){
   const cardsThisRound = storage.cardsPerRound - storage.round + 1;
-  const bidSelect = document.getElementById('bidSelect');
+  maxBidValue = cardsThisRound;
+  const dropdownOptions = document.getElementById('dropdownOptions');
+  const dropdownSelected = document.getElementById('dropdownSelected');
   const prompt = document.getElementById('biddingPrompt');
   
-  bidSelect.innerHTML = '';
+  // Populate dropdown options
+  dropdownOptions.innerHTML = '';
   for(let i = 0; i <= cardsThisRound; i++){
-    bidSelect.innerHTML += `<option value="${i}">${i}</option>`;
+    const optionDiv = document.createElement('div');
+    optionDiv.className = 'dropdown-option';
+    optionDiv.dataset.value = i;
+    optionDiv.textContent = i;
+    if (i === selectedBidValue) {
+      optionDiv.classList.add('selected');
+    }
+    dropdownOptions.appendChild(optionDiv);
   }
+  
+  // Reset selected value
+  selectedBidValue = 0;
+  dropdownSelected.textContent = '0';
   
   // Check if this is the last bidder (anti-sum rule)
   const totalBids = Object.keys(storage.bids).length;
@@ -72,23 +183,25 @@ function updateBiddingUI(){
   if(isLastBidder){
     const currentSum = Object.values(storage.bids).reduce((a,b) => a+b, 0);
     const forbidden = cardsThisRound - currentSum;
-    prompt.textContent = `Your bid (can't bid ${forbidden} – anti-sum rule):`;
+    prompt.textContent = `Place your bid`;
     
-    Array.from(bidSelect.options).forEach(opt => {
-      if(parseInt(opt.value) === forbidden){
-        opt.disabled = true;
-        opt.textContent += ' ✗';
+    const options = dropdownOptions.querySelectorAll('.dropdown-option');
+    options.forEach(opt => {
+      if(parseInt(opt.dataset.value) === forbidden){
+        opt.classList.add('disabled');
+        opt.textContent = opt.dataset.value + ' ✗';
+        opt.title = `Can't bid ${forbidden} (anti-sum rule)`;
       }
     });
   } else {
-    prompt.textContent = `How many hands will you win?`;
+    prompt.textContent = `Place your bid`;
   }
 }
 
 function submitBid(){
   if(storage.currentBidder !== storage.myId) return;
   
-  const bid = parseInt(document.getElementById('bidSelect').value);
+  const bid = selectedBidValue;
   const cardsThisRound = storage.cardsPerRound - storage.round + 1;
   
   // Validate anti-sum rule for last bidder
