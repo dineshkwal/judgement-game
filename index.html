@@ -142,8 +142,14 @@
     <!-- Bidding UI -->
     <div id="biddingUI">
       <p id="biddingPrompt"></p>
-      <select id="bidSelect"></select>
-      <button onclick="submitBid()">Submit Bid</button>
+      <div>
+        <div id="customDropdown" class="custom-dropdown">
+          <div class="dropdown-selected" id="dropdownSelected">0</div>
+          <div class="dropdown-arrow">▼</div>
+          <div class="dropdown-options" id="dropdownOptions"></div>
+        </div>
+        <button onclick="submitBid()">Submit</button>
+      </div>
     </div>
     
     <!-- Center Playing Table -->
