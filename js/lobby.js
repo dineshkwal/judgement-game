@@ -212,32 +212,90 @@ function refreshLobby(){
     roundSelContainer.style.display = 'block';
     startBtn.style.display = 'inline-block';
     
-    // Populate host selector
-    hostSel.innerHTML = '';
-    storage.players.forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p.id;
-      opt.textContent = p.name + (p.id === storage.myId ? ' (You)' : '');
-      hostSel.appendChild(opt);
+    // Populate host selector with custom dropdown
+    const hostOptionsContainer = hostSel.querySelector('.dropdown-options');
+    hostOptionsContainer.innerHTML = '';
+    storage.players.forEach((p, index) => {
+      const optDiv = document.createElement('div');
+      optDiv.className = 'dropdown-option';
+      optDiv.textContent = p.name + (p.id === storage.myId ? ' (You)' : '');
+      optDiv.dataset.value = p.id;
+      if(index === 0) {
+        optDiv.classList.add('selected');
+        hostSel.querySelector('.dropdown-selected').textContent = optDiv.textContent;
+        hostSel.dataset.value = p.id;
+      }
+      optDiv.addEventListener('click', () => {
+        hostSel.querySelectorAll('.dropdown-option').forEach(o => o.classList.remove('selected'));
+        optDiv.classList.add('selected');
+        hostSel.querySelector('.dropdown-selected').textContent = optDiv.textContent;
+        hostSel.dataset.value = optDiv.dataset.value;
+        hostSel.classList.remove('open');
+      });
+      hostOptionsContainer.appendChild(optDiv);
     });
     
-    // Populate round selector (1 to maxCardsPerPlayer)
+    // Populate round selector with custom dropdown
     const N = storage.players.length;
     const maxCardsPerPlayer = Math.floor(52 / N);
-    roundSel.innerHTML = '';
+    const roundOptionsContainer = roundSel.querySelector('.dropdown-options');
+    roundOptionsContainer.innerHTML = '';
     for(let i = 1; i <= maxCardsPerPlayer; i++){
       const cards = maxCardsPerPlayer - i + 1;
-      const opt = document.createElement('option');
-      opt.value = cards;
-      opt.textContent = `${cards} cards`;
-      if(i === 1) opt.selected = true; // Default to maximum cards
-      roundSel.appendChild(opt);
+      const optDiv = document.createElement('div');
+      optDiv.className = 'dropdown-option';
+      optDiv.textContent = `${cards} cards`;
+      optDiv.dataset.value = cards;
+      if(i === 1) {
+        optDiv.classList.add('selected');
+        roundSel.querySelector('.dropdown-selected').textContent = optDiv.textContent;
+        roundSel.dataset.value = cards;
+      }
+      optDiv.addEventListener('click', () => {
+        roundSel.querySelectorAll('.dropdown-option').forEach(o => o.classList.remove('selected'));
+        optDiv.classList.add('selected');
+        roundSel.querySelector('.dropdown-selected').textContent = optDiv.textContent;
+        roundSel.dataset.value = optDiv.dataset.value;
+        roundSel.classList.remove('open');
+      });
+      roundOptionsContainer.appendChild(optDiv);
     }
+    
+    // Initialize dropdown toggle functionality
+    initLobbyDropdowns();
   } else {
     hostSelContainer.style.display = 'none';
     roundSelContainer.style.display = 'none';
     startBtn.style.display = 'none';
   }
+}
+
+function initLobbyDropdowns() {
+  const dropdowns = document.querySelectorAll('.lobby-dropdown');
+  
+  dropdowns.forEach(dropdown => {
+    const selected = dropdown.querySelector('.dropdown-selected');
+    
+    // Remove any existing listeners
+    const newSelected = selected.cloneNode(true);
+    selected.parentNode.replaceChild(newSelected, selected);
+    
+    newSelected.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // Close other dropdowns
+      document.querySelectorAll('.lobby-dropdown').forEach(d => {
+        if(d !== dropdown) d.classList.remove('open');
+      });
+      dropdown.classList.toggle('open');
+    });
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if(!e.target.closest('.lobby-dropdown')) {
+      document.querySelectorAll('.lobby-dropdown').forEach(d => d.classList.remove('open'));
+    }
+  });
 }
 
 function leaveLobby(){
@@ -253,8 +311,8 @@ function leaveLobby(){
 }
 
 function startGame(){
-  const hostId = document.getElementById('hostSelect').value;
-  const startingCards = parseInt(document.getElementById('roundSelect').value);
+  const hostId = document.getElementById('hostSelect').dataset.value;
+  const startingCards = parseInt(document.getElementById('roundSelect').dataset.value);
   if(!hostId) return alert('Pick a host');
   storage.hostId = hostId;
   storage.isHost = (hostId === storage.myId);

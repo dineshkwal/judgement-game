@@ -671,31 +671,64 @@ button:active {
   width: 100%;
   padding: 0.9rem 1rem;
   font-size: 1rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(76, 175, 80, 0.4);
   border-radius: 12px;
   color: #fff;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath fill='%23fff' d='M7 10L2 5h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 3rem;
 }
 
 .game-settings select:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(76, 175, 80, 0.6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .game-settings select:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: rgba(76, 175, 80, 0.8);
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
 }
 
 .game-settings select option {
-  background: #1a1a1a;
+  background: rgba(45, 95, 45, 0.98);
   padding: 0.8rem;
   font-size: 1rem;
   color: #fff;
+  font-weight: 500;
+}
+
+.game-settings select option:hover {
+  background: rgba(76, 175, 80, 0.3);
+}
+
+.game-settings select option:checked {
+  background: rgba(76, 175, 80, 0.5);
+  font-weight: 600;
+}
+
+/* Lobby custom dropdowns */
+.lobby-dropdown {
+  width: 100% !important;
+}
+
+.lobby-dropdown .dropdown-selected {
+  padding: 0.9rem 1rem;
+  padding-right: 3rem;
+}
+
+.lobby-dropdown .dropdown-arrow {
+  right: 1rem;
 }
 
 .helper-text {
@@ -839,7 +872,7 @@ button:active {
 /* Deal Button */
 #dealBtn {
   position: absolute;
-  top: calc(5rem + 1.5rem + 1.5rem + 1rem + 25vmin);
+  top: calc(5rem + 1.5rem + 1.5rem + 3rem + 24vmin);
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 0.8rem 2rem;
@@ -887,7 +920,7 @@ button:active {
   max-height: 400px;
   background: radial-gradient(circle at center, #2c5f2c 0%, #1e4520 100%);
   border-radius: 50%;
-  margin: 2rem auto;
+  margin: 3rem auto;
   box-shadow: 
     0 0 0 8px rgba(76, 175, 80, 0.15),
     0 0 0 12px rgba(76, 175, 80, 0.08),
@@ -1194,7 +1227,7 @@ button:active {
 /* Bidding UI */
 #biddingUI {
   position: absolute;
-  top: calc(5rem + 1.5rem + 2rem + 26vmin);
+  top: calc(5rem + 1.5rem + 1.5rem + 3rem + 24vmin);
   left: 50%;
   transform: translate(-50%, -50%);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
@@ -1202,7 +1235,7 @@ button:active {
   border: 2px solid rgba(76, 175, 80, 0.4);
   border-radius: 16px;
   padding: 1.5rem;
-  max-width: 320px;
+  max-width: 280px;
   width: 90%;
   display: none;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -1820,17 +1853,17 @@ button:active {
   #table {
     width: 75vmin;
     height: 75vmin;
-    margin: 1rem auto;
+    margin: 2rem auto;
   }
   
   /* Deal Button - Adjust for mobile table position */
   #dealBtn {
-    top: calc(5rem + 1.5rem + 1.5rem + 1rem + 45vmin);
+    top: calc(5rem + 1.5rem + 1.5rem + 3rem + 40vmin);
   }
   
   /* Bidding UI - Adjust for mobile table position */
   #biddingUI {
-    top: calc(5rem + 1.5rem + 1.5rem + 1rem + 45vmin);
+    top: calc(5rem + 1.5rem + 1.5rem + 2rem + 45vmin);
   }
   
   #biddingUI #biddingPrompt {
@@ -1843,6 +1876,34 @@ button:active {
   
   #biddingUI button {
     width: 100%;
+  }
+  
+  /* Custom dropdown - Make wider on mobile to match button */
+  .custom-dropdown {
+    width: 100%;
+    flex: 1;
+  }
+  
+  #biddingUI > div {
+    width: 100%;
+  }
+  
+  #biddingUI button {
+    flex: 1;
+  }
+  
+  /* Mini cards - Make smaller on mobile */
+  .seat .mini-card {
+    width: 26px;
+    height: 38px;
+  }
+  
+  .seat .mini-card .mini-rank {
+    font-size: 0.6rem;
+  }
+  
+  .seat .mini-card .mini-suit {
+    font-size: 0.85rem;
   }
   
   /* Cards */
