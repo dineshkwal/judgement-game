@@ -43,13 +43,53 @@ function updateUI(){
     dealBtn.style.display = 'none';
     biddingUI.classList.remove('active');
     
+    console.log('DEBUG updateUI playing phase:', {
+      showingWinnerMessage: storage.showingWinnerMessage,
+      trickResolving: storage.trickResolving,
+      trickJustCleared: storage.trickJustCleared,
+      currentPlayer: storage.currentPlayer,
+      myId: storage.myId,
+      trickLength: storage.trick?.length
+    });
+    
+    // Don't overwrite timed messages (like "X won the hand!" or "Round complete!")
+    const centerMsg = document.getElementById('centerMsg');
+    if(centerMsg && centerMsg.isTimedMessage){
+      console.log('DEBUG: Skipping updateUI - timed message is showing');
+      return;
+    }
+    
+    // If trick just cleared, skip THIS update but clear flag and retry after brief delay
+    // This prevents showing stale currentPlayer values before Firebase fully syncs
+    // The flag is cleared here so the retry will show the correct message
+    if(storage.trickJustCleared){
+      console.log('DEBUG: Skipping updateUI - trick just cleared, will retry after sync delay');
+      storage.trickJustCleared = false; // Clear the flag BEFORE returning
+      hideCenterMessage(); // Clear any lingering message
+      // Schedule another updateUI() call after 100ms to let Firebase sync complete
+      setTimeout(() => {
+        console.log('DEBUG: Retry updateUI after trickJustCleared delay');
+        updateUI();
+      }, 100);
+      return;
+    }
+    
+    // Check if round is ending (all hands empty) - don't show turn messages
+    const allHandsEmpty = storage.hands && Object.values(storage.hands).every(h => !h || h.length === 0);
+    if(allHandsEmpty){
+      console.log('DEBUG: Skipping updateUI - round ending, all hands empty');
+      return;
+    }
+    
     // Check if round is ending (no current player means all cards played)
     if(!storage.currentPlayer){
       hideCenterMessage();
     } else if(isMyTurn()){
+      console.log('DEBUG: Showing "Your turn to play"');
       showCenterMessage('Your turn – play a card', 0); // Persistent
     } else {
       const currentPlayerName = storage.players.find(p => p.id === storage.currentPlayer)?.name || 'Player';
+      console.log('DEBUG: Showing "Waiting for ' + currentPlayerName + '"');
       showCenterMessage(`Waiting for ${currentPlayerName} to play...`, 0); // Persistent
     }
   }
@@ -88,11 +128,21 @@ function showCenterMessage(text, duration = 2000){
   centerMsg.classList.add('show');
   // Clear any existing timeout
   if(centerMsg.hideTimeout) clearTimeout(centerMsg.hideTimeout);
+  // Store whether this is a timed message
+  centerMsg.isTimedMessage = (duration > 0);
   // If duration is 0, message stays persistent
   if(duration > 0){
     centerMsg.hideTimeout = setTimeout(() => {
       centerMsg.classList.remove('show');
+      centerMsg.isTimedMessage = false;
+      // Clear the showingWinnerMessage flag when the winner message timeout completes
+      if(storage && storage.showingWinnerMessage){
+        storage.showingWinnerMessage = false;
+        console.log('DEBUG: Cleared showingWinnerMessage after message timeout');
+      }
     }, duration);
+  } else {
+    centerMsg.isTimedMessage = false;
   }
 }
 
@@ -140,6 +190,7 @@ function renderTable(){
     const y = 50 + radius * Math.sin(angle);
     const seat = document.createElement('div');
     seat.className = 'seat';
+    seat.setAttribute('data-player-id', p.id);
     
     // Highlight current player's turn
     if(storage.currentPlayer && p.id === storage.currentPlayer) {
@@ -148,7 +199,38 @@ function renderTable(){
     
     seat.style.left = x + '%';
     seat.style.top = y + '%';
-    seat.innerHTML = `<img src="${p.avatar}" alt="${p.name}"><div class="name">${p.name}</div>`;
+    
+    // Add mini card indicator (hidden by default)
+    const miniCard = document.createElement('div');
+    miniCard.className = 'mini-card';
+    miniCard.setAttribute('data-mini-card', p.id);
+    
+    // Position mini card based on avatar's angle around the table
+    // Use percentage-based positioning relative to seat
+    // Push outward from center but keep within reasonable bounds
+    const offsetDistance = 65; // pixels from seat center
+    const miniCardX = offsetDistance * Math.cos(angle);
+    const miniCardY = offsetDistance * Math.sin(angle);
+    
+    // Apply positioning
+    miniCard.style.left = '50%';
+    miniCard.style.top = '50%';
+    miniCard.style.transform = `translate(calc(-50% + ${miniCardX}px), calc(-50% + ${miniCardY}px))`;
+    
+    // Add avatar image
+    const img = document.createElement('img');
+    img.src = p.avatar;
+    img.alt = p.name;
+    
+    // Add name div
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'name';
+    nameDiv.textContent = p.name;
+    
+    // Append all elements
+    seat.appendChild(miniCard);
+    seat.appendChild(img);
+    seat.appendChild(nameDiv);
     table.appendChild(seat);
   });
   
@@ -158,6 +240,9 @@ function renderTable(){
   trickDiv.className = 'trick';
   trickDiv.innerHTML = trickHTML;
   table.appendChild(trickDiv);
+  
+  // Update mini cards based on current trick
+  updateMiniCards();
   
   updateRoundInfo();
 }
@@ -170,8 +255,11 @@ function renderMyHand(){
   // Cards should be disabled during bidding phase
   const isBidding = storage.status === 'bidding';
   
-  // Check if it's my turn - also check cardPlaying flag
-  const myTurn = isMyTurn() && !storage.cardPlaying && !isBidding;
+  // Cards should be disabled when trick is being resolved
+  const trickResolving = storage.trickResolving;
+  
+  // Check if it's my turn - also check cardPlaying flag and trick resolving
+  const myTurn = isMyTurn() && !storage.cardPlaying && !isBidding && !trickResolving;
   
   // Determine which cards are playable based on follow-suit rules
   const playableCards = myTurn ? getPlayableCards(myCards) : [];
@@ -186,6 +274,10 @@ function renderMyHand(){
       el.style.opacity = '0.4';
       el.style.cursor = 'not-allowed';
       el.title = 'Wait for bidding to complete';
+    } else if(trickResolving){
+      el.style.opacity = '0.4';
+      el.style.cursor = 'not-allowed';
+      el.title = 'Trick being resolved...';
     } else if(!myTurn){
       el.style.opacity = '0.4';
       el.style.cursor = 'not-allowed';
@@ -209,13 +301,16 @@ function renderMyHand(){
       <span class="card-corner bottom-right">${cardLabel}</span>
     `;
     
-    // Only allow clicking playable cards on my turn (not during bidding)
-    if(myTurn && isPlayable && !isBidding){
+    // Only allow clicking playable cards on my turn (not during bidding or trick resolution)
+    if(myTurn && isPlayable && !isBidding && !trickResolving){
       el.onclick = () => playCard(c, el);
     } else {
       el.onclick = () => {
         if(isBidding){
           // Silent - just don't allow click during bidding
+          return;
+        } else if(trickResolving){
+          // Silent - just don't allow click during trick resolution
           return;
         } else if(!myTurn){
           // Silent - just don't allow click when not player's turn
@@ -271,4 +366,42 @@ function renderCurrentTrick(){
     `;
     div.appendChild(el);
   });
+  
+  // Update mini cards to show who played what
+  updateMiniCards();
+}
+
+function updateMiniCards(){
+  // Hide all mini cards first
+  const allMiniCards = document.querySelectorAll('.mini-card');
+  allMiniCards.forEach(mc => {
+    mc.classList.remove('show', 'spades', 'clubs', 'hearts', 'diamonds');
+    mc.innerHTML = '';
+  });
+  
+  // Show mini cards for players who have played in current trick
+  if(storage.trick && storage.trick.length > 0){
+    storage.trick.forEach(t => {
+      const miniCard = document.querySelector(`[data-mini-card="${t.playerId}"]`);
+      if(miniCard){
+        const suit = t.card.suit;
+        const rank = t.card.rank;
+        const suitClass = getSuitClass(suit);
+        
+        miniCard.className = `mini-card ${suitClass} show`;
+        miniCard.innerHTML = `
+          <div class="mini-rank">${rank}</div>
+          <div class="mini-suit">${suit}</div>
+        `;
+      }
+    });
+  }
+}
+
+function getSuitClass(suit){
+  if(suit === '♠') return 'spades';
+  if(suit === '♥') return 'hearts';
+  if(suit === '♦') return 'diamonds';
+  if(suit === '♣') return 'clubs';
+  return '';
 }

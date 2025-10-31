@@ -19,6 +19,7 @@ function listenForPlayers(){
       // Preserve local flags before overwriting
       const wasResolving = storage.trickResolving;
       const prevCurrentPlayer = storage.currentPlayer;
+      const prevTrickLength = storage.trick?.length || 0;
       
       // Clear these before Object.assign in case Firebase doesn't send them (empty objects become null)
       if(gameData.bids === null || gameData.bids === undefined) {
@@ -72,11 +73,66 @@ function listenForPlayers(){
       if(wasResolving && gameData.trick && gameData.trick.length > 0 && !trickJustCompleted) {
         storage.trickResolving = true;
       } else if(!gameData.trick || gameData.trick.length === 0) {
-        // Trick cleared - resolution complete, clear cardPlaying for everyone
+        // Trick cleared - resolution complete
+        const wasJustResolving = storage.trickResolving; // Save state before clearing
         storage.trickResolving = false;
         storage.cardPlaying = false;
+        
+        console.log('DEBUG: Firebase listener - trick cleared, wasJustResolving:', wasJustResolving);
+        
+        // Track that trick was just cleared - but ONLY if it transitioned from non-empty to empty
+        // This prevents false triggers during initial game setup when trick is always empty
+        const trickJustTransitionedToEmpty = prevTrickLength > 0 && (!gameData.trick || gameData.trick.length === 0);
+        if(trickJustTransitionedToEmpty) {
+          console.log('DEBUG: Setting trickJustCleared=true (trick went from', prevTrickLength, 'cards to 0)');
+          // Only set the flag for non-dealers to prevent showing stale currentPlayer
+          // Dealer already knows the correct next player since they just set it
+          if(storage.dealerId !== storage.myId) {
+            storage.trickJustCleared = true;
+          } else {
+            console.log('DEBUG: I am dealer, NOT setting trickJustCleared');
+          }
+        }
+        
+        // If we just finished resolving, OR if winner message is still showing, skip updateUI()
+        // to avoid overwriting the "X won the hand!" message
+        const centerMsg = document.getElementById('centerMsg');
+        const winnerMessageShowing = centerMsg && centerMsg.isTimedMessage;
+        
+        if(wasJustResolving || winnerMessageShowing) {
+          console.log('DEBUG: Skipping updateUI() because wasJustResolving:', wasJustResolving, 'or winnerMessageShowing:', winnerMessageShowing);
+          renderScoreboard();
+          renderTable();
+          renderMyHand();
+          renderCurrentTrick();
+          updateRoundInfo();
+          // Skip updateUI() - it will be called by next Firebase update or after message timeout
+          
+          // If we set trickJustCleared flag, schedule a delayed updateUI() call
+          // to show the correct turn message after Firebase sync completes
+          // Wait 2100ms to ensure winner message (2000ms) has fully cleared
+          if(storage.trickJustCleared) {
+            console.log('DEBUG: Scheduling delayed updateUI() for trickJustCleared case');
+            setTimeout(() => {
+              storage.trickJustCleared = false;
+              console.log('DEBUG: Delayed updateUI() after trickJustCleared');
+              updateUI();
+            }, 2100);
+          }
+          
+          // If scorecard modal is open, refresh it with latest data
+          const scorecardOverlay = document.getElementById('scorecardOverlay');
+          if (scorecardOverlay && scorecardOverlay.classList.contains('show')) {
+            renderScorecard();
+          }
+          return; // Don't continue with normal flow
+        }
+      } else {
+        // Trick not empty - clear the flag if it was set
+        storage.trickJustCleared = false;
       }
       
+      console.log('DEBUG: Firebase listener calling updateUI()');
       renderScoreboard();
       renderTable();
       renderMyHand();
