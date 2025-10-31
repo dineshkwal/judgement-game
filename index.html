@@ -96,14 +96,22 @@
     <div id="hostSelectContainer" class="game-settings" style="display:none;">
       <div class="input-group">
         <label>Select Starting Player (Host)</label>
-        <select id="hostSelect"></select>
+        <div id="hostSelect" class="custom-dropdown lobby-dropdown">
+          <div class="dropdown-selected">Select Player</div>
+          <div class="dropdown-arrow">▼</div>
+          <div class="dropdown-options"></div>
+        </div>
       </div>
     </div>
     
     <div id="roundSelectContainer" class="game-settings" style="display:none;">
       <div class="input-group">
         <label>Starting Cards</label>
-        <select id="roundSelect"></select>
+        <div id="roundSelect" class="custom-dropdown lobby-dropdown">
+          <div class="dropdown-selected">26 cards</div>
+          <div class="dropdown-arrow">▼</div>
+          <div class="dropdown-options"></div>
+        </div>
         <small class="helper-text">Select number of cards to start with (Round 1)</small>
       </div>
     </div>
