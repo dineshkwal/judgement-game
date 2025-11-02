@@ -34,7 +34,7 @@
 <!-- Scorecard Overlay -->
 <div id="scorecardOverlay" onclick="toggleScorecard()">
   <div id="scorecardModal" onclick="event.stopPropagation()">
-    <h2>Game Scorecard</h2>
+    <h2>Game Scoreboard</h2>
     <button class="close-btn" onclick="toggleScorecard()">✕</button>
     <div id="scorecardContent"></div>
   </div>
@@ -147,8 +147,8 @@
   <!-- Top Bar -->
   <div id="gameTopBar">
     <button id="scorecardBtn" onclick="toggleScorecard()">
-      🏆
-      <span class="scorecard-label">Scorecard</span>
+      <img src="assets/score-icon.svg" alt="Score" class="scorecard-icon">
+      <span class="scorecard-label">Scoreboard</span>
     </button>
     
     <h1 id="roundInfo"></h1>

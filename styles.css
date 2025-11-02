@@ -1574,8 +1574,8 @@ button:active {
 }
 
 #userInfo img {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -1639,12 +1639,10 @@ button:active {
 /* ===================== Scorecard ===================== */
 #scorecardBtn {
   position: relative;
-  background: #222;
+  background: transparent;
   border: none;
-  border-radius: 50%;
   padding: 0;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
   width: 50px;
   height: 50px;
@@ -1652,7 +1650,16 @@ button:active {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  font-size: 1.5rem;
+}
+
+#scorecardBtn .scorecard-icon {
+  width: 50px;
+  height: 50px;
+  transition: transform 0.3s ease;
+}
+
+#scorecardBtn:hover .scorecard-icon {
+  transform: scale(1.1);
 }
 
 #scorecardBtn .scorecard-label {
@@ -1682,8 +1689,7 @@ button:active {
 }
 
 #scorecardBtn:hover {
-  box-shadow: 0 4px 16px rgba(76, 175, 80, 0.4);
-  transform: scale(1.05);
+  transform: none;
 }
 
 #scorecardOverlay {
