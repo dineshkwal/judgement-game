@@ -189,7 +189,7 @@ function updateLobbyInfo(){
   lobbyInfo.innerHTML = `
     <div class="lobby-share-row">
       <div class="lobby-code-display">
-        <span class="code-label">Lobby Code</span>
+        <span class="code-label">Code</span>
         <span class="code-value">${storage.lobbyId}</span>
       </div>
       <button id="copyLinkBtn" class="copy-link-btn">📋 Copy Link</button>
@@ -219,6 +219,14 @@ function refreshLobby(){
     div.innerHTML = `<img src="${p.avatar}" width="40" height="40" style="border-radius:50%;"> ${p.name}`;
     list.appendChild(div);
   });
+
+  // Show game header only when there's 1 player
+  const gameHeader = document.getElementById('lobbyGameHeader');
+  if (storage.players.length === 1) {
+    gameHeader.classList.add('show');
+  } else {
+    gameHeader.classList.remove('show');
+  }
 
   const hostSelContainer = document.getElementById('hostSelectContainer');
   const hostSel = document.getElementById('hostSelect');
