@@ -5,17 +5,26 @@ function listenForPlayers(){
     storage.players = data ? Object.values(data) : [];
     storage.players.sort((a,b) => a.joinedAt - b.joinedAt);
     refreshLobby();
+    
+    // Check for disconnected players (only during active game)
+    checkForDisconnectedPlayers();
   });
   
   // Also listen for game start
-  storage.gameRef = db.ref(`lobbies/${storage.lobbyId}/game`);
-  storage.gameRef.on('value', (snapshot) => {
+  const gameRef = db.ref(`lobbies/${storage.lobbyId}/game`);
+  gameRef.on('value', (snapshot) => {
     const gameData = snapshot.val();
     if(gameData && document.getElementById('game').classList.contains('active') === false){
       // Game started, switch to game screen
+      storage.gameRef = gameRef; // Set this only when game actually starts
       showScreen('game');
     }
     if(gameData){
+      // Mark that game has started (for disconnection detection)
+      if (!storage.gameRef) {
+        storage.gameRef = gameRef;
+      }
+      
       // Preserve local flags before overwriting
       const wasResolving = storage.trickResolving;
       const prevCurrentPlayer = storage.currentPlayer;
@@ -311,9 +320,13 @@ function leaveLobby(){
   if(storage.myId && storage.lobbyId) {
     db.ref(`lobbies/${storage.lobbyId}/players`).child(storage.myId).remove();
   }
+  stopPresence(); // Stop Firebase presence system
+  hideReconnectModal(); // Hide any open reconnect modal
   storage.myId = null;
   storage.lobbyId = null;
   localStorage.removeItem('myPlayerInfo');
+  localStorage.removeItem('lastPlayerId');
+  localStorage.removeItem('lastLobbyId');
   document.getElementById('userInfo').classList.remove('active');
   window.history.replaceState({}, document.title, window.location.pathname);
   showScreen('register');

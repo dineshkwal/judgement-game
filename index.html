@@ -31,7 +31,7 @@
   <button onclick="newGame()">New Game</button>
 </div>
 
-<!-- Registration Screen -->
+<!-- Scorecard Overlay -->
 <div id="scorecardOverlay" onclick="toggleScorecard()">
   <div id="scorecardModal" onclick="event.stopPropagation()">
     <h2>Game Scorecard</h2>
@@ -40,7 +40,27 @@
   </div>
 </div>
 
-<!-- ===== REGISTER SCREEN ===== -->
+<!-- Reconnection Waiting Overlay -->
+<div id="reconnectOverlay" class="reconnect-overlay" style="display: none;">
+  <div class="reconnect-modal">
+    <div class="reconnect-icon">⚠️</div>
+    <h2>Player Disconnected</h2>
+    <p id="reconnectPlayerName" class="reconnect-player">Waiting for player...</p>
+    <div class="reconnect-timer">
+      <div class="timer-circle">
+        <span id="reconnectTimer">120</span>
+      </div>
+      <p class="timer-label">seconds remaining</p>
+    </div>
+    <p class="reconnect-message">The game will resume when they reconnect</p>
+    <div class="reconnect-actions">
+      <button class="dismiss-btn" onclick="dismissReconnectModal()">Dismiss</button>
+      <button class="continue-btn" onclick="continueWithoutPlayer()">Continue Without Player</button>
+    </div>
+  </div>
+</div>
+
+<!-- Registration Screen -->
 <div id="register" class="screen active">
   <div class="register-container">
     <div class="register-header">

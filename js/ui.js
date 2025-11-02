@@ -1,5 +1,8 @@
 /* ---------- UI UPDATES ---------- */
 function updateUI(){
+  // Don't update UI if waiting for reconnection - the modal handles everything
+  if(storage.waitingForReconnect) return;
+  
   const dealBtn = document.getElementById('dealBtn');
   const biddingUI = document.getElementById('biddingUI');
   
