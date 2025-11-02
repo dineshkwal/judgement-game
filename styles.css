@@ -2018,6 +2018,64 @@ button:active {
     font-size: 0.9rem;
     text-align: center;
   }
+  
+  /* Scorecard Modal - Mobile */
+  #scorecardModal {
+    padding: 1.5rem 1rem;
+    width: 95%;
+    max-height: 85vh;
+  }
+  
+  #scorecardModal h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  #scorecardModal .close-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 1.3rem;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+  
+  #scorecardContent table {
+    font-size: 0.75rem;
+  }
+  
+  #scorecardContent th,
+  #scorecardContent td {
+    padding: 0.6rem 0.4rem;
+  }
+  
+  #scorecardContent th {
+    font-size: 0.7rem;
+    padding: 0.7rem 0.4rem;
+    letter-spacing: 0.5px;
+  }
+  
+  #scorecardContent td {
+    font-size: 0.7rem;
+  }
+  
+  #scorecardContent td:first-child {
+    font-size: 0.7rem;
+  }
+  
+  /* Override inline styles for Bid/Won/Pts content on mobile */
+  #scorecardContent td div {
+    font-size: 0.7rem !important;
+    margin-bottom: 0.3rem !important;
+  }
+  
+  #scorecardContent tr:last-child td {
+    font-size: 0.85rem;
+    padding: 0.8rem 0.4rem;
+  }
+  
+  #scorecardContent tr:last-child td:first-child {
+    font-size: 0.8rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -2055,5 +2113,62 @@ button:active {
   
   .card .card-center {
     font-size: 1.8rem;
+  }
+  
+  /* Scorecard Modal - Extra Small Mobile */
+  #scorecardModal {
+    padding: 1rem 0.75rem;
+    border-radius: 16px;
+  }
+  
+  #scorecardModal h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  
+  #scorecardModal .close-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 1.1rem;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+  
+  #scorecardContent table {
+    font-size: 0.65rem;
+  }
+  
+  #scorecardContent th,
+  #scorecardContent td {
+    padding: 0.5rem 0.3rem;
+  }
+  
+  #scorecardContent th {
+    font-size: 0.6rem;
+    padding: 0.6rem 0.3rem;
+    letter-spacing: 0.3px;
+  }
+  
+  #scorecardContent td {
+    font-size: 0.65rem;
+  }
+  
+  #scorecardContent td:first-child {
+    font-size: 0.65rem;
+  }
+  
+  /* Override inline styles for Bid/Won/Pts content on extra small mobile */
+  #scorecardContent td div {
+    font-size: 0.6rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+  
+  #scorecardContent tr:last-child td {
+    font-size: 0.75rem;
+    padding: 0.7rem 0.3rem;
+  }
+  
+  #scorecardContent tr:last-child td:first-child {
+    font-size: 0.7rem;
   }
 }
