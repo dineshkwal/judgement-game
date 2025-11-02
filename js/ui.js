@@ -25,7 +25,8 @@ function updateUI(){
     if(storage.dealerId === storage.myId) {
       showCenterMessage('Click Deal Cards to start the round', 0);
     } else {
-      showCenterMessage('Waiting for dealer to deal cards...', 0);
+      const dealerName = storage.players.find(p => p.id === storage.dealerId)?.name || 'dealer';
+      showCenterMessage(`Waiting for ${dealerName} to deal cards...`, 0);
     }
   }
   // Show bidding UI during bidding phase
