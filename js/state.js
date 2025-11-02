@@ -31,6 +31,290 @@ const storage = {
   gameRef: null,
   isHost: false,
   trickResolving: false,
-  cardPlaying: false  // Flag to prevent double-playing cards
+  cardPlaying: false,  // Flag to prevent double-playing cards
+  disconnectedPlayers: {},  // Track disconnected players: {playerId: {name, disconnectedAt, timerId}}
+  waitingForReconnect: false,  // Flag to pause game while waiting for reconnection
+  presenceRef: null  // Reference to Firebase presence path
 };
 
+/* ---------- FIREBASE PRESENCE SYSTEM ---------- */
+
+// Setup Firebase presence system for this player
+function setupPresence() {
+  if (!storage.lobbyId || !storage.myId) return;
+  
+  const playerRef = db.ref(`lobbies/${storage.lobbyId}/players/${storage.myId}`);
+  storage.presenceRef = playerRef;
+  
+  // Set player as online
+  playerRef.update({
+    status: 'online',
+    lastSeen: Date.now()
+  });
+  
+  // Setup onDisconnect handler - Firebase automatically sets this when connection drops
+  playerRef.onDisconnect().update({
+    status: 'offline',
+    lastSeen: Date.now()
+  });
+  
+  debugLog('Presence system activated for player:', storage.myId);
+  
+  // Listen for beforeunload to catch back button / navigation / tab close
+  window.addEventListener('beforeunload', handleBeforeUnload);
+  
+  // Listen for visibility changes (additional safety net)
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+}
+
+// Handle page unload (back button, navigation, tab close)
+function handleBeforeUnload(e) {
+  if (storage.presenceRef) {
+    // Synchronously mark as offline before page unloads
+    // Note: This uses the synchronous REST API to ensure it completes
+    navigator.sendBeacon(
+      `https://judgement-game-ef741-default-rtdb.firebaseio.com/lobbies/${storage.lobbyId}/players/${storage.myId}.json`,
+      JSON.stringify({
+        status: 'offline',
+        lastSeen: Date.now()
+      })
+    );
+    debugLog('Player marked offline via beforeunload');
+  }
+}
+
+// Handle visibility change (when user switches tabs or minimizes browser)
+function handleVisibilityChange() {
+  if (!storage.presenceRef) return;
+  
+  if (document.hidden) {
+    // Tab hidden - update lastSeen
+    storage.presenceRef.update({ lastSeen: Date.now() });
+  } else {
+    // Tab visible again - mark as online and update lastSeen
+    storage.presenceRef.update({
+      status: 'online',
+      lastSeen: Date.now()
+    });
+  }
+}
+
+// Stop presence system (when explicitly leaving)
+function stopPresence() {
+  if (storage.presenceRef) {
+    storage.presenceRef.update({
+      status: 'offline',
+      lastSeen: Date.now()
+    });
+    storage.presenceRef.onDisconnect().cancel();
+    storage.presenceRef = null;
+  }
+  
+  window.removeEventListener('beforeunload', handleBeforeUnload);
+  document.removeEventListener('visibilitychange', handleVisibilityChange);
+  
+  debugLog('Presence system stopped');
+}
+
+// Check if a player is disconnected based on their status
+function checkPlayerConnection(player) {
+  // If player has status field, use it (new presence system)
+  if (player.status) {
+    return player.status === 'online';
+  }
+  
+  // Fallback: Assume online if no status field yet (during transition)
+  return true;
+}
+
+// Check all players for disconnections (only during active game, not in lobby)
+function checkForDisconnectedPlayers() {
+  if (storage.waitingForReconnect) return; // Already waiting for someone
+  
+  // Only check during active game phases (not in lobby)
+  if (!storage.gameRef) {
+    debugLog('Skipping disconnection check - still in lobby');
+    return;
+  }
+  
+  // Find any player marked as offline (excluding myself)
+  const disconnectedPlayer = storage.players.find(p => 
+    p.id !== storage.myId && p.status === 'offline'
+  );
+  
+  if (disconnectedPlayer && !storage.disconnectedPlayers[disconnectedPlayer.id]) {
+    debugLog('Detected disconnected player during game:', disconnectedPlayer.name);
+    showReconnectModal(disconnectedPlayer);
+  }
+  
+  // Check if any previously disconnected player is back online
+  Object.keys(storage.disconnectedPlayers).forEach(playerId => {
+    const player = storage.players.find(p => p.id === playerId);
+    if (player && player.status === 'online') {
+      debugLog('Player reconnected:', player.name);
+      hideReconnectModal();
+    }
+  });
+}
+
+/* ---------- RECONNECTION MODAL ---------- */
+
+// Show the reconnection waiting modal
+function showReconnectModal(player) {
+  storage.waitingForReconnect = true;
+  const overlay = document.getElementById('reconnectOverlay');
+  const playerNameEl = document.getElementById('reconnectPlayerName');
+  const timerEl = document.getElementById('reconnectTimer');
+  
+  if (!overlay || !playerNameEl || !timerEl) return;
+  
+  playerNameEl.textContent = `Waiting for ${player.name} to reconnect...`;
+  overlay.style.display = 'flex';
+  
+  // Start 120-second countdown
+  let secondsLeft = 120;
+  timerEl.textContent = secondsLeft;
+  
+  // Store the disconnected player info
+  storage.disconnectedPlayers[player.id] = {
+    name: player.name,
+    disconnectedAt: Date.now(),
+    countdownInterval: null
+  };
+  
+  const countdownInterval = setInterval(() => {
+    secondsLeft--;
+    timerEl.textContent = secondsLeft;
+    
+    // Check if player reconnected
+    const currentPlayer = storage.players.find(p => p.id === player.id);
+    if (currentPlayer && checkPlayerConnection(currentPlayer)) {
+      debugLog('Player reconnected:', player.name);
+      hideReconnectModal();
+      clearInterval(countdownInterval);
+      return;
+    }
+    
+    // Time's up - remove player automatically
+    if (secondsLeft <= 0) {
+      clearInterval(countdownInterval);
+      removeDisconnectedPlayer(player.id);
+    }
+  }, 1000);
+  
+  storage.disconnectedPlayers[player.id].countdownInterval = countdownInterval;
+  
+  debugLog('Showing reconnect modal for player:', player.name);
+}
+
+// Dismiss the modal but keep waiting in background
+function dismissReconnectModal() {
+  const overlay = document.getElementById('reconnectOverlay');
+  if (overlay) {
+    overlay.style.display = 'none';
+  }
+  debugLog('Modal dismissed - continuing to wait in background');
+}
+
+// Hide the reconnection modal (called when player reconnects or is removed)
+function hideReconnectModal() {
+  storage.waitingForReconnect = false;
+  const overlay = document.getElementById('reconnectOverlay');
+  if (overlay) {
+    overlay.style.display = 'none';
+  }
+  
+  // Clear all countdown intervals
+  Object.values(storage.disconnectedPlayers).forEach(info => {
+    if (info.countdownInterval) {
+      clearInterval(info.countdownInterval);
+    }
+  });
+  
+  storage.disconnectedPlayers = {};
+  debugLog('Reconnect modal hidden');
+}
+
+// Continue without the disconnected player (called by button)
+function continueWithoutPlayer() {
+  const disconnectedPlayerId = Object.keys(storage.disconnectedPlayers)[0];
+  if (disconnectedPlayerId) {
+    removeDisconnectedPlayer(disconnectedPlayerId);
+  }
+}
+
+// Remove a disconnected player from the game
+function removeDisconnectedPlayer(playerId) {
+  debugLog('Removing disconnected player:', playerId);
+  
+  // Clear countdown
+  if (storage.disconnectedPlayers[playerId]?.countdownInterval) {
+    clearInterval(storage.disconnectedPlayers[playerId].countdownInterval);
+  }
+  
+  hideReconnectModal();
+  
+  // Remove player from Firebase
+  db.ref(`lobbies/${storage.lobbyId}/players/${playerId}`).remove();
+  
+  // Remove from game state
+  const gameRef = db.ref(`lobbies/${storage.lobbyId}/game`);
+  gameRef.once('value', (snapshot) => {
+    const gameData = snapshot.val();
+    if (!gameData) return;
+    
+    // Remove player from players array
+    const updatedPlayers = gameData.players.filter(p => p.id !== playerId);
+    
+    // Remove player's data from all game objects
+    const updates = {
+      players: updatedPlayers
+    };
+    
+    // Clean up player-specific data
+    if (gameData.hands && gameData.hands[playerId]) {
+      delete gameData.hands[playerId];
+      updates.hands = gameData.hands;
+    }
+    
+    if (gameData.bids && gameData.bids[playerId] !== undefined) {
+      delete gameData.bids[playerId];
+      updates.bids = gameData.bids;
+    }
+    
+    if (gameData.tricksWon && gameData.tricksWon[playerId] !== undefined) {
+      delete gameData.tricksWon[playerId];
+      updates.tricksWon = gameData.tricksWon;
+    }
+    
+    if (gameData.scores && gameData.scores[playerId] !== undefined) {
+      delete gameData.scores[playerId];
+      updates.scores = gameData.scores;
+    }
+    
+    // If disconnected player was current player, move to next player
+    if (gameData.currentPlayer === playerId || gameData.currentBidder === playerId) {
+      const currentIndex = gameData.players.findIndex(p => p.id === playerId);
+      const nextIndex = (currentIndex + 1) % updatedPlayers.length;
+      const nextPlayer = updatedPlayers[nextIndex];
+      
+      if (gameData.phase === 'bidding') {
+        updates.currentBidder = nextPlayer.id;
+      } else if (gameData.phase === 'playing') {
+        updates.currentPlayer = nextPlayer.id;
+      }
+    }
+    
+    // If disconnected player was dealer, assign new dealer
+    if (gameData.dealerId === playerId) {
+      updates.dealerId = updatedPlayers[0].id;
+    }
+    
+    // Update Firebase
+    gameRef.update(updates).then(() => {
+      debugLog('Player removed successfully from game');
+    }).catch(err => {
+      console.error('Error removing player:', err);
+    });
+  });
+}

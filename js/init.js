@@ -21,7 +21,64 @@ let selectedAvatar = avatars[0];
 // Initialize app
 window.addEventListener('DOMContentLoaded', () => {
   debugLog('DOM loaded, initializing...');
-  showScreen('register');
+  
+  // Check if player is rejoining an existing lobby
+  const urlParams = new URLSearchParams(window.location.search);
+  const joinLobbyId = urlParams.get('lobby');
+  
+  if(joinLobbyId) {
+    // Try to rejoin with existing player data
+    const savedPlayerInfo = localStorage.getItem('myPlayerInfo');
+    const savedLobbyId = localStorage.getItem('lastLobbyId');
+    const savedPlayerId = localStorage.getItem('lastPlayerId');
+    
+    if(savedPlayerInfo && savedLobbyId === joinLobbyId && savedPlayerId) {
+      // Player is rejoining the same lobby - restore their session
+      debugLog('Rejoining lobby with saved credentials');
+      const playerInfo = JSON.parse(savedPlayerInfo);
+      storage.myId = savedPlayerId;
+      storage.lobbyId = joinLobbyId;
+      
+      // Check if player still exists in lobby
+      db.ref(`lobbies/${joinLobbyId}/players/${savedPlayerId}`).once('value', (snapshot) => {
+        if(snapshot.exists()) {
+          // Player still in lobby - just update status and rejoin
+          debugLog('Player found in lobby, rejoining...');
+          db.ref(`lobbies/${joinLobbyId}/players/${savedPlayerId}`).update({
+            lastSeen: Date.now(),
+            status: 'online'
+          });
+          
+          // Show user info
+          document.getElementById('userInfoName').textContent = playerInfo.name;
+          document.getElementById('userInfoAvatar').src = playerInfo.avatar;
+          document.getElementById('userInfo').classList.add('active');
+          
+          // Check if game has started
+          db.ref(`lobbies/${joinLobbyId}/game`).once('value', (gameSnapshot) => {
+            if(gameSnapshot.exists()) {
+              showScreen('game');
+            } else {
+              showScreen('lobby');
+            }
+            listenForPlayers();
+            updateLobbyInfo();
+            setupPresence(); // Start Firebase presence system
+          });
+          return;
+        } else {
+          // Player was removed - need to re-register
+          debugLog('Player not found in lobby, showing registration');
+          showScreen('register');
+        }
+      });
+    } else {
+      // No saved data or different lobby - show registration
+      showScreen('register');
+    }
+  } else {
+    showScreen('register');
+  }
   
   // Initialize custom dropdown
   if (typeof initCustomDropdown === 'function') {

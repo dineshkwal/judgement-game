@@ -4,11 +4,12 @@ function registerPlayer(){
   const avatar = getSelectedAvatarURL();
   if(!name) return alert('Enter a name');
   const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
-  const player = {id, name, avatar, joinedAt: Date.now()};
+  const player = {id, name, avatar, joinedAt: Date.now(), lastSeen: Date.now(), status: 'online'};
   storage.myId = id;
   
-  // Store player info in localStorage for persistence
+  // Store player info in localStorage for persistence and rejoin capability
   localStorage.setItem('myPlayerInfo', JSON.stringify({name, avatar}));
+  localStorage.setItem('lastPlayerId', id);
   
   // Show user info in top right
   document.getElementById('userInfoName').textContent = name;
@@ -22,19 +23,23 @@ function registerPlayer(){
   if(joinLobbyId){
     // Join existing lobby
     storage.lobbyId = joinLobbyId;
+    localStorage.setItem('lastLobbyId', joinLobbyId);
     db.ref(`lobbies/${joinLobbyId}/players`).child(id).set(player).then(()=>{
       showScreen('lobby');
       listenForPlayers();
       updateLobbyInfo();
+      setupPresence(); // Start Firebase presence system
     }).catch(err => alert('Error joining lobby: ' + err.message));
   } else {
     // Create new lobby
     const lobbyId = Math.random().toString(36).substr(2, 6).toUpperCase();
     storage.lobbyId = lobbyId;
+    localStorage.setItem('lastLobbyId', lobbyId);
     db.ref(`lobbies/${lobbyId}/players`).child(id).set(player).then(()=>{
       showScreen('lobby');
       listenForPlayers();
       updateLobbyInfo();
+      setupPresence(); // Start Firebase presence system
     }).catch(err => alert('Error creating lobby: ' + err.message));
   }
 }

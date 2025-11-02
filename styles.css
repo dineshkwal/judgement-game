@@ -2172,3 +2172,216 @@ button:active {
     font-size: 0.7rem;
   }
 }
+
+/* ========================================
+   RECONNECTION OVERLAY
+   ======================================== */
+.reconnect-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.reconnect-modal {
+  background: linear-gradient(135deg, #1a2f1a 0%, #0f1f0f 100%);
+  border: 2px solid #ffcc00;
+  border-radius: 20px;
+  padding: 2.5rem;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(255, 204, 0, 0.3);
+  animation: slideDown 0.4s ease;
+}
+
+.reconnect-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: pulse 2s infinite;
+}
+
+.reconnect-modal h2 {
+  font-size: 2rem;
+  color: #ffcc00;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.reconnect-player {
+  font-size: 1.3rem;
+  color: #fff;
+  margin-bottom: 2rem;
+  font-weight: 600;
+}
+
+.reconnect-timer {
+  margin: 2rem 0;
+}
+
+.timer-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffcc00 0%, #ffd700 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  box-shadow: 0 5px 20px rgba(255, 204, 0, 0.5);
+  position: relative;
+}
+
+.timer-circle::before {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #0a1a0a;
+}
+
+.timer-circle span {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ffcc00;
+  position: relative;
+  z-index: 1;
+}
+
+.timer-label {
+  font-size: 0.9rem;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.reconnect-message {
+  font-size: 1rem;
+  color: #ccc;
+  margin-bottom: 2rem;
+}
+
+.reconnect-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dismiss-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffcc00;
+  border: 2px solid #ffcc00;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.dismiss-btn:hover {
+  background: rgba(255, 204, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+}
+
+.dismiss-btn:active {
+  transform: translateY(0);
+}
+
+.continue-btn {
+  background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+  font-family: 'Poppins', sans-serif;
+}
+
+.continue-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(244, 67, 54, 0.5);
+  background: linear-gradient(135deg, #ff5252 0%, #d32f2f 100%);
+}
+
+.continue-btn:active {
+  transform: translateY(0);
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .reconnect-modal {
+    padding: 2rem 1.5rem;
+  }
+  
+  .reconnect-modal h2 {
+    font-size: 1.6rem;
+  }
+  
+  .reconnect-player {
+    font-size: 1.1rem;
+  }
+  
+  .timer-circle {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .timer-circle::before {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .timer-circle span {
+    font-size: 2.5rem;
+  }
+  
+  .reconnect-actions {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .dismiss-btn,
+  .continue-btn {
+    padding: 0.9rem 2rem;
+    font-size: 1rem;
+    width: 100%;
+  }
+}

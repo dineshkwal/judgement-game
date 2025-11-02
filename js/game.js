@@ -199,6 +199,7 @@ function updateBiddingUI(){
 }
 
 function submitBid(){
+  if(storage.waitingForReconnect) return; // Don't allow bids while waiting for reconnection
   if(storage.currentBidder !== storage.myId) return;
   
   const bid = selectedBidValue;
@@ -244,6 +245,9 @@ function submitBid(){
 }
 
 function playCard(card, el){
+  // Prevent playing while waiting for reconnection
+  if(storage.waitingForReconnect) return;
+  
   // Prevent double-playing due to race condition
   if(storage.cardPlaying) return;
   
