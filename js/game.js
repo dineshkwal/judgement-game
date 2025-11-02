@@ -494,9 +494,17 @@ function endGame(){
     cardsPerRound: storage.cardsPerRound,
     status: storage.status,
     dealerId: storage.dealerId,
-    myId: storage.myId
+    myId: storage.myId,
+    gameEnded: storage.gameEnded
   });
   if (DEBUG) console.trace('Stack trace:');
+  
+  // Prevent calling endGame multiple times for the same player
+  if(storage.gameEnded) {
+    debugLog('DEBUG: endGame already called for this player, skipping');
+    return;
+  }
+  storage.gameEnded = true;
   
   // Sort players by score (descending)
   const sortedPlayers = [...storage.players].sort((a, b) => {
@@ -505,10 +513,9 @@ function endGame(){
     return scoreB - scoreA;
   });
   
-  // Update status and show final scorecard
-  storage.gameRef.update({ status: 'ended' });
+  debugLog('DEBUG: Showing final scorecard to player:', storage.myId);
   
-  // Show the scorecard with final results
+  // Show the scorecard with final results for ALL players
   renderFinalScorecard(sortedPlayers);
 }
 
