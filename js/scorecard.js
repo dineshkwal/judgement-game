@@ -79,8 +79,16 @@ function renderScorecard() {
 }
 
 function renderFinalScorecard(sortedPlayers) {
+  debugLog('DEBUG: renderFinalScorecard called for player:', storage.myId);
+  debugLog('DEBUG: sortedPlayers:', sortedPlayers);
+  
   const content = document.getElementById('scorecardContent');
   const modal = document.getElementById('scorecardModal');
+  
+  if(!content || !modal) {
+    debugLog('ERROR: scorecardContent or scorecardModal not found!');
+    return;
+  }
   
   // Build final rankings HTML
   let html = '<div style="text-align:center; margin-bottom:2rem;">';
@@ -142,13 +150,20 @@ function renderFinalScorecard(sortedPlayers) {
   
   // Show the overlay
   const overlay = document.getElementById('scorecardOverlay');
-  overlay.classList.add('show');
+  if(overlay) {
+    debugLog('DEBUG: Showing scorecardOverlay');
+    overlay.classList.add('show');
+  } else {
+    debugLog('ERROR: scorecardOverlay not found!');
+  }
   
   // Hide close button for final scorecard
   const closeBtn = document.getElementById('closeScorecard');
   if (closeBtn) {
     closeBtn.style.display = 'none';
   }
+  
+  debugLog('DEBUG: renderFinalScorecard completed successfully');
 }
 
 // Wait for DOM to be ready

@@ -20,6 +20,7 @@ function listenForPlayers(){
       const wasResolving = storage.trickResolving;
       const prevCurrentPlayer = storage.currentPlayer;
       const prevTrickLength = storage.trick?.length || 0;
+      const prevGameEnded = storage.gameEnded; // Preserve gameEnded flag
       
       // Clear these before Object.assign in case Firebase doesn't send them (empty objects become null)
       if(gameData.bids === null || gameData.bids === undefined) {
@@ -33,6 +34,9 @@ function listenForPlayers(){
       }
       
       Object.assign(storage, gameData);
+      
+      // Restore local-only flags that shouldn't be overwritten
+      storage.gameEnded = prevGameEnded;
       
       // Firebase removes empty objects, so ensure these are always objects (not null)
       if(!storage.bids || typeof storage.bids !== 'object' || Array.isArray(storage.bids)) {
@@ -92,6 +96,17 @@ function listenForPlayers(){
           } else {
             debugLog('DEBUG: I am dealer, NOT setting trickJustCleared');
           }
+        }
+        
+        // CRITICAL: Check game status FIRST before any UI logic
+        // This ensures all players see the Game Over screen even if they have winner messages showing
+        if(gameData.status === 'ended') {
+          debugLog('DEBUG: Firebase listener detected status=ended, calling endGame()');
+          debugLog('DEBUG: gameData.round=', gameData.round, 'gameData.cardsPerRound=', gameData.cardsPerRound);
+          debugLog('DEBUG: Current player ID:', storage.myId);
+          debugLog('DEBUG: Dealer ID:', gameData.dealerId);
+          endGame();
+          return; // Game is over, no need to update UI
         }
         
         // If we just finished resolving, OR if winner message is still showing, skip updateUI()
@@ -154,12 +169,6 @@ function listenForPlayers(){
             resolveTrick();
           }
         }, 1000);
-      }
-      
-      if(gameData.status === 'ended') {
-        debugLog('DEBUG: Firebase listener detected status=ended, calling endGame()');
-        debugLog('DEBUG: gameData.round=', gameData.round, 'gameData.cardsPerRound=', gameData.cardsPerRound);
-        endGame();
       }
     }
   });
