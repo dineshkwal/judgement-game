@@ -27,24 +27,27 @@ window.addEventListener('DOMContentLoaded', () => {
   const joinLobbyId = urlParams.get('lobby');
   
   if(joinLobbyId) {
+    // Normalize lobby ID to uppercase for case-insensitive matching
+    const normalizedLobbyId = joinLobbyId.toUpperCase();
+    
     // Try to rejoin with existing player data
     const savedPlayerInfo = localStorage.getItem('myPlayerInfo');
     const savedLobbyId = localStorage.getItem('lastLobbyId');
     const savedPlayerId = localStorage.getItem('lastPlayerId');
     
-    if(savedPlayerInfo && savedLobbyId === joinLobbyId && savedPlayerId) {
+    if(savedPlayerInfo && savedLobbyId === normalizedLobbyId && savedPlayerId) {
       // Player is rejoining the same lobby - restore their session
       debugLog('Rejoining lobby with saved credentials');
       const playerInfo = JSON.parse(savedPlayerInfo);
       storage.myId = savedPlayerId;
-      storage.lobbyId = joinLobbyId;
+      storage.lobbyId = normalizedLobbyId;
       
       // Check if player still exists in lobby
-      db.ref(`lobbies/${joinLobbyId}/players/${savedPlayerId}`).once('value', (snapshot) => {
+      db.ref(`lobbies/${normalizedLobbyId}/players/${savedPlayerId}`).once('value', (snapshot) => {
         if(snapshot.exists()) {
           // Player still in lobby - just update status and rejoin
           debugLog('Player found in lobby, rejoining...');
-          db.ref(`lobbies/${joinLobbyId}/players/${savedPlayerId}`).update({
+          db.ref(`lobbies/${normalizedLobbyId}/players/${savedPlayerId}`).update({
             lastSeen: Date.now(),
             status: 'online'
           });
@@ -55,7 +58,7 @@ window.addEventListener('DOMContentLoaded', () => {
           document.getElementById('userInfo').classList.add('active');
           
           // Check if game has started
-          db.ref(`lobbies/${joinLobbyId}/game`).once('value', (gameSnapshot) => {
+          db.ref(`lobbies/${normalizedLobbyId}/game`).once('value', (gameSnapshot) => {
             if(gameSnapshot.exists()) {
               showScreen('game');
             } else {

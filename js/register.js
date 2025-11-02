@@ -21,10 +21,11 @@ function registerPlayer(){
   const joinLobbyId = urlParams.get('lobby');
   
   if(joinLobbyId){
-    // Join existing lobby
-    storage.lobbyId = joinLobbyId;
-    localStorage.setItem('lastLobbyId', joinLobbyId);
-    db.ref(`lobbies/${joinLobbyId}/players`).child(id).set(player).then(()=>{
+    // Join existing lobby - convert to uppercase for case-insensitive matching
+    const normalizedLobbyId = joinLobbyId.toUpperCase();
+    storage.lobbyId = normalizedLobbyId;
+    localStorage.setItem('lastLobbyId', normalizedLobbyId);
+    db.ref(`lobbies/${normalizedLobbyId}/players`).child(id).set(player).then(()=>{
       showScreen('lobby');
       listenForPlayers();
       updateLobbyInfo();
