@@ -809,10 +809,9 @@ button:active {
 }
 
 /* Legacy lobby selects */
-#lobbyList, #hostSelect {
+#lobbyList {
   margin-top: 1rem;
   width: 100%;
-  max-width: 400px;
 }
 
 /* ===== GAME SCREEN LAYOUT ===== */
