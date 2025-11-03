@@ -95,6 +95,21 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
   
+  // Add Enter key listener to player name input
+  const playerNameInput = document.getElementById('playerName');
+  if (playerNameInput) {
+    debugLog('Adding Enter key listener to player name input');
+    playerNameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        debugLog('Enter key pressed in name input');
+        e.preventDefault();
+        registerPlayer();
+      }
+    });
+  } else {
+    debugLog('Player name input not found');
+  }
+  
   // Small delay to ensure DOM is ready
   setTimeout(() => {
     // Generate avatar grid
