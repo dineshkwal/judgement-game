@@ -264,7 +264,6 @@ function refreshLobby(){
     // Initialize dropdown toggle functionality
     initLobbyDropdowns();
   } else {
-    hostSelContainer.style.display = 'none';
     roundSelContainer.style.display = 'none';
     startBtn.style.display = 'none';
   }
