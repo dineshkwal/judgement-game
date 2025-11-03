@@ -344,7 +344,7 @@ function startGame(){
     hands: {}, 
     trick: [], 
     leadSuit: null, 
-    trump: suits[0], 
+    trump: suits[1 % suits.length], // Calculate trump based on round like in dealCards()
     status: 'waiting_deal',
     bids: {},
     tricksWon: {},

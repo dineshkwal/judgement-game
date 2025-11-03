@@ -903,6 +903,18 @@ button:active {
   -webkit-background-clip: border-box;
 }
 
+#roundInfo .suit-black {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  font-weight: 900;
+}
+
+#roundInfo .suit-red {
+  color: #dc143c !important;
+  -webkit-text-fill-color: #dc143c !important;
+  font-weight: 900;
+}
+
 /* Deal Button */
 #dealBtn {
   position: absolute;

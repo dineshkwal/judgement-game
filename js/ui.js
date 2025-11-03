@@ -116,10 +116,13 @@ function updateRoundInfo(){
   
   const trumpName = suitNames[trump] || 'Spades';
   
+  // Determine suit color class: black for spades/clubs, red for hearts/diamonds
+  const suitClass = (trump === '♠' || trump === '♣') ? 'suit-black' : 'suit-red';
+  
   debugLog('DEBUG updateRoundInfo:', {round, cardsPerRound, trump, cardsThisRound});
   
   if(roundInfoEl) {
-    roundInfoEl.innerHTML = `Round ${round} <span style="font-size: 1.8em; color: #ffd700; margin: 0 0.5rem;">${trump}</span> ${cardsThisRound > 0 ? cardsThisRound : 0} Cards <span style="font-size: 1.8em; color: #ffd700; margin: 0 0.5rem;">${trump}</span> ${trumpName}`;
+    roundInfoEl.innerHTML = `Round ${round} <span class="${suitClass}" style="font-size: 1.8em; margin: 0 0.5rem;">${trump}</span> ${cardsThisRound > 0 ? cardsThisRound : 0} Cards <span class="${suitClass}" style="font-size: 1.8em; margin: 0 0.5rem;">${trump}</span> ${trumpName}`;
     debugLog('DEBUG roundInfo updated:', roundInfoEl.textContent);
   } else {
     debugLog('DEBUG roundInfo element not found!');
