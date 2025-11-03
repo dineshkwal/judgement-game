@@ -137,6 +137,12 @@ function checkForDisconnectedPlayers() {
     return;
   }
   
+  // Don't check for disconnections if game is already over
+  if (storage.gameEnded || storage.status === 'ended') {
+    debugLog('Skipping disconnection check - game is over');
+    return;
+  }
+  
   // Find any player marked as offline (excluding myself)
   const disconnectedPlayer = storage.players.find(p => 
     p.id !== storage.myId && p.status === 'offline'
@@ -162,7 +168,7 @@ function checkForDisconnectedPlayers() {
 // Show the reconnection waiting modal
 function showReconnectModal(player) {
   // Don't show reconnect modal if game is already over
-  if (storage.gameOver) {
+  if (storage.gameEnded || storage.status === 'ended') {
     debugLog('Game is over, skipping reconnect modal for:', player.name);
     return;
   }
