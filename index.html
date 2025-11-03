@@ -35,7 +35,10 @@
 <!-- Scorecard Overlay -->
 <div id="scorecardOverlay" onclick="toggleScorecard()">
   <div id="scorecardModal" onclick="event.stopPropagation()">
-    <h2>Game Scoreboard</h2>
+    <div class="scorecard-header">
+      <h2 id="scorecardTitle">Game Scoreboard</h2>
+      <p id="scorecardLobbyCode" class="scorecard-lobby-code"></p>
+    </div>
     <button class="close-btn" onclick="toggleScorecard()">✕</button>
     <div id="scorecardContent"></div>
   </div>

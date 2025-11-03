@@ -16,6 +16,12 @@ function toggleScorecard() {
 
 function renderScorecard() {
   const content = document.getElementById('scorecardContent');
+  const lobbyCodeElement = document.getElementById('scorecardLobbyCode');
+  
+  // Update lobby code if available
+  if (lobbyCodeElement && storage.lobbyId) {
+    lobbyCodeElement.textContent = `Lobby: ${storage.lobbyId}`;
+  }
   
   // Always show scorecard, even if no rounds completed yet
   if (!storage.players || storage.players.length === 0) {
