@@ -95,19 +95,19 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
   
-  // Add Enter key listener to player name input
-  const playerNameInput = document.getElementById('playerName');
-  if (playerNameInput) {
-    debugLog('Adding Enter key listener to player name input');
-    playerNameInput.addEventListener('keydown', (e) => {
+  // Add Enter key listener to registration screen (works from anywhere on the screen)
+  const registerScreen = document.getElementById('register');
+  if (registerScreen) {
+    debugLog('Adding Enter key listener to registration screen');
+    registerScreen.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.keyCode === 13) {
-        debugLog('Enter key pressed in name input');
+        debugLog('Enter key pressed in registration screen');
         e.preventDefault();
         registerPlayer();
       }
     });
   } else {
-    debugLog('Player name input not found');
+    debugLog('Registration screen not found');
   }
   
   // Small delay to ensure DOM is ready
