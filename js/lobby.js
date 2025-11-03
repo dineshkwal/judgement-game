@@ -228,38 +228,12 @@ function refreshLobby(){
     gameHeader.classList.remove('show');
   }
 
-  const hostSelContainer = document.getElementById('hostSelectContainer');
-  const hostSel = document.getElementById('hostSelect');
   const roundSelContainer = document.getElementById('roundSelectContainer');
   const roundSel = document.getElementById('roundSelect');
   const startBtn = document.getElementById('startBtn');
   if(storage.players.length >= 2){
-    hostSelContainer.style.display = 'block';
     roundSelContainer.style.display = 'block';
     startBtn.style.display = 'inline-block';
-    
-    // Populate host selector with custom dropdown
-    const hostOptionsContainer = hostSel.querySelector('.dropdown-options');
-    hostOptionsContainer.innerHTML = '';
-    storage.players.forEach((p, index) => {
-      const optDiv = document.createElement('div');
-      optDiv.className = 'dropdown-option';
-      optDiv.textContent = p.name + (p.id === storage.myId ? ' (You)' : '');
-      optDiv.dataset.value = p.id;
-      if(index === 0) {
-        optDiv.classList.add('selected');
-        hostSel.querySelector('.dropdown-selected').textContent = optDiv.textContent;
-        hostSel.dataset.value = p.id;
-      }
-      optDiv.addEventListener('click', () => {
-        hostSel.querySelectorAll('.dropdown-option').forEach(o => o.classList.remove('selected'));
-        optDiv.classList.add('selected');
-        hostSel.querySelector('.dropdown-selected').textContent = optDiv.textContent;
-        hostSel.dataset.value = optDiv.dataset.value;
-        hostSel.classList.remove('open');
-      });
-      hostOptionsContainer.appendChild(optDiv);
-    });
     
     // Populate round selector with custom dropdown
     const N = storage.players.length;
@@ -341,9 +315,11 @@ function leaveLobby(){
 }
 
 function startGame(){
-  const hostId = document.getElementById('hostSelect').dataset.value;
+  // Randomly select a starting dealer
+  const randomIndex = Math.floor(Math.random() * storage.players.length);
+  const hostId = storage.players[randomIndex].id;
+  
   const startingCards = parseInt(document.getElementById('roundSelect').dataset.value);
-  if(!hostId) return alert('Pick a host');
   storage.hostId = hostId;
   storage.isHost = (hostId === storage.myId);
   const N = storage.players.length;
