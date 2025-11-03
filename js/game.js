@@ -474,10 +474,14 @@ function nextRound(){
   const nextDealerIdx = (dealerIdx + 1) % storage.players.length;
   const nextDealer = storage.players[nextDealerIdx].id;
   
+  // Calculate trump for next round (same calculation as in dealCards)
+  const nextTrump = suits[storage.round % suits.length];
+  
   storage.gameRef.update({ 
     round: storage.round,
     cardsPerRound: storage.cardsPerRound, // CRITICAL: Must persist this!
     dealerId: nextDealer,
+    trump: nextTrump, // Update trump for next round
     status: 'waiting_deal',
     bids: {},
     tricksWon: {},
