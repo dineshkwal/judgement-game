@@ -477,9 +477,9 @@ button:active {
   margin-right: auto;
 }
 
-/* Show on register and lobby screens */
+/* Show on register screen and lobby with single player only */
 #register.active ~ .footer,
-#lobby.active ~ .footer {
+#lobby.active.single-player ~ .footer {
   display: block;
 }
 

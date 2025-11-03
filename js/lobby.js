@@ -222,10 +222,13 @@ function refreshLobby(){
 
   // Show game header only when there's 1 player
   const gameHeader = document.getElementById('lobbyGameHeader');
+  const lobbyScreen = document.getElementById('lobby');
   if (storage.players.length === 1) {
     gameHeader.classList.add('show');
+    lobbyScreen.classList.add('single-player');
   } else {
     gameHeader.classList.remove('show');
+    lobbyScreen.classList.remove('single-player');
   }
 
   const roundSelContainer = document.getElementById('roundSelectContainer');
