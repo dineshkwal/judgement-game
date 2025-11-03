@@ -128,6 +128,9 @@ window.addEventListener('DOMContentLoaded', () => {
         avatarBtn.type = 'button';
         avatarBtn.onclick = () => selectAvatar(avatar, avatarBtn);
         
+        // Add focus event to update avatar when tabbing through
+        avatarBtn.onfocus = () => selectAvatar(avatar, avatarBtn);
+        
         const img = document.createElement('img');
         img.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${avatar.seed}&backgroundColor=${avatar.bg}`;
         img.alt = avatar.name;
