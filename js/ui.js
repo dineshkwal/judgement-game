@@ -176,7 +176,7 @@ function renderScoreboard(){
   // Show scorecard button when game is active
   const scorecardBtn = document.getElementById('scorecardBtn');
   if (scorecardBtn) {
-    scorecardBtn.style.display = 'block';
+    scorecardBtn.style.display = 'flex';
   }
 }
 
