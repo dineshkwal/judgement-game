@@ -1,7 +1,7 @@
 /* ---------- GLOBAL STATE ---------- */
 
 // Debug flag - set to true for development, false for production
-const DEBUG = true;
+const DEBUG = false;
 
 // Debug logging helper - only logs when DEBUG is true
 function debugLog(...args) {
@@ -161,6 +161,12 @@ function checkForDisconnectedPlayers() {
 
 // Show the reconnection waiting modal
 function showReconnectModal(player) {
+  // Don't show reconnect modal if game is already over
+  if (storage.gameOver) {
+    debugLog('Game is over, skipping reconnect modal for:', player.name);
+    return;
+  }
+  
   storage.waitingForReconnect = true;
   const overlay = document.getElementById('reconnectOverlay');
   const playerNameEl = document.getElementById('reconnectPlayerName');

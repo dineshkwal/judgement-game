@@ -8,19 +8,54 @@ function toggleScorecard() {
   
   if (isShowing) {
     overlay.classList.remove('show');
+    
+    // If we came from game over screen via "View Full Scorecard", go back to game over
+    if (window.scoreboardFromGameOver) {
+      window.scoreboardFromGameOver = false;
+      // Small delay to allow the overlay to close smoothly
+      setTimeout(() => {
+        const sortedPlayers = [...storage.players].sort((a, b) => 
+          (storage.scores[b.id] || 0) - (storage.scores[a.id] || 0)
+        );
+        renderFinalScorecard(sortedPlayers);
+      }, 100);
+    }
   } else {
     renderScorecard();
     overlay.classList.add('show');
+    // Remove game-over-screen class when showing regular scorecard
+    overlay.classList.remove('game-over-screen');
   }
 }
 
 function renderScorecard() {
   const content = document.getElementById('scorecardContent');
   const lobbyCodeElement = document.getElementById('scorecardLobbyCode');
+  const titleElement = document.getElementById('scorecardTitle');
+  
+  // Remove game-over-screen class to show close button
+  const overlay = document.getElementById('scorecardOverlay');
+  if (overlay) {
+    overlay.classList.remove('game-over-screen');
+  }
+  
+  // Ensure title is always visible
+  if (titleElement) {
+    titleElement.textContent = 'Game Scoreboard';
+    titleElement.style.display = 'block';
+    titleElement.style.visibility = 'visible';
+  }
   
   // Update lobby code if available
   if (lobbyCodeElement && storage.lobbyId) {
     lobbyCodeElement.textContent = `Lobby: ${storage.lobbyId}`;
+    lobbyCodeElement.style.display = 'block';
+  }
+  
+  // Restore close button visibility (in case it was hidden by renderFinalScorecard)
+  const closeBtn = document.getElementById('closeScorecard');
+  if (closeBtn) {
+    closeBtn.style.display = 'block';
   }
   
   // Always show scorecard, even if no rounds completed yet
@@ -142,8 +177,8 @@ function renderFinalScorecard(sortedPlayers) {
   
   // Game summary button
   html += '<div style="text-align:center; margin-top:2rem;">';
-  html += '<button onclick="renderScorecard()" style="padding:1rem 2rem; font-size:1.2rem; background:var(--accent); color:white; border:none; border-radius:10px; cursor:pointer; margin-right:1rem;">View Full Scorecard</button>';
-  html += '<button onclick="location.reload()" style="padding:1rem 2rem; font-size:1.2rem; background:#666; color:white; border:none; border-radius:10px; cursor:pointer;">New Game</button>';
+  html += '<button onclick="renderScorecard(); window.scoreboardFromGameOver = true;" style="padding:1rem 2rem; font-size:1.2rem; background:var(--accent); color:white; border:none; border-radius:10px; cursor:pointer; margin-right:1rem;">View Full Scoreboard</button>';
+  html += '<button onclick="window.location.href = window.location.origin + window.location.pathname" style="padding:1rem 2rem; font-size:1.2rem; background:#666; color:white; border:none; border-radius:10px; cursor:pointer;">New Game</button>';
   html += '</div>';
   
   content.innerHTML = html;
@@ -159,14 +194,10 @@ function renderFinalScorecard(sortedPlayers) {
   if(overlay) {
     debugLog('DEBUG: Showing scorecardOverlay');
     overlay.classList.add('show');
+    // Add class to hide close button for game over screen
+    overlay.classList.add('game-over-screen');
   } else {
     debugLog('ERROR: scorecardOverlay not found!');
-  }
-  
-  // Hide close button for final scorecard
-  const closeBtn = document.getElementById('closeScorecard');
-  if (closeBtn) {
-    closeBtn.style.display = 'none';
   }
   
   debugLog('DEBUG: renderFinalScorecard completed successfully');
