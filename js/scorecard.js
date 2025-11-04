@@ -138,7 +138,8 @@ function renderFinalScorecard(sortedPlayers) {
   // Winner announcement
   const winner = sortedPlayers[0];
   const winnerScore = storage.scores[winner.id] || 0;
-  html += `<h2 style="font-size:2rem; margin:1.5rem 0; color:#FFD700;">🏆 Congratulations ${winner.name}! 🏆</h2>`;
+  html += `<h2 style="font-size:2rem; margin:1.5rem 0 0.5rem 0; color:#FFD700;">CONGRATULATIONS</h2>`;
+  html += `<h2 style="font-size:2rem; margin:0.5rem 0 1rem 0; color:#7FFF7F; text-shadow: 0 0 20px rgba(127,255,127,0.8), 0 0 40px rgba(76,175,80,0.6), 2px 2px 4px rgba(0,0,0,0.5);">🏆 ${winner.name.toUpperCase()} 🏆</h2>`;
   html += `<p style="font-size:1.3rem; color:#888;">Winner with ${winnerScore} points</p>`;
   html += '</div>';
   
@@ -183,10 +184,19 @@ function renderFinalScorecard(sortedPlayers) {
   
   content.innerHTML = html;
   
-  // Change modal title
-  const title = modal.querySelector('h2');
+  // Update modal header for game over screen
+  const title = document.getElementById('scorecardTitle');
+  const lobbyCode = document.getElementById('scorecardLobbyCode');
+  
   if (title) {
-    title.style.display = 'none';
+    title.style.display = 'none'; // Hide "GAME SCOREBOARD" title
+  }
+  
+  if (lobbyCode && storage.lobbyId) {
+    lobbyCode.textContent = `Lobby: ${storage.lobbyId}`;
+    lobbyCode.style.display = 'block';
+    lobbyCode.style.fontSize = '1.2rem';
+    lobbyCode.style.marginBottom = '1rem';
   }
   
   // Show the overlay
