@@ -16,9 +16,11 @@ function registerPlayer(){
   document.getElementById('userInfoAvatar').src = avatar;
   document.getElementById('userInfo').classList.add('active');
   
-  // Check if joining existing lobby
+  // Check for lobby code from input field first, then URL parameter
+  const lobbyCodeInput = document.getElementById('lobbyCodeInput').value.trim().toUpperCase();
   const urlParams = new URLSearchParams(window.location.search);
-  const joinLobbyId = urlParams.get('lobby');
+  const urlLobbyId = urlParams.get('lobby');
+  const joinLobbyId = lobbyCodeInput || urlLobbyId;
   
   if(joinLobbyId){
     // Join existing lobby - convert to uppercase for case-insensitive matching
