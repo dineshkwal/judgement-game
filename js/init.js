@@ -22,6 +22,39 @@ let selectedAvatar = avatars[0];
 window.addEventListener('DOMContentLoaded', () => {
   debugLog('DOM loaded, initializing...');
   
+  // Initialize avatar grid first (always needed for registration)
+  setTimeout(() => {
+    const avatarGrid = document.getElementById('avatarGrid');
+    
+    debugLog('Avatar grid element:', avatarGrid);
+    
+    if (avatarGrid) {
+      debugLog('Generating avatars...');
+      avatars.forEach((avatar, index) => {
+        const avatarBtn = document.createElement('button');
+        avatarBtn.className = 'avatar-option' + (index === 0 ? ' selected' : '');
+        avatarBtn.type = 'button';
+        avatarBtn.onclick = () => selectAvatar(avatar, avatarBtn);
+        
+        // Add focus event to update avatar when tabbing through
+        avatarBtn.onfocus = () => selectAvatar(avatar, avatarBtn);
+        
+        const img = document.createElement('img');
+        img.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${avatar.seed}&backgroundColor=${avatar.bg}`;
+        img.alt = avatar.name;
+        
+        avatarBtn.appendChild(img);
+        avatarGrid.appendChild(avatarBtn);
+      });
+      debugLog('Avatar grid populated with', avatars.length, 'avatars');
+      
+      // Setup navigation buttons
+      setupAvatarScroll();
+    } else {
+      console.error('Could not find avatar grid element');
+    }
+  }, 100);
+  
   // Check if player is rejoining an existing lobby
   const urlParams = new URLSearchParams(window.location.search);
   const joinLobbyId = urlParams.get('lobby');
@@ -110,39 +143,14 @@ window.addEventListener('DOMContentLoaded', () => {
     debugLog('Registration screen not found');
   }
   
-  // Small delay to ensure DOM is ready
-  setTimeout(() => {
-    // Generate avatar grid
-    const avatarGrid = document.getElementById('avatarGrid');
-    
-    debugLog('Avatar grid element:', avatarGrid);
-    
-    if (avatarGrid) {
-      debugLog('Generating avatars...');
-      avatars.forEach((avatar, index) => {
-        const avatarBtn = document.createElement('button');
-        avatarBtn.className = 'avatar-option' + (index === 0 ? ' selected' : '');
-        avatarBtn.type = 'button';
-        avatarBtn.onclick = () => selectAvatar(avatar, avatarBtn);
-        
-        // Add focus event to update avatar when tabbing through
-        avatarBtn.onfocus = () => selectAvatar(avatar, avatarBtn);
-        
-        const img = document.createElement('img');
-        img.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${avatar.seed}&backgroundColor=${avatar.bg}`;
-        img.alt = avatar.name;
-        
-        avatarBtn.appendChild(img);
-        avatarGrid.appendChild(avatarBtn);
-      });
-      debugLog('Avatar grid populated with', avatars.length, 'avatars');
-      
-      // Setup navigation buttons
-      setupAvatarScroll();
-    } else {
-      console.error('Could not find required elements');
+  // Pre-fill lobby code if coming from a lobby link (reuse urlParams from above)
+  if (joinLobbyId) {
+    const lobbyCodeInput = document.getElementById('lobbyCodeInput');
+    if (lobbyCodeInput) {
+      lobbyCodeInput.value = joinLobbyId.toUpperCase();
+      debugLog('Pre-filled lobby code from URL:', joinLobbyId);
     }
-  }, 100);
+  }
 });
 
 function setupAvatarScroll() {
