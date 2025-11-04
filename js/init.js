@@ -114,13 +114,10 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     // Generate avatar grid
     const avatarGrid = document.getElementById('avatarGrid');
-    const avatarPreview = document.getElementById('avatarPreview');
-    const avatarName = document.getElementById('avatarName');
     
     debugLog('Avatar grid element:', avatarGrid);
-    debugLog('Avatar preview element:', avatarPreview);
     
-    if (avatarGrid && avatarPreview && avatarName) {
+    if (avatarGrid) {
       debugLog('Generating avatars...');
       avatars.forEach((avatar, index) => {
         const avatarBtn = document.createElement('button');
@@ -215,21 +212,6 @@ function setupAvatarScroll() {
 
 function selectAvatar(avatar, buttonElement) {
   selectedAvatar = avatar;
-  
-  // Update preview
-  const avatarPreview = document.getElementById('avatarPreview');
-  const avatarName = document.getElementById('avatarName');
-  
-  if (avatarPreview && avatarName) {
-    avatarPreview.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${avatar.seed}&backgroundColor=${avatar.bg}`;
-    avatarName.textContent = avatar.name;
-    
-    // Add animation
-    avatarPreview.style.animation = 'none';
-    setTimeout(() => {
-      avatarPreview.style.animation = 'avatarPop 0.4s ease';
-    }, 10);
-  }
   
   // Update selected state
   document.querySelectorAll('.avatar-option').forEach(btn => btn.classList.remove('selected'));
