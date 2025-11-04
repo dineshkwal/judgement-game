@@ -1906,6 +1906,11 @@ button:active {
   display: none !important;
 }
 
+/* Hide title on game over screen */
+#scorecardOverlay.game-over-screen #scorecardTitle {
+  display: none !important;
+}
+
 #scorecardContent table {
   width: 100%;
   border-collapse: separate;
@@ -2139,9 +2144,9 @@ button:active {
   
   /* Scorecard Modal - Mobile */
   #scorecardModal {
-    padding: 1.5rem 1rem;
+    padding: 1rem;
     width: 95%;
-    max-height: 85vh;
+    max-height: 90vh;
   }
   
   #scorecardModal h2 {
@@ -2158,6 +2163,38 @@ button:active {
     font-size: 1.3rem;
     top: 0.75rem;
     right: 0.75rem;
+  }
+  
+  /* Game Over Content - Mobile */
+  #scorecardContent h1 {
+    font-size: 1.8rem !important;
+    margin: 0.5rem 0 !important;
+  }
+  
+  #scorecardContent h2 {
+    font-size: 1.3rem !important;
+    margin: 1rem 0 !important;
+  }
+  
+  #scorecardContent p {
+    font-size: 1rem !important;
+  }
+  
+  #scorecardContent h3 {
+    font-size: 1.2rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  #scorecardContent table td {
+    padding: 0.7rem 0.8rem !important;
+    font-size: 1rem !important;
+  }
+  
+  #scorecardContent button {
+    padding: 0.8rem 1.2rem !important;
+    font-size: 1rem !important;
+    margin: 0.5rem 0.25rem !important;
+    display: inline-block !important;
   }
   
   #scorecardContent table {
