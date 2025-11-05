@@ -241,3 +241,83 @@ function joinAsNewPlayer(name, avatar, normalizedLobbyId) {
     }).catch(err => alert('Error joining lobby: ' + err.message));
   }).catch(err => alert('Error checking game status: ' + err.message));
 }
+
+/**
+ * Play Again - Creates a new lobby with all current players
+ * Used from the Game Over screen
+ */
+function playAgain() {
+  if (!storage.lobbyId || !storage.players || storage.players.length === 0) {
+    alert('No active lobby found');
+    return;
+  }
+
+  debugLog('Starting Play Again - creating new lobby with all players');
+  
+  // Store old lobby ID to clean up listeners
+  const oldLobbyId = storage.lobbyId;
+  
+  // Generate new lobby ID
+  const newLobbyId = Math.random().toString(36).substr(2, 6).toUpperCase();
+  
+  // Get all current players
+  const currentPlayers = storage.players;
+  const myPlayerId = storage.myId;
+  
+  // Create new lobby with all players
+  const playersData = {};
+  currentPlayers.forEach(player => {
+    playersData[player.id] = {
+      name: player.name,
+      avatar: player.avatar,
+      id: player.id,
+      lastSeen: Date.now(),
+      status: 'online'
+    };
+  });
+  
+  // Write all players to new lobby at once
+  db.ref(`lobbies/${newLobbyId}/players`).set(playersData).then(() => {
+    debugLog('New lobby created successfully:', newLobbyId);
+    
+    // Write rematch signal to old lobby so all players get redirected
+    return db.ref(`lobbies/${oldLobbyId}/rematch`).set({
+      newLobbyId: newLobbyId,
+      timestamp: Date.now()
+    });
+  }).then(() => {
+    debugLog('Rematch signal written to old lobby');
+    
+    // Clean up old lobby listeners
+    db.ref(`lobbies/${oldLobbyId}`).off();
+    
+    // Update local storage
+    storage.lobbyId = newLobbyId;
+    localStorage.setItem('lastLobbyId', newLobbyId);
+    
+    // Update browser URL
+    updateBrowserURL(newLobbyId);
+    
+    // Reset game state
+    storage.gameRef = null;
+    storage.gameEnded = false;
+    
+    // Close scorecard overlay
+    const overlay = document.getElementById('scorecardOverlay');
+    if (overlay) {
+      overlay.classList.remove('show');
+      overlay.classList.remove('game-over-screen');
+    }
+    
+    // Navigate to lobby screen
+    showScreen('lobby');
+    listenForPlayers();
+    updateLobbyInfo();
+    setupPresence(); // Start Firebase presence system
+    
+    debugLog(`✅ Play Again successful - New lobby: ${newLobbyId}`);
+  }).catch(err => {
+    console.error('Error creating new lobby:', err);
+    alert('Error creating new lobby: ' + err.message);
+  });
+}

@@ -179,6 +179,7 @@ function renderFinalScorecard(sortedPlayers) {
   // Game summary button
   html += '<div style="text-align:center; margin-top:2rem;">';
   html += '<button onclick="renderScorecard(); window.scoreboardFromGameOver = true;" style="padding:1rem 2rem; font-size:1.2rem; background:var(--accent); color:white; border:none; border-radius:10px; cursor:pointer; margin-right:1rem;">View Full Scoreboard</button>';
+  html += '<button onclick="playAgain()" style="padding:1rem 2rem; font-size:1.2rem; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; margin-right:1rem;">🎮 Play Again</button>';
   html += '<button onclick="window.location.href = window.location.origin + window.location.pathname" style="padding:1rem 2rem; font-size:1.2rem; background:#666; color:white; border:none; border-radius:10px; cursor:pointer;">New Game</button>';
   html += '</div>';
   
