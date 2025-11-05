@@ -10,6 +10,42 @@ function listenForPlayers(){
     checkForDisconnectedPlayers();
   });
   
+  // Listen for rematch/play again signal
+  db.ref(`lobbies/${storage.lobbyId}/rematch`).on('value', (snapshot) => {
+    const rematchData = snapshot.val();
+    if (rematchData && rematchData.newLobbyId) {
+      debugLog('Rematch detected! Redirecting to new lobby:', rematchData.newLobbyId);
+      
+      // Clean up old lobby listeners
+      db.ref(`lobbies/${storage.lobbyId}`).off();
+      
+      // Update to new lobby
+      storage.lobbyId = rematchData.newLobbyId;
+      localStorage.setItem('lastLobbyId', rematchData.newLobbyId);
+      
+      // Update browser URL
+      const newUrl = `${window.location.origin}${window.location.pathname}?lobby=${rematchData.newLobbyId}`;
+      window.history.pushState({lobby: rematchData.newLobbyId}, '', newUrl);
+      
+      // Reset game state
+      storage.gameRef = null;
+      storage.gameEnded = false;
+      
+      // Close scorecard overlay
+      const overlay = document.getElementById('scorecardOverlay');
+      if (overlay) {
+        overlay.classList.remove('show');
+        overlay.classList.remove('game-over-screen');
+      }
+      
+      // Navigate to lobby screen
+      showScreen('lobby');
+      listenForPlayers();
+      updateLobbyInfo();
+      setupPresence();
+    }
+  });
+  
   // Also listen for game start
   const gameRef = db.ref(`lobbies/${storage.lobbyId}/game`);
   gameRef.on('value', (snapshot) => {

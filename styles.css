@@ -349,6 +349,7 @@ button:active {
   letter-spacing: 0.5px;
   z-index: 2;
   -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
 }
 
 .tab-btn::before {
@@ -2483,6 +2484,17 @@ button:active {
   
   #scorecardContent tr:last-child td:first-child {
     font-size: 0.8rem;
+  }
+  
+  /* Registration Tabs - Mobile */
+  .tab-btn {
+    padding: 0.8rem 0.5rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.3px;
+  }
+  
+  .registration-tabs {
+    gap: 0.5rem;
   }
 }
 
