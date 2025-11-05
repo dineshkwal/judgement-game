@@ -16,6 +16,7 @@
 <script src="js/config.js"></script>
 <script src="js/state.js"></script>
 <script src="js/utils.js"></script>
+<script src="js/validation.js"></script>
 <script src="js/register.js"></script>
 <script src="js/lobby.js"></script>
 <script src="js/ui.js"></script>
@@ -52,14 +53,13 @@
     <p id="reconnectPlayerName" class="reconnect-player">Waiting for player...</p>
     <div class="reconnect-timer">
       <div class="timer-circle">
-        <span id="reconnectTimer">120</span>
+        <span id="reconnectTimer">300</span>
       </div>
       <p class="timer-label">seconds remaining</p>
     </div>
     <p class="reconnect-message">The game will resume when they reconnect</p>
     <div class="reconnect-actions">
       <button class="dismiss-btn" onclick="dismissReconnectModal()">Dismiss</button>
-      <button class="continue-btn" onclick="continueWithoutPlayer()">Continue Without Player</button>
     </div>
   </div>
 </div>
@@ -72,15 +72,41 @@
       <p class="tagline">Play the Ultimate Card Game Online</p>
     </div>
     
+    <!-- Resume Game Banner (hidden by default) -->
+    <div id="resumeBanner" class="resume-banner" style="display: none;">
+      <div class="resume-content">
+        <h3>Continue your game <span id="resumePlayerName"></span>?</h3>
+        <p>You have an active session in lobby <strong id="resumeLobbyCode"></strong></p>
+      </div>
+      <div class="resume-actions">
+        <button class="resume-btn" onclick="resumeGame()">Resume</button>
+        <button class="dismiss-resume-btn" onclick="dismissResume()">Dismiss</button>
+      </div>
+    </div>
+    
     <div class="register-form">
       <div class="input-group">
         <label for="playerName">Player Name</label>
-        <input type="text" id="playerName" placeholder="ENTER YOUR NAME" maxlength="20" autofocus>
+        <input 
+          type="text" 
+          id="playerName" 
+          placeholder="ENTER YOUR NAME" 
+          maxlength="20" 
+          autofocus
+          oninput="formatPlayerNameInput(this)">
+        <div class="input-error-message" id="playerNameError"></div>
       </div>
 
       <div class="input-group">
         <label for="lobbyCodeInput">Lobby Code <span style="color: #888; font-size: 0.9em;">(Optional)</span></label>
-        <input type="text" id="lobbyCodeInput" placeholder="ENTER LOBBY CODE TO JOIN" maxlength="10" style="text-transform: uppercase;">
+        <input 
+          type="text" 
+          id="lobbyCodeInput" 
+          placeholder="ENTER LOBBY CODE TO JOIN" 
+          maxlength="20" 
+          style="text-transform: uppercase;"
+          oninput="formatLobbyCodeInput(this)">
+        <div class="input-error-message" id="lobbyCodeError"></div>
       </div>
 
       <div class="input-group">

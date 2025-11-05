@@ -55,6 +55,12 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }, 100);
   
+  // Check for active session and show resume banner if applicable
+  // Add small delay to ensure DOM is ready and Firebase is initialized
+  setTimeout(() => {
+    checkAndShowResumeBanner();
+  }, 200);
+  
   // Check if player is rejoining an existing lobby
   const urlParams = new URLSearchParams(window.location.search);
   const joinLobbyId = urlParams.get('lobby');
@@ -93,7 +99,28 @@ window.addEventListener('DOMContentLoaded', () => {
           // Check if game has started
           db.ref(`lobbies/${normalizedLobbyId}/game`).once('value', (gameSnapshot) => {
             if(gameSnapshot.exists()) {
+              debugLog('Game in progress, rejoining game screen');
+              
+              // Load game state into storage
+              const gameData = gameSnapshot.val();
+              
+              // Ensure arrays/objects exist
+              if(!gameData.bids || typeof gameData.bids !== 'object') gameData.bids = {};
+              if(!gameData.tricksWon || typeof gameData.tricksWon !== 'object') gameData.tricksWon = {};
+              if(!gameData.hands || typeof gameData.hands !== 'object') gameData.hands = {};
+              if(!gameData.trick) gameData.trick = [];
+              
+              Object.assign(storage, gameData);
+              
               showScreen('game');
+              
+              // Render all game UI components
+              renderScoreboard();
+              renderTable();
+              renderMyHand();
+              renderCurrentTrick();
+              updateRoundInfo();
+              updateUI();
             } else {
               showScreen('lobby');
             }
@@ -230,4 +257,174 @@ function selectAvatar(avatar, buttonElement) {
 
 function getSelectedAvatarURL() {
   return `https://api.dicebear.com/9.x/adventurer/svg?seed=${selectedAvatar.seed}&backgroundColor=${selectedAvatar.bg}`;
+}
+
+/* ---------- RESUME GAME BANNER ---------- */
+function checkAndShowResumeBanner() {
+  // Only show on registration screen without URL parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const hasUrlLobby = urlParams.get('lobby');
+  
+  debugLog('checkAndShowResumeBanner called, hasUrlLobby:', hasUrlLobby);
+  
+  if (hasUrlLobby) {
+    // User came from a direct link, don't show banner
+    debugLog('URL has lobby parameter, skipping resume banner');
+    return;
+  }
+  
+  const savedLobbyId = localStorage.getItem('lastLobbyId');
+  const savedPlayerId = localStorage.getItem('lastPlayerId');
+  const savedPlayerInfo = localStorage.getItem('myPlayerInfo');
+  
+  debugLog('localStorage data:', {
+    savedLobbyId,
+    savedPlayerId,
+    savedPlayerInfo: savedPlayerInfo ? 'exists' : 'missing'
+  });
+  
+  if (!savedLobbyId || !savedPlayerId || !savedPlayerInfo) {
+    // No saved session
+    debugLog('No saved session found in localStorage');
+    return;
+  }
+  
+  // Check if the lobby still exists and player is still in it
+  debugLog('Checking if player exists in lobby:', savedLobbyId, savedPlayerId);
+  db.ref(`lobbies/${savedLobbyId}/players/${savedPlayerId}`).once('value', (snapshot) => {
+    debugLog('Firebase snapshot exists:', snapshot.exists());
+    
+    if (snapshot.exists()) {
+      // Player still exists in lobby - check if game is over
+      db.ref(`lobbies/${savedLobbyId}/game/status`).once('value', (gameStatusSnapshot) => {
+        const gameStatus = gameStatusSnapshot.val();
+        
+        debugLog('Game status:', gameStatus);
+        
+        // Don't show resume banner if game has ended
+        if (gameStatus === 'ended') {
+          debugLog('Game has ended, not showing resume banner');
+          // Clear localStorage since game is over
+          localStorage.removeItem('lastLobbyId');
+          localStorage.removeItem('lastPlayerId');
+          localStorage.removeItem('myPlayerInfo');
+          return;
+        }
+        
+        // Game is still active or hasn't started - show resume banner
+        const playerInfo = JSON.parse(savedPlayerInfo);
+        const resumeBanner = document.getElementById('resumeBanner');
+        const resumeLobbyCode = document.getElementById('resumeLobbyCode');
+        const resumePlayerName = document.getElementById('resumePlayerName');
+        
+        debugLog('Game is still active, showing resume banner for player:', playerInfo.name);
+        
+        if (resumeBanner && resumeLobbyCode && resumePlayerName) {
+          resumePlayerName.textContent = playerInfo.name;
+          resumeLobbyCode.textContent = savedLobbyId;
+          resumeBanner.style.display = 'flex';
+          debugLog('Resume banner displayed successfully');
+        } else {
+          console.error('Resume banner elements not found:', {
+            resumeBanner: !!resumeBanner,
+            resumeLobbyCode: !!resumeLobbyCode,
+            resumePlayerName: !!resumePlayerName
+          });
+        }
+      }).catch(err => {
+        console.error('Error checking game status:', err);
+      });
+    } else {
+      // Player was removed or lobby doesn't exist - clear localStorage
+      debugLog('Player not found in lobby, clearing localStorage');
+      localStorage.removeItem('lastLobbyId');
+      localStorage.removeItem('lastPlayerId');
+      localStorage.removeItem('myPlayerInfo');
+    }
+  }).catch(err => {
+    console.error('Error checking saved session:', err);
+    debugLog('Error checking saved session:', err);
+  });
+}
+
+function resumeGame() {
+  const savedLobbyId = localStorage.getItem('lastLobbyId');
+  const savedPlayerId = localStorage.getItem('lastPlayerId');
+  const savedPlayerInfo = localStorage.getItem('myPlayerInfo');
+  
+  if (savedLobbyId && savedPlayerId && savedPlayerInfo) {
+    debugLog('Resuming game directly without page reload');
+    
+    // Hide the resume banner first
+    const resumeBanner = document.getElementById('resumeBanner');
+    if (resumeBanner) {
+      resumeBanner.style.display = 'none';
+    }
+    
+    // Update URL without reloading
+    const newUrl = `${window.location.origin}${window.location.pathname}?lobby=${savedLobbyId}`;
+    window.history.pushState({lobby: savedLobbyId}, '', newUrl);
+    
+    // Set up storage
+    const playerInfo = JSON.parse(savedPlayerInfo);
+    storage.myId = savedPlayerId;
+    storage.lobbyId = savedLobbyId;
+    
+    // Show user info in top right
+    document.getElementById('userInfoName').textContent = playerInfo.name;
+    document.getElementById('userInfoAvatar').src = playerInfo.avatar;
+    document.getElementById('userInfo').classList.add('active');
+    
+    // Update player status in Firebase
+    db.ref(`lobbies/${savedLobbyId}/players/${savedPlayerId}`).update({
+      lastSeen: Date.now(),
+      status: 'online'
+    });
+    
+    // Check if game has started
+    db.ref(`lobbies/${savedLobbyId}/game`).once('value', (gameSnapshot) => {
+      if(gameSnapshot.exists()) {
+        debugLog('Game in progress, rejoining game screen');
+        
+        // Load game state into storage
+        const gameData = gameSnapshot.val();
+        
+        // Ensure arrays/objects exist
+        if(!gameData.bids || typeof gameData.bids !== 'object') gameData.bids = {};
+        if(!gameData.tricksWon || typeof gameData.tricksWon !== 'object') gameData.tricksWon = {};
+        if(!gameData.hands || typeof gameData.hands !== 'object') gameData.hands = {};
+        if(!gameData.trick) gameData.trick = [];
+        
+        Object.assign(storage, gameData);
+        
+        showScreen('game');
+        
+        // Render all game UI components
+        renderScoreboard();
+        renderTable();
+        renderMyHand();
+        renderCurrentTrick();
+        updateRoundInfo();
+        updateUI();
+      } else {
+        showScreen('lobby');
+      }
+      listenForPlayers();
+      updateLobbyInfo();
+      setupPresence(); // Start Firebase presence system
+    });
+  }
+}
+
+function dismissResume() {
+  // Hide the banner
+  const resumeBanner = document.getElementById('resumeBanner');
+  if (resumeBanner) {
+    resumeBanner.style.display = 'none';
+  }
+  
+  // Clear saved session
+  localStorage.removeItem('lastLobbyId');
+  localStorage.removeItem('lastPlayerId');
+  localStorage.removeItem('myPlayerInfo');
 }
