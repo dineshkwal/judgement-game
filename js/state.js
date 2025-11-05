@@ -1,7 +1,7 @@
 /* ---------- GLOBAL STATE ---------- */
 
 // Debug flag - set to true for development, false for production
-const DEBUG = false;
+const DEBUG = true;
 
 // Debug logging helper - only logs when DEBUG is true
 function debugLog(...args) {
@@ -148,16 +148,37 @@ function checkForDisconnectedPlayers() {
     p.id !== storage.myId && p.status === 'offline'
   );
   
-  if (disconnectedPlayer && !storage.disconnectedPlayers[disconnectedPlayer.id]) {
-    debugLog('Detected disconnected player during game:', disconnectedPlayer.name);
-    showReconnectModal(disconnectedPlayer);
+  if (disconnectedPlayer) {
+    const existingDisconnect = storage.disconnectedPlayers[disconnectedPlayer.id];
+    
+    if (!existingDisconnect) {
+      // First time detecting this disconnection - start grace period
+      debugLog('Detected disconnected player, starting 30s grace period:', disconnectedPlayer.name);
+      storage.disconnectedPlayers[disconnectedPlayer.id] = {
+        name: disconnectedPlayer.name,
+        disconnectedAt: Date.now(),
+        graceTimeout: setTimeout(() => {
+          // After 30 seconds, show the modal
+          debugLog('Grace period expired, showing reconnect modal for:', disconnectedPlayer.name);
+          showReconnectModal(disconnectedPlayer);
+        }, 30000) // 30 seconds
+      };
+    }
   }
   
   // Check if any previously disconnected player is back online
   Object.keys(storage.disconnectedPlayers).forEach(playerId => {
     const player = storage.players.find(p => p.id === playerId);
     if (player && player.status === 'online') {
-      debugLog('Player reconnected:', player.name);
+      debugLog('Player reconnected during grace period:', player.name);
+      
+      // Clear grace period timeout if it exists
+      const disconnectInfo = storage.disconnectedPlayers[playerId];
+      if (disconnectInfo.graceTimeout) {
+        clearTimeout(disconnectInfo.graceTimeout);
+        debugLog('Cancelled grace period timeout for:', player.name);
+      }
+      
       hideReconnectModal();
     }
   });
@@ -183,16 +204,17 @@ function showReconnectModal(player) {
   playerNameEl.textContent = `Waiting for ${player.name} to reconnect...`;
   overlay.style.display = 'flex';
   
-  // Start 120-second countdown
-  let secondsLeft = 120;
+  // Start 300-second countdown
+  let secondsLeft = 300;
   timerEl.textContent = secondsLeft;
   
-  // Store the disconnected player info
-  storage.disconnectedPlayers[player.id] = {
-    name: player.name,
-    disconnectedAt: Date.now(),
-    countdownInterval: null
-  };
+  // Update the disconnected player info (grace period is over)
+  if (!storage.disconnectedPlayers[player.id]) {
+    storage.disconnectedPlayers[player.id] = {
+      name: player.name,
+      disconnectedAt: Date.now()
+    };
+  }
   
   const countdownInterval = setInterval(() => {
     secondsLeft--;
@@ -236,15 +258,18 @@ function hideReconnectModal() {
     overlay.style.display = 'none';
   }
   
-  // Clear all countdown intervals
+  // Clear all countdown intervals and grace timeouts
   Object.values(storage.disconnectedPlayers).forEach(info => {
     if (info.countdownInterval) {
       clearInterval(info.countdownInterval);
     }
+    if (info.graceTimeout) {
+      clearTimeout(info.graceTimeout);
+    }
   });
   
   storage.disconnectedPlayers = {};
-  debugLog('Reconnect modal hidden');
+  debugLog('Reconnect modal hidden and all timers cleared');
 }
 
 // Continue without the disconnected player (called by button)
