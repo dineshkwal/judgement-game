@@ -313,26 +313,33 @@ function setupAvatarScrollForGrid(gridId, leftBtnId, rightBtnId) {
   
   // Show/hide navigation buttons based on scroll position
   const updateNavButtons = () => {
-    const scrollLeft = grid.scrollLeft;
-    const scrollWidth = grid.scrollWidth;
-    const clientWidth = grid.clientWidth;
-    
-    if (scrollLeft <= 0) {
-      leftBtn.classList.add('hidden');
+    if (typeof updateAvatarScrollButtons === 'function') {
+      updateAvatarScrollButtons(gridId, leftBtnId, rightBtnId);
     } else {
-      leftBtn.classList.remove('hidden');
-    }
-    
-    if (scrollLeft + clientWidth >= scrollWidth - 1) {
-      rightBtn.classList.add('hidden');
-    } else {
-      rightBtn.classList.remove('hidden');
+      // Fallback if tabs.js not loaded
+      const scrollLeft = grid.scrollLeft;
+      const scrollWidth = grid.scrollWidth;
+      const clientWidth = grid.clientWidth;
+      
+      if (scrollLeft <= 0) {
+        leftBtn.classList.add('hidden');
+      } else {
+        leftBtn.classList.remove('hidden');
+      }
+      
+      if (scrollLeft + clientWidth >= scrollWidth - 1) {
+        rightBtn.classList.add('hidden');
+      } else {
+        rightBtn.classList.remove('hidden');
+      }
     }
   };
   
   grid.addEventListener('scroll', updateNavButtons);
   window.addEventListener('resize', updateNavButtons);
-  updateNavButtons(); // Initial check
+  
+  // Initial check with delay to ensure layout is complete
+  setTimeout(updateNavButtons, 100);
 }
 
 // Legacy functions for backward compatibility (if needed)

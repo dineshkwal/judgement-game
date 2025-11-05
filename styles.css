@@ -348,6 +348,7 @@ button:active {
   font-family: 'Poppins', sans-serif;
   letter-spacing: 0.5px;
   z-index: 2;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .tab-btn::before {
