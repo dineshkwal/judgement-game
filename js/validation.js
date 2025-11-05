@@ -46,18 +46,19 @@ function validatePlayerName(name) {
 function validateLobbyCode(code) {
   const trimmedCode = code.trim().toUpperCase();
   
-  // Empty is valid (means create new lobby)
+  // Empty is not valid for joining
   if (!trimmedCode) {
-    return { valid: true, error: null };
+    return { valid: false, error: 'Lobby code is required' };
   }
   
-  // Check length (Firebase push keys are typically 20 chars, but we display 6-char codes)
+  // Check minimum length
   if (trimmedCode.length < 4) {
     return { valid: false, error: 'Lobby code must be at least 4 characters' };
   }
   
-  if (trimmedCode.length > 20) {
-    return { valid: false, error: 'Lobby code is too long' };
+  // Check maximum length
+  if (trimmedCode.length > 8) {
+    return { valid: false, error: 'Lobby code must be 8 characters or less' };
   }
   
   // Check for valid characters (alphanumeric only, no special chars)
@@ -104,6 +105,10 @@ function formatLobbyCodeInput(input) {
   value = value.replace(/[^a-zA-Z0-9]/g, '');
   // Convert to uppercase
   value = value.toUpperCase();
+  // Enforce max length of 8 characters
+  if (value.length > 8) {
+    value = value.substring(0, 8);
+  }
   input.value = value;
   
   // Clear error state when user types
@@ -136,13 +141,23 @@ function showInputError(inputId, errorMessage) {
   const input = document.getElementById(inputId);
   const errorElement = document.getElementById(inputId + 'Error');
   
+  debugLog('showInputError called for:', inputId);
+  debugLog('Input element found:', input !== null);
+  debugLog('Error element ID:', inputId + 'Error');
+  debugLog('Error element found:', errorElement !== null);
+  
   if (input) {
     input.classList.add('error');
+    debugLog('Added error class to input');
   }
   
   if (errorElement) {
     errorElement.textContent = errorMessage;
     errorElement.classList.add('active');
+    debugLog('Error element classes after adding active:', errorElement.classList.toString());
+    debugLog('Error element display style:', window.getComputedStyle(errorElement).display);
+  } else {
+    console.error('Error element not found for ID:', inputId + 'Error');
   }
   
   debugLog('Showing error for', inputId, ':', errorMessage);
