@@ -129,7 +129,7 @@ function formatPlayerNameInput(input) {
 
 /**
  * Shows an error message for an input field
- * @param {string} inputId - The ID of the input element
+ * @param {string} inputId - The ID of the input element (without 'Error' suffix)
  * @param {string} errorMessage - The error message to display
  */
 function showInputError(inputId, errorMessage) {
@@ -144,11 +144,13 @@ function showInputError(inputId, errorMessage) {
     errorElement.textContent = errorMessage;
     errorElement.classList.add('active');
   }
+  
+  debugLog('Showing error for', inputId, ':', errorMessage);
 }
 
 /**
  * Clears the error state for an input field
- * @param {string} inputId - The ID of the input element
+ * @param {string} inputId - The ID of the input element (without 'Error' suffix)
  */
 function clearInputError(inputId) {
   const input = document.getElementById(inputId);

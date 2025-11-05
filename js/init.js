@@ -22,46 +22,64 @@ let selectedAvatar = avatars[0];
 window.addEventListener('DOMContentLoaded', () => {
   debugLog('DOM loaded, initializing...');
   
-  // Initialize avatar grid first (always needed for registration)
+  // Initialize avatar grids for both tabs
   setTimeout(() => {
-    const avatarGrid = document.getElementById('avatarGrid');
+    const avatarGridCreate = document.getElementById('avatarGridCreate');
+    const avatarGridJoin = document.getElementById('avatarGridJoin');
     
-    debugLog('Avatar grid element:', avatarGrid);
+    debugLog('Avatar grid elements - Create:', avatarGridCreate, 'Join:', avatarGridJoin);
     
-    if (avatarGrid) {
-      debugLog('Generating avatars...');
+    // Generate avatars for Create tab
+    if (avatarGridCreate) {
+      debugLog('Generating avatars for Create tab...');
       avatars.forEach((avatar, index) => {
         const avatarBtn = document.createElement('button');
         avatarBtn.className = 'avatar-option' + (index === 0 ? ' selected' : '');
         avatarBtn.type = 'button';
-        avatarBtn.onclick = () => selectAvatar(avatar, avatarBtn);
-        
-        // Add focus event to update avatar when tabbing through
-        avatarBtn.onfocus = () => selectAvatar(avatar, avatarBtn);
+        avatarBtn.dataset.avatar = `https://api.dicebear.com/9.x/adventurer/svg?seed=${avatar.seed}&backgroundColor=${avatar.bg}`;
+        avatarBtn.onclick = () => selectAvatarInGrid(avatar, avatarBtn, 'avatarGridCreate');
+        avatarBtn.onfocus = () => selectAvatarInGrid(avatar, avatarBtn, 'avatarGridCreate');
         
         const img = document.createElement('img');
         img.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${avatar.seed}&backgroundColor=${avatar.bg}`;
         img.alt = avatar.name;
         
         avatarBtn.appendChild(img);
-        avatarGrid.appendChild(avatarBtn);
+        avatarGridCreate.appendChild(avatarBtn);
       });
-      debugLog('Avatar grid populated with', avatars.length, 'avatars');
-      
-      // Setup navigation buttons
-      setupAvatarScroll();
-    } else {
-      console.error('Could not find avatar grid element');
+      debugLog('Create tab avatar grid populated with', avatars.length, 'avatars');
+      setupAvatarScrollForGrid('avatarGridCreate', 'avatarScrollLeftCreate', 'avatarScrollRightCreate');
+    }
+    
+    // Generate avatars for Join tab
+    if (avatarGridJoin) {
+      debugLog('Generating avatars for Join tab...');
+      avatars.forEach((avatar, index) => {
+        const avatarBtn = document.createElement('button');
+        avatarBtn.className = 'avatar-option' + (index === 0 ? ' selected' : '');
+        avatarBtn.type = 'button';
+        avatarBtn.dataset.avatar = `https://api.dicebear.com/9.x/adventurer/svg?seed=${avatar.seed}&backgroundColor=${avatar.bg}`;
+        avatarBtn.onclick = () => selectAvatarInGrid(avatar, avatarBtn, 'avatarGridJoin');
+        avatarBtn.onfocus = () => selectAvatarInGrid(avatar, avatarBtn, 'avatarGridJoin');
+        
+        const img = document.createElement('img');
+        img.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${avatar.seed}&backgroundColor=${avatar.bg}`;
+        img.alt = avatar.name;
+        
+        avatarBtn.appendChild(img);
+        avatarGridJoin.appendChild(avatarBtn);
+      });
+      debugLog('Join tab avatar grid populated with', avatars.length, 'avatars');
+      setupAvatarScrollForGrid('avatarGridJoin', 'avatarScrollLeftJoin', 'avatarScrollRightJoin');
     }
   }, 100);
   
   // Check for active session and show resume banner if applicable
-  // Add small delay to ensure DOM is ready and Firebase is initialized
   setTimeout(() => {
     checkAndShowResumeBanner();
   }, 200);
   
-  // Check if player is rejoining an existing lobby
+  // Check if player is rejoining an existing lobby via URL
   const urlParams = new URLSearchParams(window.location.search);
   const joinLobbyId = urlParams.get('lobby');
   
@@ -155,7 +173,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
   
-  // Add Enter key listener to registration screen (works from anywhere on the screen)
+  // Add Enter key listeners to both tabs in registration screen
   const registerScreen = document.getElementById('register');
   if (registerScreen) {
     debugLog('Adding Enter key listener to registration screen');
@@ -163,15 +181,28 @@ window.addEventListener('DOMContentLoaded', () => {
       if (e.key === 'Enter' || e.keyCode === 13) {
         debugLog('Enter key pressed in registration screen');
         e.preventDefault();
-        registerPlayer();
+        
+        // Call the appropriate function based on active tab
+        const createTab = document.getElementById('createTabContent');
+        if (createTab && createTab.classList.contains('active')) {
+          createLobby();
+        } else {
+          joinLobby();
+        }
       }
     });
   } else {
     debugLog('Registration screen not found');
   }
   
-  // Pre-fill lobby code if coming from a lobby link (reuse urlParams from above)
+  // If URL has ?lobby= parameter, switch to Join tab and pre-fill lobby code
   if (joinLobbyId) {
+    debugLog('URL has lobby parameter, switching to Join tab:', joinLobbyId);
+    
+    // Switch to Join tab
+    switchRegistrationTab('join');
+    
+    // Pre-fill lobby code
     const lobbyCodeInput = document.getElementById('lobbyCodeInput');
     if (lobbyCodeInput) {
       lobbyCodeInput.value = joinLobbyId.toUpperCase();
@@ -245,6 +276,66 @@ function setupAvatarScroll() {
   avatarGrid.style.cursor = 'grab';
 }
 
+/**
+ * Select avatar in a specific grid
+ */
+function selectAvatarInGrid(avatar, buttonElement, gridId) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  
+  // Update selected state only within this grid
+  grid.querySelectorAll('.avatar-option').forEach(btn => btn.classList.remove('selected'));
+  if (buttonElement) {
+    buttonElement.classList.add('selected');
+  }
+  
+  debugLog('Avatar selected in grid', gridId, ':', avatar.name);
+}
+
+/**
+ * Setup avatar scroll navigation for a specific grid
+ */
+function setupAvatarScrollForGrid(gridId, leftBtnId, rightBtnId) {
+  const grid = document.getElementById(gridId);
+  const leftBtn = document.getElementById(leftBtnId);
+  const rightBtn = document.getElementById(rightBtnId);
+  
+  if (!grid || !leftBtn || !rightBtn) return;
+  
+  // Scroll functionality
+  leftBtn.addEventListener('click', () => {
+    grid.scrollBy({ left: -200, behavior: 'smooth' });
+  });
+  
+  rightBtn.addEventListener('click', () => {
+    grid.scrollBy({ left: 200, behavior: 'smooth' });
+  });
+  
+  // Show/hide navigation buttons based on scroll position
+  const updateNavButtons = () => {
+    const scrollLeft = grid.scrollLeft;
+    const scrollWidth = grid.scrollWidth;
+    const clientWidth = grid.clientWidth;
+    
+    if (scrollLeft <= 0) {
+      leftBtn.classList.add('hidden');
+    } else {
+      leftBtn.classList.remove('hidden');
+    }
+    
+    if (scrollLeft + clientWidth >= scrollWidth - 1) {
+      rightBtn.classList.add('hidden');
+    } else {
+      rightBtn.classList.remove('hidden');
+    }
+  };
+  
+  grid.addEventListener('scroll', updateNavButtons);
+  window.addEventListener('resize', updateNavButtons);
+  updateNavButtons(); // Initial check
+}
+
+// Legacy functions for backward compatibility (if needed)
 function selectAvatar(avatar, buttonElement) {
   selectedAvatar = avatar;
   

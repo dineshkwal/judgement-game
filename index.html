@@ -17,6 +17,7 @@
 <script src="js/state.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/validation.js"></script>
+<script src="js/tabs.js"></script>
 <script src="js/register.js"></script>
 <script src="js/lobby.js"></script>
 <script src="js/ui.js"></script>
@@ -84,46 +85,89 @@
       </div>
     </div>
     
+    <!-- Tabbed Registration Interface -->
     <div class="register-form">
-      <div class="input-group">
-        <label for="playerName">Player Name</label>
-        <input 
-          type="text" 
-          id="playerName" 
-          placeholder="ENTER YOUR NAME" 
-          maxlength="20" 
-          autofocus
-          oninput="formatPlayerNameInput(this)">
-        <div class="input-error-message" id="playerNameError"></div>
+      <!-- Tab Buttons -->
+      <div class="registration-tabs">
+        <button class="tab-btn active" id="createTab" onclick="switchRegistrationTab('create')">
+          <span>Create Lobby</span>
+        </button>
+        <button class="tab-btn" id="joinTab" onclick="switchRegistrationTab('join')">
+          <span>Join Lobby</span>
+        </button>
       </div>
 
-      <div class="input-group">
-        <label for="lobbyCodeInput">Lobby Code <span style="color: #888; font-size: 0.9em;">(Optional)</span></label>
-        <input 
-          type="text" 
-          id="lobbyCodeInput" 
-          placeholder="ENTER LOBBY CODE TO JOIN" 
-          maxlength="20" 
-          style="text-transform: uppercase;"
-          oninput="formatLobbyCodeInput(this)">
-        <div class="input-error-message" id="lobbyCodeError"></div>
-      </div>
-
-      <div class="input-group">
-        <label for="avatarSelect">Choose Your Avatar</label>
-        <div class="avatar-grid-container">
-          <button class="avatar-grid-nav left hidden" id="avatarScrollLeft" type="button" tabindex="-1">‹</button>
-          <div class="avatar-grid" id="avatarGrid">
-            <!-- Avatars will be generated here -->
-          </div>
-          <button class="avatar-grid-nav right" id="avatarScrollRight" type="button" tabindex="-1">›</button>
+      <!-- Create Lobby Tab Content -->
+      <div class="tab-content active" id="createTabContent">
+        <div class="input-group">
+          <label for="playerNameCreate">Player Name</label>
+          <input 
+            type="text" 
+            id="playerNameCreate" 
+            placeholder="ENTER YOUR NAME" 
+            maxlength="20" 
+            autofocus
+            oninput="formatPlayerNameInput(this)">
+          <div class="input-error-message" id="playerNameCreateError"></div>
         </div>
+
+        <div class="input-group">
+          <label for="avatarSelectCreate">Choose Your Avatar</label>
+          <div class="avatar-grid-container">
+            <button class="avatar-grid-nav left hidden" id="avatarScrollLeftCreate" type="button" tabindex="-1">‹</button>
+            <div class="avatar-grid" id="avatarGridCreate">
+              <!-- Avatars will be generated here -->
+            </div>
+            <button class="avatar-grid-nav right" id="avatarScrollRightCreate" type="button" tabindex="-1">›</button>
+          </div>
+        </div>
+
+        <button class="primary-btn" onclick="createLobby()">
+          <span>Create New Lobby</span>
+        </button>
+        <p class="info-text">A unique lobby code will be generated</p>
       </div>
 
-      <button class="primary-btn" onclick="registerPlayer()">
-        <span>Start Playing</span>
-        <span class="btn-icon">→</span>
-      </button>
+      <!-- Join Lobby Tab Content -->
+      <div class="tab-content" id="joinTabContent">
+        <div class="input-group">
+          <label for="playerNameJoin">Player Name</label>
+          <input 
+            type="text" 
+            id="playerNameJoin" 
+            placeholder="ENTER YOUR NAME" 
+            maxlength="20"
+            oninput="formatPlayerNameInput(this)">
+          <div class="input-error-message" id="playerNameJoinError"></div>
+        </div>
+
+        <div class="input-group">
+          <label for="lobbyCodeInput">Lobby Code</label>
+          <input 
+            type="text" 
+            id="lobbyCodeInput" 
+            placeholder="ENTER 6-DIGIT CODE" 
+            maxlength="20" 
+            style="text-transform: uppercase;"
+            oninput="formatLobbyCodeInput(this)">
+          <div class="input-error-message" id="lobbyCodeError"></div>
+        </div>
+
+        <div class="input-group">
+          <label for="avatarSelectJoin">Choose Your Avatar</label>
+          <div class="avatar-grid-container">
+            <button class="avatar-grid-nav left hidden" id="avatarScrollLeftJoin" type="button" tabindex="-1">‹</button>
+            <div class="avatar-grid" id="avatarGridJoin">
+              <!-- Avatars will be generated here -->
+            </div>
+            <button class="avatar-grid-nav right" id="avatarScrollRightJoin" type="button" tabindex="-1">›</button>
+          </div>
+        </div>
+
+        <button class="primary-btn" onclick="joinLobby()">
+          <span>Join Lobby</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>
