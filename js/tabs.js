@@ -15,11 +15,22 @@ function switchRegistrationTab(tab) {
   const createContent = document.getElementById('createTabContent');
   const joinContent = document.getElementById('joinTabContent');
   
+  // Determine current active tab
+  const currentTab = createContent.classList.contains('active') ? 'create' : 'join';
+  
   if (tab === 'create') {
     createTabBtn.classList.add('active');
     joinTabBtn.classList.remove('active');
+    
+    // Remove previous content
+    joinContent.classList.remove('active', 'slide-left', 'slide-right');
+    
+    // Add new content with slide animation
+    createContent.classList.remove('slide-left', 'slide-right');
     createContent.classList.add('active');
-    joinContent.classList.remove('active');
+    if (currentTab === 'join') {
+      createContent.classList.add('slide-left');
+    }
     
     // Focus on name input in create tab
     setTimeout(() => {
@@ -32,8 +43,16 @@ function switchRegistrationTab(tab) {
   } else if (tab === 'join') {
     createTabBtn.classList.remove('active');
     joinTabBtn.classList.add('active');
-    createContent.classList.remove('active');
+    
+    // Remove previous content
+    createContent.classList.remove('active', 'slide-left', 'slide-right');
+    
+    // Add new content with slide animation
+    joinContent.classList.remove('slide-left', 'slide-right');
     joinContent.classList.add('active');
+    if (currentTab === 'create') {
+      joinContent.classList.add('slide-right');
+    }
     
     // Focus on name input in join tab
     setTimeout(() => {
