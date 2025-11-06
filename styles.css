@@ -344,7 +344,7 @@ button:active {
   font-weight: 600;
   cursor: pointer;
   position: relative;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
   font-family: 'Poppins', sans-serif;
   letter-spacing: 0.5px;
   z-index: 2;
@@ -370,7 +370,6 @@ button:active {
 .tab-btn.active {
   color: var(--primary);
   box-shadow: none;
-  /* margin-bottom: -5px; */
 }
 
 .tab-btn.active::before {
@@ -385,7 +384,7 @@ button:active {
 /* Tab Content */
 .tab-content {
   display: none;
-  animation: fadeInUp 0.4s ease;
+  opacity: 0;
   padding-top: 1.5rem;
 }
 
@@ -393,6 +392,48 @@ button:active {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  animation: fadeSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.tab-content.slide-left {
+  animation: fadeSlideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.tab-content.slide-right {
+  animation: fadeSlideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeSlideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeSlideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes fadeInUp {
