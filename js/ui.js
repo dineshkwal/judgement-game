@@ -167,7 +167,9 @@ function renderScoreboard(){
     const bid = storage.bids[p.id] !== undefined ? storage.bids[p.id] : '–';
     const won = storage.tricksWon[p.id] || 0;
     const isActive = p.id === storage.currentBidder ? ' class="active-turn"' : '';
-    html += `<tr${isActive}><td>${p.name}</td><td>${bid}</td><td>${won}</td></tr>`;
+    const isDealer = p.id === storage.dealerId;
+    const dealerBadge = isDealer ? ' <span style="background: var(--accent); color: white; padding: 0.1rem 0.4rem; border-radius: 0.2rem; font-size: 0.65rem; font-weight: 600; margin-left: 0.3rem;">DEALER</span>' : '';
+    html += `<tr${isActive}><td>${p.name}${dealerBadge}</td><td>${bid}</td><td>${won}</td></tr>`;
   });
   
   html += '</tbody></table>';
