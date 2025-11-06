@@ -27,9 +27,25 @@ function listenForPlayers(){
       const newUrl = `${window.location.origin}${window.location.pathname}?lobby=${rematchData.newLobbyId}`;
       window.history.pushState({lobby: rematchData.newLobbyId}, '', newUrl);
       
-      // Reset game state
+      // Reset ALL game state for fresh start
       storage.gameRef = null;
       storage.gameEnded = false;
+      storage.round = 1;
+      storage.cardsPerRound = 0;
+      storage.deck = [];
+      storage.hands = {};
+      storage.trick = [];
+      storage.leadSuit = null;
+      storage.trump = null;
+      storage.bids = {};
+      storage.tricksWon = {};
+      storage.scores = {};
+      storage.roundHistory = [];
+      storage.dealerId = null;
+      storage.currentBidder = null;
+      storage.currentPlayer = null;
+      storage.trickResolving = false;
+      storage.cardPlaying = false;
       
       // Close scorecard overlay
       const overlay = document.getElementById('scorecardOverlay');
