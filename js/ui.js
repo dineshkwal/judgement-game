@@ -100,10 +100,7 @@ function updateUI(){
 }
 
 function updateRoundInfo(){
-  const round = storage.round || 1;
-  const cardsPerRound = storage.cardsPerRound || 0;
   const trump = storage.trump || '♠';
-  const cardsThisRound = cardsPerRound - round + 1;
   const roundInfoEl = document.getElementById('roundInfo');
   
   // Map suit symbols to names
@@ -119,10 +116,10 @@ function updateRoundInfo(){
   // Determine suit color class: black for spades/clubs, red for hearts/diamonds
   const suitClass = (trump === '♠' || trump === '♣') ? 'suit-black' : 'suit-red';
   
-  debugLog('DEBUG updateRoundInfo:', {round, cardsPerRound, trump, cardsThisRound});
+  debugLog('DEBUG updateRoundInfo:', {trump, trumpName});
   
   if(roundInfoEl) {
-    roundInfoEl.innerHTML = `Round ${round} <span class="${suitClass}" style="font-size: 1.8em; margin: 0 0.5rem;">${trump}</span> ${cardsThisRound > 0 ? cardsThisRound : 0} Cards <span class="${suitClass}" style="font-size: 1.8em; margin: 0 0.5rem;">${trump}</span> ${trumpName}`;
+    roundInfoEl.innerHTML = `Trump <span class="${suitClass}" style="font-size: 1.8em; margin: 0 0.5rem;">${trump}</span> ${trumpName}`;
     debugLog('DEBUG roundInfo updated:', roundInfoEl.textContent);
   } else {
     debugLog('DEBUG roundInfo element not found!');
@@ -159,9 +156,65 @@ function hideCenterMessage(){
   centerMsg.classList.remove('show');
 }
 
+/**
+ * Show a bid popup on a player's avatar
+ * @param {string} playerId - The player's ID
+ * @param {number} bidValue - The bid value
+ */
+function showBidPopup(playerId, bidValue) {
+  console.log('showBidPopup called:', playerId, bidValue);
+  
+  const seat = document.querySelector(`.seat[data-player-id="${playerId}"]`);
+  console.log('Found seat:', seat);
+  
+  if (!seat) {
+    console.warn('Seat not found for player:', playerId);
+    return;
+  }
+  
+  // Remove any existing bid popup on this seat
+  const existingPopup = seat.querySelector('.bid-popup');
+  if (existingPopup) {
+    console.log('Removing existing popup');
+    existingPopup.remove();
+  }
+  
+  // Create new bid popup
+  const popup = document.createElement('div');
+  popup.className = 'bid-popup';
+  popup.textContent = `I bid ${bidValue}`;
+  
+  console.log('Created popup element:', popup);
+  
+  // Add to seat
+  seat.appendChild(popup);
+  console.log('Popup appended to seat');
+  
+  // Remove popup after animation completes (2.5 seconds)
+  setTimeout(() => {
+    popup.remove();
+    console.log('Popup removed after timeout');
+  }, 2500);
+}
+
 function renderScoreboard(){
   const sb = document.getElementById('scoreboard');
-  let html = '<table><thead><tr><th>Player</th><th>Hands Bid</th><th>Hands Made</th></tr></thead><tbody>';
+  
+  // Get round and card information
+  const round = storage.round || 1;
+  const cardsPerRound = storage.cardsPerRound || 0;
+  const trump = storage.trump || '♠';
+  const cardsThisRound = cardsPerRound - round + 1;
+  
+  // Determine suit color class
+  const suitClass = (trump === '♠' || trump === '♣') ? 'suit-black' : 'suit-red';
+  
+  // Add round info header above the table
+  let html = `<div style="text-align: center; margin-bottom: 1rem; font-size: 1.1rem; font-weight: 600;">
+    Round ${round} <span class="${suitClass}" style="font-size: 1.3em; margin: 0 0.3rem;">${trump}</span> ${cardsThisRound > 0 ? cardsThisRound : 0} Cards
+  </div>`;
+  
+  html += '<table><thead><tr><th>Player</th><th>Hands Bid</th><th>Hands Made</th></tr></thead><tbody>';
   
   storage.players.forEach(p => {
     const bid = storage.bids[p.id] !== undefined ? storage.bids[p.id] : '–';

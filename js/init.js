@@ -393,11 +393,23 @@ function checkAndShowResumeBanner() {
     debugLog('Firebase snapshot exists:', snapshot.exists());
     
     if (snapshot.exists()) {
-      // Player still exists in lobby - check if game is over
-      db.ref(`lobbies/${savedLobbyId}/game/status`).once('value', (gameStatusSnapshot) => {
-        const gameStatus = gameStatusSnapshot.val();
+      // Player still exists in lobby - check if game is over and if there are active players
+      db.ref(`lobbies/${savedLobbyId}`).once('value', (lobbySnapshot) => {
+        const lobbyData = lobbySnapshot.val();
+        
+        if (!lobbyData) {
+          debugLog('Lobby data not found, clearing localStorage');
+          localStorage.removeItem('lastLobbyId');
+          localStorage.removeItem('lastPlayerId');
+          localStorage.removeItem('myPlayerInfo');
+          return;
+        }
+        
+        const gameStatus = lobbyData.game?.status;
+        const players = lobbyData.players || {};
         
         debugLog('Game status:', gameStatus);
+        debugLog('Players in lobby:', Object.keys(players).length);
         
         // Don't show resume banner if game has ended
         if (gameStatus === 'ended') {
@@ -409,13 +421,23 @@ function checkAndShowResumeBanner() {
           return;
         }
         
-        // Game is still active or hasn't started - show resume banner
+        // Check if there are any active (online) players in the lobby
+        const activePlayers = Object.values(players).filter(p => p.status === 'online');
+        debugLog('Active players count:', activePlayers.length);
+        
+        if (activePlayers.length === 0) {
+          debugLog('No active players in lobby, not showing resume banner');
+          // Don't clear localStorage yet - player might reconnect
+          return;
+        }
+        
+        // Game is still active and has active players - show resume banner
         const playerInfo = JSON.parse(savedPlayerInfo);
         const resumeBanner = document.getElementById('resumeBanner');
         const resumeLobbyCode = document.getElementById('resumeLobbyCode');
         const resumePlayerName = document.getElementById('resumePlayerName');
         
-        debugLog('Game is still active, showing resume banner for player:', playerInfo.name);
+        debugLog('Game is still active with active players, showing resume banner for player:', playerInfo.name);
         
         if (resumeBanner && resumeLobbyCode && resumePlayerName) {
           resumePlayerName.textContent = playerInfo.name;
@@ -430,7 +452,7 @@ function checkAndShowResumeBanner() {
           });
         }
       }).catch(err => {
-        console.error('Error checking game status:', err);
+        console.error('Error checking lobby data:', err);
       });
     } else {
       // Player was removed or lobby doesn't exist - clear localStorage

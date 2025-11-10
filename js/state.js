@@ -1,7 +1,7 @@
 /* ---------- GLOBAL STATE ---------- */
 
 // Debug flag - set to true for development, false for production
-const DEBUG = false;
+const DEBUG = true;
 
 // Debug logging helper - only logs when DEBUG is true
 function debugLog(...args) {
