@@ -176,10 +176,11 @@ function renderFinalScorecard(sortedPlayers) {
   html += '</table>';
   html += '</div>';
   
-  // Game summary button
-  html += '<div style="text-align:center; margin-top:2rem;">';
-  html += '<button onclick="renderScorecard(); window.scoreboardFromGameOver = true;" style="padding:1rem 2rem; font-size:1.2rem; background:var(--accent); color:white; border:none; border-radius:10px; cursor:pointer; margin-right:1rem;">View Full Scoreboard</button>';
-  html += '<button onclick="playAgain()" style="padding:1rem 2rem; font-size:1.2rem; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer; margin-right:1rem;">🎮 Play Again</button>';
+  // Action buttons
+  html += '<div style="text-align:center; margin-top:2rem; display:flex; flex-wrap:wrap; gap:1rem; justify-content:center;">';
+  html += '<button onclick="shareGameResults()" style="padding:1rem 2rem; font-size:1.2rem; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 15px rgba(102,126,234,0.4); transition:all 0.3s ease;" onmouseover="this.style.transform=\'translateY(-2px)\'; this.style.boxShadow=\'0 6px 20px rgba(102,126,234,0.6)\';" onmouseout="this.style.transform=\'translateY(0)\'; this.style.boxShadow=\'0 4px 15px rgba(102,126,234,0.4)\';">📤 Share Results</button>';
+  html += '<button onclick="renderScorecard(); window.scoreboardFromGameOver = true;" style="padding:1rem 2rem; font-size:1.2rem; background:var(--accent); color:white; border:none; border-radius:10px; cursor:pointer;">View Full Scoreboard</button>';
+  html += '<button onclick="playAgain()" style="padding:1rem 2rem; font-size:1.2rem; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer;">🎮 Play Again</button>';
   html += '<button onclick="window.location.href = window.location.origin + window.location.pathname" style="padding:1rem 2rem; font-size:1.2rem; background:#666; color:white; border:none; border-radius:10px; cursor:pointer;">New Game</button>';
   html += '</div>';
   
@@ -232,3 +233,169 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+/* ---------- SHARE GAME RESULTS ---------- */
+function shareGameResults() {
+  // Get sorted players by score
+  const sortedPlayers = [...storage.players].sort((a, b) => {
+    const scoreA = storage.scores[a.id] || 0;
+    const scoreB = storage.scores[b.id] || 0;
+    return scoreB - scoreA;
+  });
+  
+  const winner = sortedPlayers[0];
+  const winnerScore = storage.scores[winner.id] || 0;
+  
+  // Create shareable text
+  let shareText = '🎮 Game of Judgement - Results 🎮\n\n';
+  shareText += '🏆 WINNER: ' + winner.name.toUpperCase() + ' 🏆\n';
+  shareText += `Score: ${winnerScore} points\n\n`;
+  shareText += '📊 Final Rankings:\n';
+  shareText += '─────────────────\n';
+  
+  sortedPlayers.forEach((player, index) => {
+    const score = storage.scores[player.id] || 0;
+    let medal = '';
+    if (index === 0) medal = '🥇';
+    else if (index === 1) medal = '🥈';
+    else if (index === 2) medal = '🥉';
+    else medal = `${index + 1}.`;
+    
+    shareText += `${medal} ${player.name.padEnd(20)} ${score} pts\n`;
+  });
+  
+  shareText += '─────────────────\n';
+  shareText += `\nLobby: ${storage.lobbyId}\n`;
+  shareText += `Total Rounds: ${storage.round}\n\n`;
+  
+  const gameUrl = window.location.origin + window.location.pathname;
+  shareText += `🎴 Play now: ${gameUrl}\n`;
+  
+  // Try to use native share API first (mobile-friendly)
+  if (navigator.share) {
+    navigator.share({
+      title: 'Game of Judgement - Results',
+      text: shareText
+    }).then(() => {
+      debugLog('Share successful');
+      showShareFeedback('Shared successfully! 🎉');
+    }).catch((error) => {
+      debugLog('Share failed:', error);
+      // Fallback to clipboard
+      copyToClipboard(shareText);
+    });
+  } else {
+    // Fallback to clipboard copy
+    copyToClipboard(shareText);
+  }
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showShareFeedback('Results copied to clipboard! 📋');
+    }).catch(err => {
+      console.error('Failed to copy:', err);
+      // Final fallback - show text in a textarea
+      showTextFallback(text);
+    });
+  } else {
+    // Older browsers fallback
+    showTextFallback(text);
+  }
+}
+
+function showTextFallback(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.top = '50%';
+  textarea.style.left = '50%';
+  textarea.style.transform = 'translate(-50%, -50%)';
+  textarea.style.width = '80%';
+  textarea.style.maxWidth = '600px';
+  textarea.style.height = '400px';
+  textarea.style.padding = '1rem';
+  textarea.style.fontSize = '0.9rem';
+  textarea.style.background = '#1a1a1a';
+  textarea.style.color = '#fff';
+  textarea.style.border = '2px solid var(--primary)';
+  textarea.style.borderRadius = '10px';
+  textarea.style.zIndex = '10001';
+  textarea.readOnly = true;
+  
+  const overlay = document.createElement('div');
+  overlay.style.position = 'fixed';
+  overlay.style.top = '0';
+  overlay.style.left = '0';
+  overlay.style.width = '100%';
+  overlay.style.height = '100%';
+  overlay.style.background = 'rgba(0,0,0,0.8)';
+  overlay.style.zIndex = '10000';
+  
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = 'Close';
+  closeBtn.style.position = 'fixed';
+  closeBtn.style.top = '50%';
+  closeBtn.style.left = '50%';
+  closeBtn.style.transform = 'translate(-50%, calc(200px + 2rem))';
+  closeBtn.style.padding = '0.8rem 2rem';
+  closeBtn.style.fontSize = '1rem';
+  closeBtn.style.background = 'var(--primary)';
+  closeBtn.style.color = '#fff';
+  closeBtn.style.border = 'none';
+  closeBtn.style.borderRadius = '8px';
+  closeBtn.style.cursor = 'pointer';
+  closeBtn.style.zIndex = '10001';
+  
+  document.body.appendChild(overlay);
+  document.body.appendChild(textarea);
+  document.body.appendChild(closeBtn);
+  
+  textarea.select();
+  
+  const cleanup = () => {
+    document.body.removeChild(overlay);
+    document.body.removeChild(textarea);
+    document.body.removeChild(closeBtn);
+  };
+  
+  closeBtn.onclick = cleanup;
+  overlay.onclick = cleanup;
+  
+  // Try to copy to clipboard
+  try {
+    document.execCommand('copy');
+    showShareFeedback('Results copied! You can paste it anywhere 📋');
+  } catch (err) {
+    console.error('Copy failed:', err);
+  }
+}
+
+function showShareFeedback(message) {
+  const feedback = document.createElement('div');
+  feedback.textContent = message;
+  feedback.style.position = 'fixed';
+  feedback.style.top = '20px';
+  feedback.style.left = '50%';
+  feedback.style.transform = 'translateX(-50%)';
+  feedback.style.padding = '1rem 2rem';
+  feedback.style.background = 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)';
+  feedback.style.color = '#fff';
+  feedback.style.borderRadius = '10px';
+  feedback.style.fontSize = '1.1rem';
+  feedback.style.fontWeight = '600';
+  feedback.style.boxShadow = '0 4px 20px rgba(76, 175, 80, 0.5)';
+  feedback.style.zIndex = '10002';
+  feedback.style.animation = 'slideDown 0.4s ease-out';
+  
+  document.body.appendChild(feedback);
+  
+  setTimeout(() => {
+    feedback.style.opacity = '0';
+    feedback.style.transition = 'opacity 0.3s ease-out';
+    setTimeout(() => {
+      document.body.removeChild(feedback);
+    }, 300);
+  }, 3000);
+}
