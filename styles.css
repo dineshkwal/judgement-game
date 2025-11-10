@@ -1368,6 +1368,44 @@ button:active {
   transition: transform 0.3s ease;
 }
 
+/* Bid popup on player avatar */
+.bid-popup {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--primary), #45a049);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  pointer-events: none;
+  animation: bidPopupShow 2.5s ease-out forwards;
+}
+
+@keyframes bidPopupShow {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px) scale(0.8);
+  }
+  15% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  85% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px) scale(0.9);
+  }
+}
+
 @keyframes glowPulse {
   0%, 100% {
     box-shadow: 

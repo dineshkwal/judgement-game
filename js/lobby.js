@@ -82,6 +82,7 @@ function listenForPlayers(){
       const prevCurrentPlayer = storage.currentPlayer;
       const prevTrickLength = storage.trick?.length || 0;
       const prevGameEnded = storage.gameEnded; // Preserve gameEnded flag
+      const prevBids = {...storage.bids}; // Track previous bids for popup detection
       
       // Clear these before Object.assign in case Firebase doesn't send them (empty objects become null)
       if(gameData.bids === null || gameData.bids === undefined) {
@@ -98,6 +99,19 @@ function listenForPlayers(){
       
       // Restore local-only flags that shouldn't be overwritten
       storage.gameEnded = prevGameEnded;
+      
+      // Detect new bids and show popup
+      console.log('Checking for new bids. Previous:', prevBids, 'Current:', gameData.bids);
+      if (gameData.bids && typeof gameData.bids === 'object') {
+        for (let playerId in gameData.bids) {
+          console.log(`Checking player ${playerId}: prev=${prevBids[playerId]}, current=${gameData.bids[playerId]}`);
+          if (prevBids[playerId] === undefined && gameData.bids[playerId] !== undefined) {
+            // New bid detected! Show popup
+            console.log('New bid detected! Calling showBidPopup for player:', playerId, 'bid:', gameData.bids[playerId]);
+            showBidPopup(playerId, gameData.bids[playerId]);
+          }
+        }
+      }
       
       // Firebase removes empty objects, so ensure these are always objects (not null)
       if(!storage.bids || typeof storage.bids !== 'object' || Array.isArray(storage.bids)) {

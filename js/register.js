@@ -1,5 +1,8 @@
 /* ---------- REGISTER - TABBED INTERFACE ---------- */
 
+// Flag to prevent double submissions
+let isRegistering = false;
+
 // Helper function to update browser URL with lobby code
 function updateBrowserURL(lobbyId) {
   try {
@@ -16,6 +19,13 @@ function updateBrowserURL(lobbyId) {
  * Create a new lobby (from Create tab)
  */
 function createLobby() {
+  // Prevent double submission
+  if (isRegistering) {
+    debugLog('Registration already in progress, ignoring duplicate request');
+    return;
+  }
+  isRegistering = true;
+  
   const nameInput = document.getElementById('playerNameCreate').value;
   
   // Clear previous errors
@@ -25,13 +35,17 @@ function createLobby() {
   const nameValidation = validatePlayerName(nameInput);
   if (!nameValidation.valid) {
     showInputError('playerNameCreate', nameValidation.error);
+    isRegistering = false;
     return;
   }
   const name = sanitizeInput(nameInput.trim());
   
   // Get avatar from create tab grid
   const avatar = getSelectedAvatarFromGrid('avatarGridCreate');
-  if(!avatar) return alert('Please select an avatar');
+  if(!avatar) {
+    isRegistering = false;
+    return alert('Please select an avatar');
+  }
   
   debugLog('Creating new lobby for player:', name);
   
@@ -59,13 +73,26 @@ function createLobby() {
     listenForPlayers();
     updateLobbyInfo();
     setupPresence(); // Start Firebase presence system
-  }).catch(err => alert('Error creating lobby: ' + err.message));
+    
+    // Reset flag after successful registration
+    isRegistering = false;
+  }).catch(err => {
+    isRegistering = false;
+    alert('Error creating lobby: ' + err.message);
+  });
 }
 
 /**
  * Join an existing lobby (from Join tab)
  */
 function joinLobby() {
+  // Prevent double submission
+  if (isRegistering) {
+    debugLog('Registration already in progress, ignoring duplicate request');
+    return;
+  }
+  isRegistering = true;
+  
   const nameInput = document.getElementById('playerNameJoin').value;
   const lobbyCodeInput = document.getElementById('lobbyCodeInput').value;
   
@@ -77,6 +104,7 @@ function joinLobby() {
   const nameValidation = validatePlayerName(nameInput);
   if (!nameValidation.valid) {
     showInputError('playerNameJoin', nameValidation.error);
+    isRegistering = false;
     return;
   }
   const name = sanitizeInput(nameInput.trim());
@@ -85,11 +113,13 @@ function joinLobby() {
   const codeValidation = validateLobbyCode(lobbyCodeInput);
   if (!codeValidation.valid) {
     showInputError('lobbyCodeInput', codeValidation.error);
+    isRegistering = false;
     return;
   }
   
   if (!lobbyCodeInput.trim()) {
     showInputError('lobbyCodeInput', 'Lobby code is required');
+    isRegistering = false;
     return;
   }
   
@@ -97,7 +127,10 @@ function joinLobby() {
   
   // Get avatar from join tab grid
   const avatar = getSelectedAvatarFromGrid('avatarGridJoin');
-  if(!avatar) return alert('Please select an avatar');
+  if(!avatar) {
+    isRegistering = false;
+    return alert('Please select an avatar');
+  }
   
   debugLog('Attempting to join lobby:', normalizedLobbyId, 'as player:', name);
   
@@ -118,6 +151,7 @@ function joinLobby() {
     } else {
       // Lobby doesn't exist
       showInputError('lobbyCodeInput', 'Lobby not found. Please check the code.');
+      isRegistering = false;
       return;
     }
     
@@ -131,6 +165,7 @@ function joinLobby() {
       joinAsNewPlayer(name, avatar, normalizedLobbyId);
     }
   }).catch(err => {
+    isRegistering = false;
     alert('Error checking lobby: ' + err.message);
   });
 }
@@ -198,8 +233,14 @@ function rejoinAsExistingPlayer(existingPlayerId, existingPlayer, name, avatar, 
       listenForPlayers();
       updateLobbyInfo();
       setupPresence(); // Start Firebase presence system
+      
+      // Reset flag after successful rejoin
+      isRegistering = false;
     });
-  }).catch(err => alert('Error rejoining lobby: ' + err.message));
+  }).catch(err => {
+    isRegistering = false;
+    alert('Error rejoining lobby: ' + err.message);
+  });
 }
 
 // Helper function to handle joining as a new player
@@ -210,6 +251,7 @@ function joinAsNewPlayer(name, avatar, normalizedLobbyId) {
   db.ref(`lobbies/${normalizedLobbyId}/game`).once('value', (gameSnapshot) => {
     if(gameSnapshot.exists()) {
       // Game already started - don't allow new players
+      isRegistering = false;
       alert('This game has already started. You cannot join a game in progress.');
       return;
     }
@@ -238,8 +280,17 @@ function joinAsNewPlayer(name, avatar, normalizedLobbyId) {
       listenForPlayers();
       updateLobbyInfo();
       setupPresence(); // Start Firebase presence system
-    }).catch(err => alert('Error joining lobby: ' + err.message));
-  }).catch(err => alert('Error checking game status: ' + err.message));
+      
+      // Reset flag after successful join
+      isRegistering = false;
+    }).catch(err => {
+      isRegistering = false;
+      alert('Error joining lobby: ' + err.message);
+    });
+  }).catch(err => {
+    isRegistering = false;
+    alert('Error checking game status: ' + err.message);
+  });
 }
 
 /**
