@@ -197,6 +197,10 @@ function rejoinAsExistingPlayer(existingPlayerId, existingPlayer, name, avatar, 
   document.getElementById('userInfoAvatar').src = avatar;
   document.getElementById('userInfo').classList.add('active');
   
+  // Update top bar label
+  const myNameLabel = document.getElementById('myNameLabel');
+  if (myNameLabel) myNameLabel.textContent = name;
+  
   // Update player in Firebase
   db.ref(`lobbies/${normalizedLobbyId}/players/${existingPlayerId}`).update(updatedPlayer).then(() => {
     // Update browser URL
@@ -271,6 +275,10 @@ function joinAsNewPlayer(name, avatar, normalizedLobbyId) {
     document.getElementById('userInfoName').textContent = name;
     document.getElementById('userInfoAvatar').src = avatar;
     document.getElementById('userInfo').classList.add('active');
+    
+    // Update top bar label
+    const myNameLabel = document.getElementById('myNameLabel');
+    if (myNameLabel) myNameLabel.textContent = name;
     
     db.ref(`lobbies/${normalizedLobbyId}/players`).child(id).set(player).then(()=>{
       // Update browser URL

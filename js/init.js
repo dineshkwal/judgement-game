@@ -114,6 +114,10 @@ window.addEventListener('DOMContentLoaded', () => {
           document.getElementById('userInfoAvatar').src = playerInfo.avatar;
           document.getElementById('userInfo').classList.add('active');
           
+          // Update top bar label
+          const myNameLabel = document.getElementById('myNameLabel');
+          if (myNameLabel) myNameLabel.textContent = playerInfo.name;
+          
           // Check if game has started
           db.ref(`lobbies/${normalizedLobbyId}/game`).once('value', (gameSnapshot) => {
             if(gameSnapshot.exists()) {

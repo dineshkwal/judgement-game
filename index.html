@@ -212,16 +212,28 @@
 <div id="game" class="screen">
   <!-- Top Bar -->
   <div id="gameTopBar">
-    <button id="scorecardBtn" onclick="toggleScorecard()">
-      <img src="assets/score-icon.svg" alt="Score" class="scorecard-icon">
-      <span class="scorecard-label">Scoreboard</span>
-    </button>
+    <div class="top-bar-item">
+      <button id="scorecardBtn" onclick="toggleScorecard()">
+        <img src="assets/score-icon.svg" alt="Score" class="scorecard-icon">
+        <span class="scorecard-label">Scoreboard</span>
+      </button>
+      <div class="item-label-below">
+        <span class="label-key">Score</span>
+        <span class="label-value" id="myScoreLabel">0</span>
+      </div>
+    </div>
     
     <h1 id="roundInfo"></h1>
     
-    <div id="userInfo" onclick="toggleUserMenu()">
-      <img id="userInfoAvatar" src="" alt="avatar">
-      <span class="userName" id="userInfoName"></span>
+    <div class="top-bar-item">
+      <div id="userInfo" onclick="toggleUserMenu()">
+        <img id="userInfoAvatar" src="" alt="avatar">
+        <span class="userName" id="userInfoName"></span>
+      </div>
+      <div class="item-label-below">
+        <span class="label-key">You</span>
+        <span class="label-value" id="myNameLabel"></span>
+      </div>
     </div>
   </div>
   
