@@ -9,6 +9,9 @@ function updateUI(){
   // Update round info
   updateRoundInfo();
   
+  // Update top bar labels
+  updateTopBarLabels();
+  
   // Show player name
   const myPlayer = storage.players.find(p => p.id === storage.myId);
   if(myPlayer){
@@ -233,6 +236,9 @@ function renderScoreboard(){
   if (scorecardBtn) {
     scorecardBtn.style.display = 'flex';
   }
+  
+  // Update top bar score label
+  updateTopBarLabels();
 }
 
 function renderTable(){
@@ -485,4 +491,21 @@ function getSuitClass(suit){
   if(suit === '♦') return 'diamonds';
   if(suit === '♣') return 'clubs';
   return '';
+}
+
+/* ---------- TOP BAR LABELS ---------- */
+function updateTopBarLabels() {
+  // Update player name label
+  const myNameLabel = document.getElementById('myNameLabel');
+  const myPlayer = storage.players?.find(p => p.id === storage.myId);
+  if (myNameLabel && myPlayer) {
+    myNameLabel.textContent = myPlayer.name;
+  }
+  
+  // Update score label
+  const myScoreLabel = document.getElementById('myScoreLabel');
+  if (myScoreLabel && storage.scores && storage.myId) {
+    const myScore = storage.scores[storage.myId] || 0;
+    myScoreLabel.textContent = myScore.toString();
+  }
 }

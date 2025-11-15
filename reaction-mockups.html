@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Reaction Mockups - Game of Judgement</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .mockup-selector {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .mockup-selector h1 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .mockup-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .mockup-btn {
+            padding: 12px 24px;
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .mockup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .mockup-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: white;
+        }
+
+        .mockup-container {
+            display: none;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .mockup-container.active {
+            display: block;
+        }
+
+        .mockup-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .mockup-header h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .mockup-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        /* OPTION 1: Gameplay Floating Button */
+        .gameplay-mockup {
+            position: relative;
+            height: 600px;
+            background: #f8f9fa;
+        }
+
+        .game-simulation {
+            padding: 20px;
+        }
+
+        .round-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .cards-area {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 40px 0;
+        }
+
+        .card {
+            width: 80px;
+            height: 120px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .reaction-float-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .reaction-float-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .reaction-float-btn:active {
+            transform: scale(0.95);
+        }
+
+        .emoji-picker-popup {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 101;
+        }
+
+        .emoji-picker-popup.show {
+            display: block;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .emoji-option {
+            width: 50px;
+            height: 50px;
+            border: none;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .emoji-option:hover {
+            background: #e9ecef;
+            transform: scale(1.1);
+        }
+
+        .flying-emoji {
+            position: fixed;
+            font-size: 48px;
+            pointer-events: none;
+            z-index: 1000;
+            animation: flyUp 2s ease-out forwards;
+        }
+
+        @keyframes flyUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-100px) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) scale(0.8);
+            }
+        }
+
+        /* OPTION 2: Scorecard Reactions */
+        .scorecard-mockup {
+            padding: 20px;
+        }
+
+        .scorecard-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .scorecard-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .scorecard-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .player-row {
+            transition: background 0.2s ease;
+        }
+
+        .player-row:hover {
+            background: #f8f9fa;
+        }
+
+        .react-btn {
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s ease;
+        }
+
+        .react-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .reactions-display {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .reaction-badge {
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* OPTION 3: Trick Winner Moment */
+        .trick-winner-mockup {
+            padding: 40px 20px;
+            text-align: center;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .winner-message {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .winner-message h3 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .trick-cards {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .reaction-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .reaction-btn-large {
+            width: 60px;
+            height: 60px;
+            border: none;
+            background: #f8f9fa;
+            border-radius: 12px;
+            font-size: 32px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .reaction-btn-large:hover {
+            background: #e9ecef;
+            transform: scale(1.1);
+        }
+
+        .reaction-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .live-reactions {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #666;
+        }
+
+        /* OPTION 4: Chat-Style Bar */
+        .chat-style-mockup {
+            position: relative;
+            height: 600px;
+            background: #f8f9fa;
+        }
+
+        .chat-game-area {
+            padding: 20px;
+            height: calc(100% - 80px);
+        }
+
+        .chat-reaction-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 16px;
+            box-shadow: 0 -2px 16px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-emoji-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .chat-emoji-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .chat-emoji-picker {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.2);
+            position: absolute;
+            bottom: 80px;
+            left: 16px;
+            right: 16px;
+        }
+
+        .chat-emoji-picker.show {
+            display: block;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reaction-notification {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            display: none;
+            animation: slideInRight 0.3s ease;
+        }
+
+        .reaction-notification.show {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            margin: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        @media (max-width: 600px) {
+            .mockup-buttons {
+                flex-direction: column;
+            }
+
+            .mockup-btn {
+                width: 100%;
+            }
+
+            .reaction-float-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 28px;
+            }
+
+            .emoji-picker-popup {
+                bottom: 80px;
+                right: 20px;
+                left: 20px;
+            }
+
+            .emoji-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mockup-selector">
+        <h1>🎮 Emoji Reaction Mockups</h1>
+        <div class="mockup-buttons">
+            <button class="mockup-btn active" onclick="showMockup(1)">Option 1: Gameplay Float</button>
+            <button class="mockup-btn" onclick="showMockup(2)">Option 2: Scorecard</button>
+            <button class="mockup-btn" onclick="showMockup(3)">Option 3: Trick Winner</button>
+            <button class="mockup-btn" onclick="showMockup(4)">Option 4: Chat Bar</button>
+        </div>
+    </div>
+
+    <!-- OPTION 1: Gameplay Floating Button -->
+    <div id="mockup1" class="mockup-container active">
+        <div class="mockup-header">
+            <h2>Option 1: Floating Button During Gameplay</h2>
+            <p>React anytime when it's not your turn • Bottom-right corner</p>
+        </div>
+        <div class="info-box">
+            <strong>How it works:</strong> Tap the emoji button → Pick reaction → Emoji flies up. Available when not your turn. Rate limit: 1 reaction per trick.
+        </div>
+        <div class="gameplay-mockup">
+            <div class="game-simulation">
+                <div class="round-info">
+                    <strong>Round 3 of 10</strong> • Trump: ♠️ Spades • Waiting for Player 2...
+                </div>
+                <div class="cards-area">
+                    <div class="card">🃏</div>
+                    <div class="card">🃏</div>
+                    <div class="card">🃏</div>
+                </div>
+            </div>
+            <button class="reaction-float-btn" onclick="toggleEmojiPicker(1)">😊</button>
+            <div id="emojiPicker1" class="emoji-picker-popup">
+                <div class="emoji-grid">
+                    <button class="emoji-option" onclick="sendReaction('😂', 1)">😂</button>
+                    <button class="emoji-option" onclick="sendReaction('🔥', 1)">🔥</button>
+                    <button class="emoji-option" onclick="sendReaction('👏', 1)">👏</button>
+                    <button class="emoji-option" onclick="sendReaction('😱', 1)">😱</button>
+                    <button class="emoji-option" onclick="sendReaction('🎉', 1)">🎉</button>
+                    <button class="emoji-option" onclick="sendReaction('💯', 1)">💯</button>
+                    <button class="emoji-option" onclick="sendReaction('👀', 1)">👀</button>
+                    <button class="emoji-option" onclick="sendReaction('🤔', 1)">🤔</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OPTION 2: Scorecard Reactions -->
+    <div id="mockup2" class="mockup-container">
+        <div class="mockup-header">
+            <h2>Option 2: React on Scorecard</h2>
+            <p>Post-round celebration • React to each player's performance</p>
+        </div>
+        <div class="info-box">
+            <strong>How it works:</strong> After each round, react to any player's score. Reactions stack below their name. Great for celebrating wins or commiserating losses.
+        </div>
+        <div class="scorecard-mockup">
+            <table class="scorecard-table">
+                <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Bid</th>
+                        <th>Won</th>
+                        <th>Score</th>
+                        <th>React</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="player-row">
+                        <td>
+                            <strong>Alice</strong>
+                            <div class="reactions-display" id="reactions-alice"></div>
+                        </td>
+                        <td>3</td>
+                        <td>3 ✅</td>
+                        <td><strong>+13</strong></td>
+                        <td>
+                            <button class="react-btn" onclick="toggleScoreReact('alice')">😊</button>
+                        </td>
+                    </tr>
+                    <tr class="player-row">
+                        <td>
+                            <strong>Bob</strong>
+                            <div class="reactions-display" id="reactions-bob"></div>
+                        </td>
+                        <td>2</td>
+                        <td>1 ❌</td>
+                        <td><strong>-5</strong></td>
+                        <td>
+                            <button class="react-btn" onclick="toggleScoreReact('bob')">😊</button>
+                        </td>
+                    </tr>
+                    <tr class="player-row">
+                        <td>
+                            <strong>Charlie</strong>
+                            <div class="reactions-display" id="reactions-charlie"></div>
+                        </td>
+                        <td>1</td>
+                        <td>1 ✅</td>
+                        <td><strong>+11</strong></td>
+                        <td>
+                            <button class="react-btn" onclick="toggleScoreReact('charlie')">😊</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="scoreReactPicker" class="emoji-picker-popup" style="position: absolute; bottom: auto; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                <div class="emoji-grid">
+                    <button class="emoji-option" onclick="addScoreReaction('😂')">😂</button>
+                    <button class="emoji-option" onclick="addScoreReaction('🔥')">🔥</button>
+                    <button class="emoji-option" onclick="addScoreReaction('👏')">👏</button>
+                    <button class="emoji-option" onclick="addScoreReaction('😱')">😱</button>
+                    <button class="emoji-option" onclick="addScoreReaction('🎉')">🎉</button>
+                    <button class="emoji-option" onclick="addScoreReaction('💯')">💯</button>
+                    <button class="emoji-option" onclick="addScoreReaction('😭')">😭</button>
+                    <button class="emoji-option" onclick="addScoreReaction('🤝')">🤝</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OPTION 3: Trick Winner Moment -->
+    <div id="mockup3" class="mockup-container">
+        <div class="mockup-header">
+            <h2>Option 3: Trick Winner Reaction</h2>
+            <p>Quick celebration moment • React immediately after each trick</p>
+        </div>
+        <div class="info-box">
+            <strong>How it works:</strong> When someone wins a trick, everyone sees the winner announcement with reaction buttons. Counts show live. Brief 3-second moment before next trick.
+        </div>
+        <div class="trick-winner-mockup">
+            <div class="winner-message">
+                <h3>🏆 Alice Wins the Trick!</h3>
+                <div class="trick-cards">
+                    <div class="card">K♠️</div>
+                    <div class="card">Q♠️</div>
+                    <div class="card">J♠️</div>
+                    <div class="card">10♠️</div>
+                </div>
+                <div class="reaction-row">
+                    <button class="reaction-btn-large" onclick="trickReact('😂')">
+                        😂
+                        <span class="reaction-count" id="count-😂">2</span>
+                    </button>
+                    <button class="reaction-btn-large" onclick="trickReact('🔥')">
+                        🔥
+                        <span class="reaction-count" id="count-🔥">1</span>
+                    </button>
+                    <button class="reaction-btn-large" onclick="trickReact('👏')">
+                        👏
+                        <span class="reaction-count" id="count-👏">3</span>
+                    </button>
+                    <button class="reaction-btn-large" onclick="trickReact('😱')">
+                        😱
+                        <span class="reaction-count" id="count-😱">0</span>
+                    </button>
+                    <button class="reaction-btn-large" onclick="trickReact('🎉')">
+                        🎉
+                        <span class="reaction-count" id="count-🎉">1</span>
+                    </button>
+                </div>
+                <div class="live-reactions">
+                    <span id="liveReactionText">Bob reacted 😂 • Charlie reacted 👏</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OPTION 4: Chat-Style Bar -->
+    <div id="mockup4" class="mockup-container">
+        <div class="mockup-header">
+            <h2>Option 4: Chat-Style Bottom Bar</h2>
+            <p>Always available • Send reactions anytime like a chat message</p>
+        </div>
+        <div class="info-box">
+            <strong>How it works:</strong> Persistent emoji button at bottom. Tap → picker slides up → select emoji → notification appears briefly for all players.
+        </div>
+        <div class="chat-style-mockup">
+            <div class="chat-game-area">
+                <div class="round-info">
+                    <strong>Round 5 of 10</strong> • Trump: ♥️ Hearts • Your turn to bid
+                </div>
+                <div class="cards-area">
+                    <div class="card">🃏</div>
+                    <div class="card">🃏</div>
+                    <div class="card">🃏</div>
+                    <div class="card">🃏</div>
+                    <div class="card">🃏</div>
+                </div>
+            </div>
+            <div id="chatNotification" class="reaction-notification">
+                <strong>Bob:</strong> <span style="font-size: 24px;">🔥</span>
+            </div>
+            <div id="chatEmojiPicker" class="chat-emoji-picker">
+                <div class="emoji-grid">
+                    <button class="emoji-option" onclick="sendChatReaction('😂')">😂</button>
+                    <button class="emoji-option" onclick="sendChatReaction('🔥')">🔥</button>
+                    <button class="emoji-option" onclick="sendChatReaction('👏')">👏</button>
+                    <button class="emoji-option" onclick="sendChatReaction('😱')">😱</button>
+                    <button class="emoji-option" onclick="sendChatReaction('🎉')">🎉</button>
+                    <button class="emoji-option" onclick="sendChatReaction('💯')">💯</button>
+                    <button class="emoji-option" onclick="sendChatReaction('👀')">👀</button>
+                    <button class="emoji-option" onclick="sendChatReaction('🤔')">🤔</button>
+                </div>
+            </div>
+            <div class="chat-reaction-bar">
+                <button class="chat-emoji-btn" onclick="toggleChatPicker()">😊</button>
+                <div style="color: #999; font-size: 14px;">Tap to send a reaction...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Switch between mockups
+        function showMockup(num) {
+            document.querySelectorAll('.mockup-container').forEach(m => m.classList.remove('active'));
+            document.querySelectorAll('.mockup-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById('mockup' + num).classList.add('active');
+            document.querySelectorAll('.mockup-btn')[num - 1].classList.add('active');
+        }
+
+        // OPTION 1: Gameplay Float
+        function toggleEmojiPicker(option) {
+            const picker = document.getElementById('emojiPicker1');
+            picker.classList.toggle('show');
+        }
+
+        function sendReaction(emoji, option) {
+            const picker = document.getElementById('emojiPicker1');
+            picker.classList.remove('show');
+
+            // Create flying emoji
+            const flyingEmoji = document.createElement('div');
+            flyingEmoji.className = 'flying-emoji';
+            flyingEmoji.textContent = emoji;
+            flyingEmoji.style.right = '50px';
+            flyingEmoji.style.bottom = '50px';
+            document.body.appendChild(flyingEmoji);
+
+            setTimeout(() => {
+                flyingEmoji.remove();
+            }, 2000);
+        }
+
+        // OPTION 2: Scorecard
+        let currentReactPlayer = null;
+
+        function toggleScoreReact(player) {
+            currentReactPlayer = player;
+            const picker = document.getElementById('scoreReactPicker');
+            picker.classList.toggle('show');
+        }
+
+        function addScoreReaction(emoji) {
+            if (!currentReactPlayer) return;
+            
+            const reactionsDiv = document.getElementById('reactions-' + currentReactPlayer);
+            const badge = document.createElement('span');
+            badge.className = 'reaction-badge';
+            badge.textContent = emoji + ' You';
+            reactionsDiv.appendChild(badge);
+
+            document.getElementById('scoreReactPicker').classList.remove('show');
+            currentReactPlayer = null;
+        }
+
+        // OPTION 3: Trick Winner
+        const trickCounts = {'😂': 2, '🔥': 1, '👏': 3, '😱': 0, '🎉': 1};
+
+        function trickReact(emoji) {
+            trickCounts[emoji]++;
+            document.getElementById('count-' + emoji).textContent = trickCounts[emoji];
+            
+            const liveText = document.getElementById('liveReactionText');
+            liveText.textContent = 'You reacted ' + emoji + '!';
+            
+            setTimeout(() => {
+                updateLiveText();
+            }, 1500);
+        }
+
+        function updateLiveText() {
+            const texts = ['Bob reacted 😂', 'Charlie reacted 👏', 'Alice reacted 🔥'];
+            document.getElementById('liveReactionText').textContent = texts.join(' • ');
+        }
+
+        // OPTION 4: Chat Style
+        function toggleChatPicker() {
+            const picker = document.getElementById('chatEmojiPicker');
+            picker.classList.toggle('show');
+        }
+
+        function sendChatReaction(emoji) {
+            const picker = document.getElementById('chatEmojiPicker');
+            picker.classList.remove('show');
+
+            const notification = document.getElementById('chatNotification');
+            notification.querySelector('span').textContent = emoji;
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2500);
+        }
+
+        // Close pickers when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.reaction-float-btn') && !e.target.closest('.emoji-picker-popup')) {
+                document.querySelectorAll('.emoji-picker-popup').forEach(p => p.classList.remove('show'));
+            }
+            if (!e.target.closest('.chat-emoji-btn') && !e.target.closest('.chat-emoji-picker')) {
+                document.getElementById('chatEmojiPicker')?.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
