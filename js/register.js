@@ -193,8 +193,11 @@ function rejoinAsExistingPlayer(existingPlayerId, existingPlayer, name, avatar, 
   localStorage.setItem('lastLobbyId', normalizedLobbyId);
   
   // Show user info in top right
-  document.getElementById('userInfoName').textContent = name;
-  document.getElementById('userInfoAvatar').src = avatar;
+  const avatarElem = document.getElementById('userInfoAvatar');
+  avatarElem.src = getValidAvatar(avatar, name);
+  avatarElem.onerror = function() {
+    this.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(name)}&backgroundColor=4caf50`;
+  };
   document.getElementById('userInfo').classList.add('active');
   
   // Update top bar label
@@ -272,8 +275,11 @@ function joinAsNewPlayer(name, avatar, normalizedLobbyId) {
     localStorage.setItem('lastLobbyId', normalizedLobbyId);
     
     // Show user info in top right
-    document.getElementById('userInfoName').textContent = name;
-    document.getElementById('userInfoAvatar').src = avatar;
+    const avatarElem = document.getElementById('userInfoAvatar');
+    avatarElem.src = getValidAvatar(avatar, name);
+    avatarElem.onerror = function() {
+      this.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(name)}&backgroundColor=4caf50`;
+    };
     document.getElementById('userInfo').classList.add('active');
     
     // Update top bar label

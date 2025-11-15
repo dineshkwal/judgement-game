@@ -2037,25 +2037,7 @@ button:active {
   object-fit: cover;
 }
 
-#userInfo .userName {
-  display: none;
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 0.5rem;
-  background: #222;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius);
-  font-weight: bold;
-  color: var(--accent);
-  white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .5);
-  z-index: 1001;
-}
 
-#userInfo:hover .userName {
-  display: block;
-}
 
 /* User Dropdown Menu */
 #userMenu {
@@ -2121,26 +2103,7 @@ button:active {
   transform: scale(1.05);
 }
 
-#scorecardBtn .scorecard-label {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  margin-top: 0.5rem;
-  background: #222;
-  padding: 0.5rem 1rem;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: var(--accent);
-  white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  z-index: 1001;
-}
 
-#scorecardBtn:hover .scorecard-label {
-  display: block;
-}
 
 /* Hide on register screen */
 #register.active ~ #scorecardBtn {
