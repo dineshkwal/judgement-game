@@ -21,3 +21,17 @@ function showScreen(id){
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
+
+/**
+ * Get a valid avatar URL with fallback
+ * @param {string} avatarUrl - The avatar URL from player data
+ * @param {string} playerName - Player name for generating fallback
+ * @returns {string} Valid avatar URL
+ */
+function getValidAvatar(avatarUrl, playerName) {
+  if (avatarUrl && avatarUrl.startsWith('http')) {
+    return avatarUrl;
+  }
+  // Generate fallback avatar based on player name
+  return `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(playerName)}&backgroundColor=4caf50`;
+}

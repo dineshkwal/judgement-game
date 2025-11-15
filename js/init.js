@@ -110,8 +110,11 @@ window.addEventListener('DOMContentLoaded', () => {
           });
           
           // Show user info
-          document.getElementById('userInfoName').textContent = playerInfo.name;
-          document.getElementById('userInfoAvatar').src = playerInfo.avatar;
+          const avatarElem = document.getElementById('userInfoAvatar');
+          avatarElem.src = getValidAvatar(playerInfo.avatar, playerInfo.name);
+          avatarElem.onerror = function() {
+            this.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(playerInfo.name)}&backgroundColor=4caf50`;
+          };
           document.getElementById('userInfo').classList.add('active');
           
           // Update top bar label
@@ -425,12 +428,13 @@ function checkAndShowResumeBanner() {
           return;
         }
         
-        // Check if there are any active (online) players in the lobby
-        const activePlayers = Object.values(players).filter(p => p.status === 'online');
-        debugLog('Active players count:', activePlayers.length);
+        // Check if there are any OTHER active (online) players in the lobby besides the current player
+        const activePlayers = Object.values(players).filter(p => p.status === 'online' && p.id !== savedPlayerId);
+        debugLog('Active players count (excluding current player):', activePlayers.length);
+        debugLog('All players:', Object.values(players).map(p => ({id: p.id, status: p.status, name: p.name})));
         
         if (activePlayers.length === 0) {
-          debugLog('No active players in lobby, not showing resume banner');
+          debugLog('No other active players in lobby, not showing resume banner');
           // Don't clear localStorage yet - player might reconnect
           return;
         }
@@ -495,8 +499,11 @@ function resumeGame() {
     storage.lobbyId = savedLobbyId;
     
     // Show user info in top right
-    document.getElementById('userInfoName').textContent = playerInfo.name;
-    document.getElementById('userInfoAvatar').src = playerInfo.avatar;
+    const avatarElem = document.getElementById('userInfoAvatar');
+    avatarElem.src = getValidAvatar(playerInfo.avatar, playerInfo.name);
+    avatarElem.onerror = function() {
+      this.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(playerInfo.name)}&backgroundColor=4caf50`;
+    };
     document.getElementById('userInfo').classList.add('active');
     
     // Update player status in Firebase

@@ -285,10 +285,15 @@ function renderTable(){
     miniCard.style.top = '50%';
     miniCard.style.transform = `translate(calc(-50% + ${miniCardX}px), calc(-50% + ${miniCardY}px))`;
     
-    // Add avatar image
+    // Add avatar image with fallback
     const img = document.createElement('img');
-    img.src = p.avatar;
+    img.src = getValidAvatar(p.avatar, p.name);
     img.alt = p.name;
+    
+    // Handle image loading errors with fallback
+    img.onerror = function() {
+      this.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(p.name)}&backgroundColor=4caf50`;
+    };
     
     // Add name div
     const nameDiv = document.createElement('div');
