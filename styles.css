@@ -1252,13 +1252,15 @@ button:active {
   -webkit-background-clip: border-box;
 }
 
-#roundInfo .suit-black {
+#roundInfo .suit-black,
+#scoreboard .suit-black {
   color: #000 !important;
   -webkit-text-fill-color: #000 !important;
   font-weight: 900;
 }
 
-#roundInfo .suit-red {
+#roundInfo .suit-red,
+#scoreboard .suit-red {
   color: #dc143c !important;
   -webkit-text-fill-color: #dc143c !important;
   font-weight: 900;
@@ -1725,6 +1727,10 @@ button:active {
   justify-content: center;
   padding: 0;
   outline: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
 
 .emoji-reaction-bar .emoji-btn:hover {
@@ -1737,6 +1743,11 @@ button:active {
 }
 
 .emoji-reaction-bar .emoji-btn:focus {
+  outline: none;
+  background: transparent;
+}
+
+.emoji-reaction-bar .emoji-btn:focus-visible {
   outline: none;
 }
 
@@ -2507,6 +2518,12 @@ button:active {
     letter-spacing: 0.3px;
   }
   
+  /* Trick cards - less overlap on tablet for better visibility */
+  .trick .card {
+    margin-left: -25px;
+    transform: scale(1.05);
+  }
+  
   /* Center Message */
   #centerMsg {
     font-size: 0.9rem;
@@ -2737,6 +2754,12 @@ button:active {
     font-size: 0.6rem;
     padding: 0.35rem 0.15rem;
     letter-spacing: 0.2px;
+  }
+  
+  /* Trick cards - minimal overlap on mobile for best visibility */
+  .trick .card {
+    margin-left: -30px;
+    transform: scale(1);
   }
   
   #centerMsg {
