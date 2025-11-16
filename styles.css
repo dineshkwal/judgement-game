@@ -2892,12 +2892,14 @@ button:active {
     font-size: 0.6rem;
     max-width: 50px;
     padding: 0.5rem 0.2rem;
+    font-weight: 500;
   }
   
   #scorecardContent th:first-child {
     max-width: 50px;
     padding: 0.6rem 0.2rem;
     font-size: 0.55rem;
+    font-weight: 500;
   }
   
   /* Override inline styles for Bid/Won/Pts content on extra small mobile */
@@ -2909,10 +2911,12 @@ button:active {
   #scorecardContent tr:last-child td {
     font-size: 0.75rem;
     padding: 0.7rem 0.3rem;
+    font-weight: 600;
   }
   
   #scorecardContent tr:last-child td:first-child {
     font-size: 0.7rem;
+    font-weight: 600;
   }
 }
 
