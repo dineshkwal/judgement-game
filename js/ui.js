@@ -182,10 +182,21 @@ function showBidPopup(playerId, bidValue) {
     existingPopup.remove();
   }
   
-  // Create new bid popup
+  // Create new bid popup with emoji enhancement
   const popup = document.createElement('div');
   popup.className = 'bid-popup';
-  popup.textContent = `I bid ${bidValue}`;
+  
+  // Add emoji and text
+  const emoji = document.createElement('span');
+  emoji.className = 'bid-emoji';
+  emoji.textContent = '🎯';
+  
+  const text = document.createElement('span');
+  text.className = 'bid-text';
+  text.textContent = `I bid ${bidValue}`;
+  
+  popup.appendChild(emoji);
+  popup.appendChild(text);
   
   console.log('Created popup element:', popup);
   
