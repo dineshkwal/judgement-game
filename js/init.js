@@ -139,6 +139,10 @@ window.addEventListener('DOMContentLoaded', () => {
               
               showScreen('game');
               
+              // Start listening for emoji reactions
+              console.log('Calling listenForReactions from URL rejoin');
+              listenForReactions();
+              
               // Render all game UI components
               renderScoreboard();
               renderTable();
@@ -529,6 +533,10 @@ function resumeGame() {
         Object.assign(storage, gameData);
         
         showScreen('game');
+        
+        // Start listening for emoji reactions
+        console.log('Calling listenForReactions from resume game');
+        listenForReactions();
         
         // Render all game UI components
         renderScoreboard();

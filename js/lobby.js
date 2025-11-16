@@ -69,7 +69,12 @@ function listenForPlayers(){
     if(gameData && document.getElementById('game').classList.contains('active') === false){
       // Game started, switch to game screen
       storage.gameRef = gameRef; // Set this only when game actually starts
+      console.log('Game detected, switching to game screen');
       showScreen('game');
+      // Start listening for emoji reactions
+      console.log('Calling listenForReactions from game detection');
+      listenForReactions();
+      console.log('listenForReactions called');
     }
     if(gameData){
       // Mark that game has started (for disconnection detection)
@@ -419,7 +424,15 @@ function startGame(){
     currentBidder: null,
     currentPlayer: null
   };
+  console.log('Setting initial game state to Firebase...');
   storage.gameRef.set(initialState).then(() => {
+    console.log('Game started, switching to game screen');
     showScreen('game');
+    // Start listening for emoji reactions
+    console.log('Calling listenForReactions from startGame');
+    listenForReactions();
+    console.log('listenForReactions called');
+  }).catch((error) => {
+    console.error('Error setting game state:', error);
   });
 }
