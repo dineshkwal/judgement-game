@@ -1223,7 +1223,7 @@ button:active {
   border-radius: 16px;
   border: 2px solid rgba(76, 175, 80, 0.3);
   padding: 1rem;
-  max-width: 600px;
+  max-width: 650px;
   width: 90%;
   overflow-x: auto;
   margin: 0.5rem auto;
@@ -1713,11 +1713,10 @@ button:active {
 }
 
 .emoji-reaction-bar .emoji-btn {
-  background: rgba(76, 175, 80, 0.15);
-  border: 2px solid rgba(76, 175, 80, 0.3);
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
+  background: transparent;
+  border: none;
+  width: 40px;
+  height: 40px;
   font-size: 1.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1729,19 +1728,16 @@ button:active {
 }
 
 .emoji-reaction-bar .emoji-btn:hover {
-  background: rgba(76, 175, 80, 0.3);
-  transform: scale(1.1);
-  border-color: #4caf50;
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+  transform: scale(1.2);
+  filter: drop-shadow(0 2px 8px rgba(76, 175, 80, 0.6));
 }
 
 .emoji-reaction-bar .emoji-btn:active {
-  transform: scale(0.95);
+  transform: scale(0.9);
 }
 
 .emoji-reaction-bar .emoji-btn:focus {
-  outline: 2px solid rgba(76, 175, 80, 0.5);
-  outline-offset: 2px;
+  outline: none;
 }
 
 /* Bidding UI */
@@ -2480,7 +2476,7 @@ button:active {
   
   /* Scoreboard - Make smaller on mobile */
   #scoreboard {
-    max-width: 280px;
+    max-width: 320px;
     font-size: 0.75rem;
   }
   
@@ -2490,14 +2486,14 @@ button:active {
   
   /* Emoji reaction bar - smaller buttons on mobile */
   .emoji-reaction-bar {
-    gap: 0.4rem;
+    gap: 0.3rem;
     padding-top: 0.8rem;
     margin-top: 0.8rem;
   }
   
   .emoji-reaction-bar .emoji-btn {
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
     font-size: 1.3rem;
   }
   
@@ -2701,13 +2697,15 @@ button:active {
   
   /* Emoji reaction bar - even smaller on tiny screens */
   .emoji-reaction-bar {
-    gap: 0.3rem;
+    gap: 0.2rem;
+    padding-top: 0.6rem;
+    margin-top: 0.6rem;
   }
   
   .emoji-reaction-bar .emoji-btn {
-    width: 38px;
-    height: 38px;
-    font-size: 1.2rem;
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
   }
   
   /* Registration Tabs - Mobile */
@@ -2724,7 +2722,7 @@ button:active {
 
 @media (max-width: 480px) {
   #scoreboard {
-    max-width: 220px;
+    max-width: 280px;
   }
   
   #scoreboard table {

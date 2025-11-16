@@ -239,6 +239,7 @@ function renderScoreboard(){
       <button class="emoji-btn" onclick="sendReaction('😮', this)" title="Wow">😮</button>
       <button class="emoji-btn" onclick="sendReaction('❤️', this)" title="Heart">❤️</button>
       <button class="emoji-btn" onclick="sendReaction('👏', this)" title="Clap">👏</button>
+      <button class="emoji-btn" onclick="sendReaction('💩', this)" title="Poo">💩</button>
     </div>
   `;
   
