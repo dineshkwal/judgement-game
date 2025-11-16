@@ -2889,7 +2889,15 @@ button:active {
   }
   
   #scorecardContent td:first-child {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
+    max-width: 50px;
+    padding: 0.5rem 0.2rem;
+  }
+  
+  #scorecardContent th:first-child {
+    max-width: 50px;
+    padding: 0.6rem 0.2rem;
+    font-size: 0.55rem;
   }
   
   /* Override inline styles for Bid/Won/Pts content on extra small mobile */

@@ -1,7 +1,11 @@
 /* ---------- GLOBAL STATE ---------- */
 
+// Version tracking for debugging
+const APP_VERSION = '1.2.2'; // Fixed: Added bid popup detection to status-changed code path
+console.log(`%c🎮 Game of Judgement v${APP_VERSION}`, 'color: #4caf50; font-weight: bold; font-size: 14px;');
+
 // Debug flag - set to true for development, false for production
-const DEBUG = true;
+const DEBUG = false;
 
 // Debug logging helper - only logs when DEBUG is true
 function debugLog(...args) {

@@ -87,9 +87,14 @@ function listenForPlayers(){
       const prevCurrentPlayer = storage.currentPlayer;
       const prevTrickLength = storage.trick?.length || 0;
       const prevGameEnded = storage.gameEnded; // Preserve gameEnded flag
-      const prevBids = {...storage.bids}; // Track previous bids for popup detection
-      console.log('🔍 BEFORE Object.assign - prevBids:', prevBids, 'storage.bids:', storage.bids);
-      console.log('🔍 Firebase gameData.bids:', gameData.bids);
+      
+      // CRITICAL: Use lastKnownBids to track what we had BEFORE this Firebase update
+      // This prevents missing bid popups when multiple updates happen rapidly
+      const prevBids = storage.lastKnownBids ? {...storage.lastKnownBids} : {};
+      const currentBids = gameData.bids && typeof gameData.bids === 'object' ? {...gameData.bids} : {};
+      
+      console.log('🔍 BEFORE Object.assign - prevBids (lastKnown):', prevBids, 'currentBids (incoming):', currentBids);
+      console.log('🔍 storage.bids:', storage.bids, 'gameData.bids:', gameData.bids);
       
       // Clear these before Object.assign in case Firebase doesn't send them (empty objects become null)
       if(gameData.bids === null || gameData.bids === undefined) {
@@ -102,10 +107,22 @@ function listenForPlayers(){
         gameData.hands = {};
       }
       
+      const prevStatus = storage.status; // Track status changes
+      
       Object.assign(storage, gameData);
       
       // Restore local-only flags that shouldn't be overwritten
       storage.gameEnded = prevGameEnded;
+      
+      // Save current bids as lastKnownBids for next update cycle
+      // This ensures we always compare against the PREVIOUS Firebase update, not current storage
+      storage.lastKnownBids = currentBids;
+      
+      // Detect status change - critical for ensuring UI updates correctly
+      const statusChanged = prevStatus !== gameData.status;
+      if (statusChanged) {
+        debugLog(`🔄 STATUS CHANGED: ${prevStatus} → ${gameData.status}`);
+      }
       
       // Firebase removes empty objects, so ensure these are always objects (not null)
       if(!storage.bids || typeof storage.bids !== 'object' || Array.isArray(storage.bids)) {
@@ -180,10 +197,11 @@ function listenForPlayers(){
         
         // If we just finished resolving, OR if winner message is still showing, skip updateUI()
         // to avoid overwriting the "X won the hand!" message
+        // EXCEPTION: If status changed (e.g., to 'waiting_deal'), we MUST call updateUI() to show the correct UI
         const centerMsg = document.getElementById('centerMsg');
         const winnerMessageShowing = centerMsg && centerMsg.isTimedMessage;
         
-        if(wasJustResolving || winnerMessageShowing) {
+        if((wasJustResolving || winnerMessageShowing) && !statusChanged) {
           debugLog('DEBUG: Skipping updateUI() because wasJustResolving:', wasJustResolving, 'or winnerMessageShowing:', winnerMessageShowing);
           renderScoreboard();
           renderTable();
@@ -194,14 +212,14 @@ function listenForPlayers(){
           
           // Detect new bids and show popup (after table is rendered so seats exist)
           // Show popup to all players including the bidder
-          console.log('🎯 [TRICK-RESOLVED PATH] Checking for new bids. Previous:', prevBids, 'Current:', gameData.bids);
-          if (gameData.bids && typeof gameData.bids === 'object') {
-            for (let playerId in gameData.bids) {
-              console.log(`🔍 Player ${playerId}: prevBids[${playerId}]=${prevBids[playerId]}, gameData.bids[${playerId}]=${gameData.bids[playerId]}, myId=${storage.myId}`);
-              if (prevBids[playerId] === undefined && gameData.bids[playerId] !== undefined) {
+          console.log('🎯 [TRICK-RESOLVED PATH] Checking for new bids. Previous:', prevBids, 'Current:', currentBids);
+          if (currentBids && typeof currentBids === 'object') {
+            for (let playerId in currentBids) {
+              console.log(`🔍 Player ${playerId}: prevBids[${playerId}]=${prevBids[playerId]}, currentBids[${playerId}]=${currentBids[playerId]}, myId=${storage.myId}`);
+              if (prevBids[playerId] === undefined && currentBids[playerId] !== undefined) {
                 // New bid detected! Show popup to all players
-                console.log(`✅ SHOWING POPUP for player ${playerId} with bid ${gameData.bids[playerId]}`);
-                showBidPopup(playerId, gameData.bids[playerId]);
+                console.log(`✅ SHOWING POPUP for player ${playerId} with bid ${currentBids[playerId]}`);
+                showBidPopup(playerId, currentBids[playerId]);
               } else {
                 console.log(`⏭️ Skipping ${playerId}: already in prevBids`);
               }
@@ -227,6 +245,34 @@ function listenForPlayers(){
           }
           return; // Don't continue with normal flow
         }
+        
+        // If status changed, we need to call updateUI() even if trick was just resolved
+        if (statusChanged) {
+          debugLog('DEBUG: Status changed during trick resolution, calling updateUI()');
+          renderScoreboard();
+          renderTable();
+          renderMyHand();
+          renderCurrentTrick();
+          updateRoundInfo();
+          updateUI();
+          
+          // CRITICAL: Check for bid popups even when status changes
+          console.log('🎯 [STATUS-CHANGED PATH] Checking for new bids. Previous:', prevBids, 'Current:', currentBids);
+          if (currentBids && typeof currentBids === 'object') {
+            for (let playerId in currentBids) {
+              console.log(`🔍 Player ${playerId}: prevBids[${playerId}]=${prevBids[playerId]}, currentBids[${playerId}]=${currentBids[playerId]}, myId=${storage.myId}`);
+              if (prevBids[playerId] === undefined && currentBids[playerId] !== undefined) {
+                // New bid detected! Show popup to all players
+                console.log(`✅ SHOWING POPUP for player ${playerId} with bid ${currentBids[playerId]}`);
+                showBidPopup(playerId, currentBids[playerId]);
+              } else {
+                console.log(`⏭️ Skipping ${playerId}: already in prevBids`);
+              }
+            }
+          }
+          
+          return;
+        }
       } else {
         // Trick not empty - clear the flag if it was set
         storage.trickJustCleared = false;
@@ -242,14 +288,14 @@ function listenForPlayers(){
       
       // Detect new bids and show popup (after table is rendered so seats exist)
       // Show popup to all players including the bidder
-      console.log('🎯 [NORMAL PATH] Checking for new bids. Previous:', prevBids, 'Current:', gameData.bids);
-      if (gameData.bids && typeof gameData.bids === 'object') {
-        for (let playerId in gameData.bids) {
-          console.log(`🔍 Player ${playerId}: prevBids[${playerId}]=${prevBids[playerId]}, gameData.bids[${playerId}]=${gameData.bids[playerId]}, myId=${storage.myId}`);
-          if (prevBids[playerId] === undefined && gameData.bids[playerId] !== undefined) {
+      console.log('🎯 [NORMAL PATH] Checking for new bids. Previous:', prevBids, 'Current:', currentBids);
+      if (currentBids && typeof currentBids === 'object') {
+        for (let playerId in currentBids) {
+          console.log(`🔍 Player ${playerId}: prevBids[${playerId}]=${prevBids[playerId]}, currentBids[${playerId}]=${currentBids[playerId]}, myId=${storage.myId}`);
+          if (prevBids[playerId] === undefined && currentBids[playerId] !== undefined) {
             // New bid detected! Show popup to all players
-            console.log(`✅ SHOWING POPUP for player ${playerId} with bid ${gameData.bids[playerId]}`);
-            showBidPopup(playerId, gameData.bids[playerId]);
+            console.log(`✅ SHOWING POPUP for player ${playerId} with bid ${currentBids[playerId]}`);
+            showBidPopup(playerId, currentBids[playerId]);
           } else {
             console.log(`⏭️ Skipping ${playerId}: already in prevBids`);
           }
