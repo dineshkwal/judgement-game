@@ -88,6 +88,8 @@ function listenForPlayers(){
       const prevTrickLength = storage.trick?.length || 0;
       const prevGameEnded = storage.gameEnded; // Preserve gameEnded flag
       const prevBids = {...storage.bids}; // Track previous bids for popup detection
+      console.log('🔍 BEFORE Object.assign - prevBids:', prevBids, 'storage.bids:', storage.bids);
+      console.log('🔍 Firebase gameData.bids:', gameData.bids);
       
       // Clear these before Object.assign in case Firebase doesn't send them (empty objects become null)
       if(gameData.bids === null || gameData.bids === undefined) {
@@ -104,19 +106,6 @@ function listenForPlayers(){
       
       // Restore local-only flags that shouldn't be overwritten
       storage.gameEnded = prevGameEnded;
-      
-      // Detect new bids and show popup
-      console.log('Checking for new bids. Previous:', prevBids, 'Current:', gameData.bids);
-      if (gameData.bids && typeof gameData.bids === 'object') {
-        for (let playerId in gameData.bids) {
-          console.log(`Checking player ${playerId}: prev=${prevBids[playerId]}, current=${gameData.bids[playerId]}`);
-          if (prevBids[playerId] === undefined && gameData.bids[playerId] !== undefined) {
-            // New bid detected! Show popup
-            console.log('New bid detected! Calling showBidPopup for player:', playerId, 'bid:', gameData.bids[playerId]);
-            showBidPopup(playerId, gameData.bids[playerId]);
-          }
-        }
-      }
       
       // Firebase removes empty objects, so ensure these are always objects (not null)
       if(!storage.bids || typeof storage.bids !== 'object' || Array.isArray(storage.bids)) {
@@ -203,6 +192,22 @@ function listenForPlayers(){
           updateRoundInfo();
           // Skip updateUI() - it will be called by next Firebase update or after message timeout
           
+          // Detect new bids and show popup (after table is rendered so seats exist)
+          // Show popup to all players including the bidder
+          console.log('🎯 [TRICK-RESOLVED PATH] Checking for new bids. Previous:', prevBids, 'Current:', gameData.bids);
+          if (gameData.bids && typeof gameData.bids === 'object') {
+            for (let playerId in gameData.bids) {
+              console.log(`🔍 Player ${playerId}: prevBids[${playerId}]=${prevBids[playerId]}, gameData.bids[${playerId}]=${gameData.bids[playerId]}, myId=${storage.myId}`);
+              if (prevBids[playerId] === undefined && gameData.bids[playerId] !== undefined) {
+                // New bid detected! Show popup to all players
+                console.log(`✅ SHOWING POPUP for player ${playerId} with bid ${gameData.bids[playerId]}`);
+                showBidPopup(playerId, gameData.bids[playerId]);
+              } else {
+                console.log(`⏭️ Skipping ${playerId}: already in prevBids`);
+              }
+            }
+          }
+          
           // If we set trickJustCleared flag, schedule a delayed updateUI() call
           // to show the correct turn message after Firebase sync completes
           // Wait 2100ms to ensure winner message (2000ms) has fully cleared
@@ -234,6 +239,22 @@ function listenForPlayers(){
       renderCurrentTrick();
       updateRoundInfo();
       updateUI();
+      
+      // Detect new bids and show popup (after table is rendered so seats exist)
+      // Show popup to all players including the bidder
+      console.log('🎯 [NORMAL PATH] Checking for new bids. Previous:', prevBids, 'Current:', gameData.bids);
+      if (gameData.bids && typeof gameData.bids === 'object') {
+        for (let playerId in gameData.bids) {
+          console.log(`🔍 Player ${playerId}: prevBids[${playerId}]=${prevBids[playerId]}, gameData.bids[${playerId}]=${gameData.bids[playerId]}, myId=${storage.myId}`);
+          if (prevBids[playerId] === undefined && gameData.bids[playerId] !== undefined) {
+            // New bid detected! Show popup to all players
+            console.log(`✅ SHOWING POPUP for player ${playerId} with bid ${gameData.bids[playerId]}`);
+            showBidPopup(playerId, gameData.bids[playerId]);
+          } else {
+            console.log(`⏭️ Skipping ${playerId}: already in prevBids`);
+          }
+        }
+      }
       
       // If scorecard modal is open, refresh it with latest data
       const scorecardOverlay = document.getElementById('scorecardOverlay');

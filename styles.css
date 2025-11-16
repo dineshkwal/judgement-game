@@ -1419,20 +1419,50 @@ button:active {
 /* Bid popup on player avatar */
 .bid-popup {
   position: absolute;
-  top: -50px;
+  top: -45px;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, var(--primary), #45a049);
-  color: white;
-  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+  color: #1a1a1a;
+  padding: 6px 12px;
   border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-size: 0.75rem;
+  font-weight: 600;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(76, 175, 80, 0.2);
   z-index: 1000;
   pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   animation: bidPopupShow 2.5s ease-out forwards;
+}
+
+/* Small arrow pointing down to avatar */
+.bid-popup::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #f8f8f8;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+}
+
+.bid-emoji {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.bid-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1a1a1a;
 }
 
 @keyframes bidPopupShow {
@@ -2485,6 +2515,26 @@ button:active {
     font-size: 0.7rem;
   }
   
+  /* Bid popup - smaller on tablet */
+  .bid-popup {
+    font-size: 0.7rem;
+    padding: 5px 11px;
+    top: -42px;
+    gap: 5px;
+  }
+  
+  .bid-emoji {
+    font-size: 0.95rem;
+  }
+  
+  .bid-text {
+    font-size: 0.7rem;
+  }
+  
+  .bid-text {
+    font-size: 0.9rem;
+  }
+  
   /* Scoreboard - Make smaller on mobile */
   #scoreboard {
     max-width: 320px;
@@ -2738,6 +2788,26 @@ button:active {
 }
 
 @media (max-width: 480px) {
+  /* Bid popup - even smaller on mobile */
+  .bid-popup {
+    font-size: 0.65rem;
+    padding: 5px 10px;
+    top: -40px;
+    gap: 5px;
+  }
+  
+  .bid-emoji {
+    font-size: 0.9rem;
+  }
+  
+  .bid-text {
+    font-size: 0.65rem;
+  }
+  
+  .bid-text {
+    font-size: 0.85rem;
+  }
+  
   #scoreboard {
     max-width: 280px;
   }
