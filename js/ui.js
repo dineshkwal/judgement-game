@@ -233,12 +233,12 @@ function renderScoreboard(){
   // Add emoji reaction bar
   html += `
     <div class="emoji-reaction-bar">
-      <button class="emoji-btn" onclick="sendReaction('👍')" title="Thumbs up">👍</button>
-      <button class="emoji-btn" onclick="sendReaction('🔥')" title="Fire">🔥</button>
-      <button class="emoji-btn" onclick="sendReaction('😂')" title="Laughing">😂</button>
-      <button class="emoji-btn" onclick="sendReaction('😮')" title="Wow">😮</button>
-      <button class="emoji-btn" onclick="sendReaction('❤️')" title="Heart">❤️</button>
-      <button class="emoji-btn" onclick="sendReaction('👏')" title="Clap">👏</button>
+      <button class="emoji-btn" onclick="sendReaction('👍', this)" title="Thumbs up">👍</button>
+      <button class="emoji-btn" onclick="sendReaction('🔥', this)" title="Fire">🔥</button>
+      <button class="emoji-btn" onclick="sendReaction('😂', this)" title="Laughing">😂</button>
+      <button class="emoji-btn" onclick="sendReaction('😮', this)" title="Wow">😮</button>
+      <button class="emoji-btn" onclick="sendReaction('❤️', this)" title="Heart">❤️</button>
+      <button class="emoji-btn" onclick="sendReaction('👏', this)" title="Clap">👏</button>
     </div>
   `;
   

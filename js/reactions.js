@@ -3,8 +3,14 @@
 /**
  * Send an emoji reaction to other players
  * @param {string} emoji - The emoji character to send
+ * @param {HTMLElement} button - The button element that was clicked (optional)
  */
-function sendReaction(emoji) {
+function sendReaction(emoji, button) {
+  // Remove focus from button to prevent visual feedback remaining
+  if (button && button.blur) {
+    button.blur();
+  }
+  
   if (!storage.lobbyId || !storage.myId) {
     debugLog('Cannot send reaction: no lobby or player ID');
     return;
