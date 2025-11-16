@@ -227,6 +227,10 @@ function rejoinAsExistingPlayer(existingPlayerId, existingPlayer, name, avatar, 
         
         showScreen('game');
         
+        // Start listening for emoji reactions
+        console.log('Calling listenForReactions from rejoin game');
+        listenForReactions();
+        
         // Render all game UI components
         renderScoreboard();
         renderTable();
