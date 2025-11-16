@@ -209,15 +209,15 @@ function renderScoreboard(){
   const trump = storage.trump || '♠';
   const cardsThisRound = cardsPerRound - round + 1;
   
-  // Determine suit color class
+  // Determine suit color class (reusing same logic as updateRoundInfo)
   const suitClass = (trump === '♠' || trump === '♣') ? 'suit-black' : 'suit-red';
   
-  // Add round info header above the table
+  // Add round info header above the table with colored suit
   let html = `<div style="text-align: center; margin-bottom: 1rem; font-size: 1.1rem; font-weight: 600;">
     Round ${round} <span class="${suitClass}" style="font-size: 1.3em; margin: 0 0.3rem;">${trump}</span> ${cardsThisRound > 0 ? cardsThisRound : 0} Cards
   </div>`;
   
-  html += '<table><thead><tr><th>Player</th><th>Hands Bid</th><th>Hands Made</th></tr></thead><tbody>';
+  html += '<table><thead><tr><th>Player</th><th>Hands Bid</th><th>Hands Win</th></tr></thead><tbody>';
   
   storage.players.forEach(p => {
     const bid = storage.bids[p.id] !== undefined ? storage.bids[p.id] : '–';
