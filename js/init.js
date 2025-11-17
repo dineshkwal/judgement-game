@@ -111,8 +111,11 @@ window.addEventListener('DOMContentLoaded', () => {
           
           // Show user info
           const avatarElem = document.getElementById('userInfoAvatar');
-          avatarElem.src = getValidAvatar(playerInfo.avatar, playerInfo.name);
+          const avatarUrl = getValidAvatar(playerInfo.avatar, playerInfo.name);
+          debugLog('Setting userInfo avatar:', avatarUrl);
+          avatarElem.src = avatarUrl || `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(playerInfo.name)}&backgroundColor=4caf50`;
           avatarElem.onerror = function() {
+            debugLog('Avatar load error, using fallback');
             this.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(playerInfo.name)}&backgroundColor=4caf50`;
           };
           document.getElementById('userInfo').classList.add('active');
@@ -520,8 +523,11 @@ function resumeGame() {
     
     // Show user info in top right
     const avatarElem = document.getElementById('userInfoAvatar');
-    avatarElem.src = getValidAvatar(playerInfo.avatar, playerInfo.name);
+    const avatarUrl = getValidAvatar(playerInfo.avatar, playerInfo.name);
+    debugLog('Setting userInfo avatar on resume:', avatarUrl);
+    avatarElem.src = avatarUrl || `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(playerInfo.name)}&backgroundColor=4caf50`;
     avatarElem.onerror = function() {
+      debugLog('Avatar load error on resume, using fallback');
       this.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(playerInfo.name)}&backgroundColor=4caf50`;
     };
     document.getElementById('userInfo').classList.add('active');

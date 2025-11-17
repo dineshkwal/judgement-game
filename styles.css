@@ -1,7 +1,3 @@
-/* ========================================
-   Judgement Card Game - Styles
-   ======================================== */
-
 /* CSS Variables */
 :root {
   --bg: #0a1a0a;
@@ -24,14 +20,10 @@
   padding: 0;
 }
 
-html {
-  background: var(--gradient-end);
-  min-height: 100%;
-}
-
 body {
   font-family: 'Poppins', Helvetica, Arial, sans-serif;
   background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  background-attachment: fixed;
   color: #eee;
   display: flex;
   flex-direction: column;
@@ -39,7 +31,6 @@ body {
   justify-content: center;
   padding: 1rem;
   min-height: 100vh;
-  position: relative;
 }
 
 h1 {
@@ -117,7 +108,6 @@ input:focus, select:focus {
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
 }
 
-/* Input validation states */
 input.error {
   border-color: #f44336;
   background: rgba(244, 67, 54, 0.05);
@@ -163,7 +153,6 @@ button:active {
   transform: translateY(0);
 }
 
-/* Register Screen Styles */
 .register-container {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(10px);
@@ -476,7 +465,7 @@ button:active {
 .avatar-grid-container {
   position: relative;
   margin-top: 0.8rem;
-  padding-bottom: 50px; /* Space for navigation buttons below */
+  padding-bottom: 50px;
 }
 
 .avatar-grid {
@@ -486,13 +475,13 @@ button:active {
   overflow-y: hidden;
   padding: 0.5rem 0;
   scroll-behavior: smooth;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   scroll-snap-type: x proximity;
 }
 
 .avatar-grid::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 
 .avatar-grid-nav {
@@ -796,14 +785,13 @@ button:active {
   50% { transform: scale(1); }
 }
 
-/* ===== LOBBY SCREEN STYLING ===== */
 .lobby-container {
-  background: linear-gradient(135deg, rgba(26, 47, 26, 0.95) 0%, rgba(10, 26, 10, 0.95) 100%);
+  background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(10px);
   border-radius: 24px;
   padding: 2rem 1.5rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(76, 175, 80, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   max-width: 500px;
   width: 100%;
   margin: 0 auto;
@@ -1110,7 +1098,6 @@ button:active {
   width: 100%;
 }
 
-/* ===== GAME SCREEN LAYOUT ===== */
 #game {
   display: none;
   flex-direction: column;
@@ -1118,44 +1105,31 @@ button:active {
   padding: 0.5rem;
   min-height: 100vh;
   position: relative;
-  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
 }
 
 #game.active {
   display: flex;
 }
 
-/* Top Bar with Scorecard, Round Info, and User Info */
+/* Top Bar with Scorecard, Message Bar, and User Info */
 #gameTopBar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   display: grid;
-  grid-template-columns: minmax(50px, 1fr) auto minmax(50px, 1fr);
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   padding: 1rem;
   background: transparent;
   z-index: 1000;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 #gameTopBar #roundInfo {
-  text-align: center;
-  font-size: 1rem;
-  margin: 0;
-  padding: 0.5rem 1rem;
-  background: rgba(76, 175, 80, 0.2);
-  border-radius: 10px;
-  border: 1px solid rgba(76, 175, 80, 0.3);
-  grid-column: 2;
-  justify-self: center;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: none;
 }
 
-/* Top bar item containers (Option 7: Labels Below) */
 .top-bar-item {
   display: flex;
   flex-direction: column;
@@ -1212,7 +1186,7 @@ button:active {
 /* Game Content Area (below top bar) */
 .game-content {
   width: 100%;
-  padding-top: 5rem;
+  padding-top: 5.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1222,18 +1196,16 @@ button:active {
   position: relative;
 }
 
-/* Scoreboard - Below Round Info */
 #scoreboard {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
   backdrop-filter: blur(20px);
-  border-radius: 16px;
-  border: 2px solid rgba(76, 175, 80, 0.3);
-  padding: 1rem;
+  border-radius: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  padding: 1.5rem;
   max-width: 650px;
   width: 90%;
   overflow-x: auto;
-  margin: 0.5rem auto;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  margin: 1.5rem auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 /* Round Info */
@@ -1272,10 +1244,9 @@ button:active {
   font-weight: 900;
 }
 
-/* Deal Button */
 #dealBtn {
   position: absolute;
-  top: calc(5rem + 1.5rem + 1.5rem + 3rem + 24vmin);
+  top: calc(3rem + 30vmin);
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 0.8rem 2rem;
@@ -1343,7 +1314,6 @@ button:active {
   align-items: center;
 }
 
-/* Mini card badge showing what player played */
 .seat .mini-card {
   position: absolute;
   width: 32px;
@@ -1422,7 +1392,6 @@ button:active {
   transition: transform 0.3s ease;
 }
 
-/* Bid popup on player avatar */
 .bid-popup {
   position: absolute;
   top: -45px;
@@ -1445,7 +1414,6 @@ button:active {
   animation: bidPopupShow 2.5s ease-out forwards;
 }
 
-/* Small arrow pointing down to avatar */
 .bid-popup::after {
   content: '';
   position: absolute;
@@ -1543,7 +1511,6 @@ button:active {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* Player Hand */
 .hand {
   display: flex;
   gap: .4rem;
@@ -1577,7 +1544,6 @@ button:active {
   background: rgba(76, 175, 80, 0.7);
 }
 
-/* Playing Cards */
 .card {
   width: 90px;
   height: 130px;
@@ -1638,7 +1604,6 @@ button:active {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* Card Suit Colors */
 .card.spades, .card.clubs {
   color: #1a1a1a;
 }
@@ -1647,7 +1612,6 @@ button:active {
   color: #e63946;
 }
 
-/* Trick Display (Center of Table) */
 .trick {
   position: absolute;
   top: 50%;
@@ -1669,70 +1633,185 @@ button:active {
   margin-left: 0;
 }
 
-/* Center Message (modern coachmark style) */
 #centerMsg {
-  background: rgba(102, 126, 234, 0.95);
-  backdrop-filter: blur(10px);
-  color: white;
-  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.9) 0%, rgba(25, 118, 210, 0.9) 100%);
+  backdrop-filter: blur(15px);
+  color: #fff;
+  padding: 0.8rem 1.5rem;
   border-radius: 12px;
   font-size: 1rem;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-weight:500;
+  box-shadow: 0 4px 20px rgba(33, 150, 243, 0.5);
   text-align: center;
-  display: none;
-  letter-spacing: 0.3px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  margin: 1.5rem auto;
-  max-width: 500px;
-  width: 90%;
+  visibility: hidden;
+  opacity: 0;
+  letter-spacing: 0.5px;
+  border: 2px solid rgba(144, 202, 249, 0.5);
+  grid-column: 2;
+  justify-self: center;
+  align-self: center;
+  max-width: 100%;
+  overflow: hidden;
+  word-wrap: break-word;
+  white-space: normal;
+  line-height: 1.3;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  position: relative;
+}
+
+#centerMsg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 3s infinite;
 }
 
 #centerMsg.show {
-  display: block;
+  visibility: visible;
+  opacity: 0.8;
 }
 
-/* Messages */
 #msg {
   color: var(--accent);
   margin-top: .5rem;
 }
 
-/* Scoreboard Table Styles */
+.scoreboard-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.round-info {
+  background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.3), transparent);
+  padding: 0.6rem;
+  margin-bottom: 0.5rem;
+  color: #c8e6c9;
+  font-weight: 500;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.round-divider {
+  width: 2px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.3);
+  display: inline-block;
+}
+
+.trump-info {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 215, 0, 0.2) 50%, transparent 100%);
+  padding: 0.6rem;
+  color: #ffd700;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.trump-info span:first-child {
+  margin-right: 0;
+}
+
+.trump-suit {
+  font-size: 1.8rem;
+  line-height: 1;
+  margin: 0;
+  vertical-align: middle;
+}
+
+.separator {
+  display: none;
+}
+
+.cards-info {
+  color: #c8e6c9;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
 #scoreboard table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse;
   color: #fff;
   font-size: 0.9rem;
 }
 
-#scoreboard th, #scoreboard td {
-  padding: 0.7rem 0.8rem;
-  text-align: center;
-  border-bottom: 1px solid rgba(76, 175, 80, 0.2);
+#scoreboard thead {
+  border-bottom: none;
 }
 
 #scoreboard th {
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.3) 0%, rgba(76, 175, 80, 0.15) 100%);
-  font-weight: 600;
-  font-size: 0.85rem;
+  color: #888;
+  font-weight: 500;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: rgba(255, 255, 255, 0.95);
-  border-bottom: 2px solid rgba(76, 175, 80, 0.4);
+  letter-spacing: 1.5px;
+  padding: 0.6rem 1rem;
+  text-align: left;
+  background: transparent;
+  border: none;
 }
 
-#scoreboard th:first-child {
-  border-top-left-radius: 8px;
+#scoreboard th:not(:first-child) {
+  text-align: center;
 }
 
-#scoreboard th:last-child {
-  border-top-right-radius: 8px;
+#scoreboard tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.2s ease;
 }
 
-#scoreboard tr:hover {
-  background: rgba(76, 175, 80, 0.1);
+#scoreboard tbody tr:first-child {
+  border-top: none;
+}
+
+#scoreboard tbody tr:hover {
+  background: rgba(255, 215, 0, 0.05);
+}
+
+#scoreboard tbody td {
+  padding: 0.6rem 1rem;
+  color: #a5d6a7;
+}
+
+#scoreboard tbody td:first-child {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #c8e6c9;
+  text-align: left;
+}
+
+#scoreboard tbody td:first-child > span:first-child {
+  margin-right: 0.4rem;
+}
+
+#scoreboard tbody td:not(:first-child) {
+  text-align: center;
+  font-size: 1rem;
+}
+
+.dealer-badge {
+  background: linear-gradient(135deg, #ffd700, #ffb900);
+  color: #000;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  display: inline-block;
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
 .dealer-indicator {
@@ -1741,7 +1820,6 @@ button:active {
   text-shadow: 0 0 10px var(--accent);
 }
 
-/* Emoji Reaction Bar */
 .emoji-reaction-bar {
   display: flex;
   gap: 0.5rem;
@@ -1787,13 +1865,12 @@ button:active {
   outline: none;
 }
 
-/* Bidding UI */
 #biddingUI {
   position: absolute;
-  top: calc(5rem + 1.5rem + 1.5rem + 3rem + 24vmin);
+  top: calc(3rem + 30vmin);
   left: 50%;
   transform: translate(-50%, -50%);
-  background: linear-gradient(135deg, rgba(26, 47, 26, 0.98) 0%, rgba(10, 26, 10, 0.98) 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
   backdrop-filter: blur(20px);
   border: 2px solid rgba(76, 175, 80, 0.4);
   border-radius: 16px;
@@ -1802,7 +1879,6 @@ button:active {
   width: 90%;
   display: none;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  /* Vertical column layout */
   flex-direction: column;
   gap: 1rem;
   align-items: stretch;
@@ -1821,7 +1897,6 @@ button:active {
   font-weight: 600;
 }
 
-/* Bidding controls row - dropdown and button side by side */
 #biddingUI > div {
   display: flex;
   gap: 0.75rem;
@@ -1829,7 +1904,6 @@ button:active {
   justify-content: center;
 }
 
-/* Custom Dropdown Styling */
 .custom-dropdown {
   position: relative;
   width: 120px;
@@ -2089,7 +2163,6 @@ button:active {
   transform: translateY(0);
 }
 
-/* User Info (Top Right) */
 #userInfo {
   position: relative;
   background: #222;
@@ -2109,7 +2182,6 @@ button:active {
   transform: scale(1.05);
 }
 
-/* Hide on register screen */
 #register.active ~ #userInfo {
   display: none !important;
 }
@@ -2121,9 +2193,6 @@ button:active {
   object-fit: cover;
 }
 
-
-
-/* User Dropdown Menu */
 #userMenu {
   position: fixed;
   top: 4.5rem; /* Below the userInfo button */
@@ -2159,7 +2228,6 @@ button:active {
   transform: none;
 }
 
-/* ===================== Scorecard ===================== */
 #scorecardBtn {
   position: relative;
   background: #222;
@@ -2187,9 +2255,6 @@ button:active {
   transform: scale(1.05);
 }
 
-
-
-/* Hide on register screen */
 #register.active ~ #scorecardBtn {
   display: none !important;
 }
@@ -2259,7 +2324,6 @@ button:active {
   }
 }
 
-/* Reaction Animations */
 @keyframes floatUp {
   0% {
     opacity: 1;
@@ -2315,7 +2379,6 @@ button:active {
   }
 }
 
-/* Emoji floating from player avatar */
 .emoji-float-from-player {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
@@ -2510,9 +2573,12 @@ button:active {
   font-weight: 700;
   text-shadow: 0 0 10px rgba(239, 83, 80, 0.5);
 }
-/* ===== MOBILE RESPONSIVENESS ===== */
+
 @media (max-width: 768px) {
-  /* Top bar labels - smaller on mobile */
+  .game-content {
+    padding-top: 6rem;
+  }
+  
   .item-label-below .label-key {
     font-size: 0.55rem;
   }
@@ -2521,7 +2587,6 @@ button:active {
     font-size: 0.7rem;
   }
   
-  /* Bid popup - smaller on tablet */
   .bid-popup {
     font-size: 0.7rem;
     padding: 5px 11px;
@@ -2541,17 +2606,42 @@ button:active {
     font-size: 0.9rem;
   }
   
-  /* Scoreboard - Make smaller on mobile */
   #scoreboard {
     max-width: 320px;
     font-size: 0.75rem;
+    padding: 1rem;
   }
   
   #scoreboard table {
     font-size: 0.75rem;
+    border-spacing: 0 0.4rem;
   }
   
-  /* Emoji reaction bar - smaller buttons on mobile */
+  .scoreboard-header {
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0;
+  }
+  
+  .round-info {
+    font-size: 0.85rem;
+  }
+  
+  .trump-info {
+    font-size: 0.85rem;
+    gap: 0.5rem;
+    padding: 0.6rem;
+  }
+  
+  .trump-suit {
+    font-size: 1.2rem;
+  }
+  
+  .cards-info {
+    font-size: 0.9rem;
+  }
+  
   .emoji-reaction-bar {
     gap: 0.3rem;
     padding-top: 0.8rem;
@@ -2565,48 +2655,54 @@ button:active {
   }
   
   #scoreboard th, #scoreboard td {
-    padding: 0.3rem 0.2rem;
+    padding: 0.7rem 0.5rem;
   }
   
   #scoreboard th {
     font-size: 0.65rem;
-    padding: 0.4rem 0.2rem;
+    padding: 0.8rem 0.5rem;
     letter-spacing: 0.3px;
   }
   
-  /* Trick cards - less overlap on tablet for better visibility */
+  #scoreboard th:first-child {
+    padding-left: 1rem;
+  }
+  
+  #scoreboard tbody td:first-child {
+    font-size: 0.85rem;
+  }
+  
+  #scoreboard tbody td:not(:first-child) {
+    font-size: 0.9rem;
+  }
+  
   .trick .card {
     margin-left: -25px;
     transform: scale(1.05);
   }
   
-  /* Center Message */
   #centerMsg {
-    font-size: 0.9rem;
-    padding: 0.8rem 1rem;
+    font-size: 0.75rem;
+    padding: 0.5rem 0.8rem;
   }
   
-  /* Round Info */
   #roundInfo {
     font-size: 1rem;
     padding: 0.5rem;
   }
   
-  /* Table */
   #table {
     width: 75vmin;
     height: 75vmin;
     margin: 2rem auto;
   }
   
-  /* Deal Button - Adjust for mobile table position */
   #dealBtn {
-    top: calc(5rem + 1.5rem + 1.5rem + 3rem + 40vmin);
+    top: calc(6rem + 2rem + 37.5vmin);
   }
   
-  /* Bidding UI - Adjust for mobile table position */
   #biddingUI {
-    top: calc(5rem + 1.5rem + 1.5rem + 2rem + 45vmin);
+    top: calc(6rem + 2rem + 37.5vmin);
   }
   
   #biddingUI #biddingPrompt {
@@ -2621,7 +2717,6 @@ button:active {
     width: 100%;
   }
   
-  /* Custom dropdown - Make wider on mobile to match button */
   .custom-dropdown {
     width: 100%;
     flex: 1;
@@ -2635,7 +2730,6 @@ button:active {
     flex: 1;
   }
   
-  /* Mini cards - Make smaller on mobile */
   .seat .mini-card {
     width: 26px;
     height: 38px;
@@ -2649,7 +2743,6 @@ button:active {
     font-size: 0.85rem;
   }
   
-  /* Cards */
   .hand {
     justify-content: flex-start;
     padding: 0.5rem;
@@ -2669,13 +2762,11 @@ button:active {
     font-size: 2rem;
   }
   
-  /* Messages */
   #msg {
     font-size: 0.9rem;
     text-align: center;
   }
   
-  /* Scorecard Modal - Mobile */
   #scorecardModal {
     padding: 1rem;
     width: 95%;
@@ -2698,7 +2789,6 @@ button:active {
     right: 0.75rem;
   }
   
-  /* Game Over Content - Mobile */
   #scorecardContent h1 {
     font-size: 1.8rem !important;
     margin: 0.5rem 0 !important;
@@ -2768,7 +2858,6 @@ button:active {
     font-size: 0.8rem;
   }
   
-  /* Emoji reaction bar - even smaller on tiny screens */
   .emoji-reaction-bar {
     gap: 0.2rem;
     padding-top: 0.6rem;
@@ -2781,7 +2870,6 @@ button:active {
     font-size: 1.1rem;
   }
   
-  /* Registration Tabs - Mobile */
   .tab-btn {
     padding: 0.8rem 0.5rem;
     font-size: 0.85rem;
@@ -2794,7 +2882,10 @@ button:active {
 }
 
 @media (max-width: 480px) {
-  /* Bid popup - even smaller on mobile */
+  .game-content {
+    padding-top: 7rem;
+  }
+  
   .bid-popup {
     font-size: 0.65rem;
     padding: 5px 10px;
@@ -2816,23 +2907,67 @@ button:active {
   
   #scoreboard {
     max-width: 280px;
+    padding: 1rem;
   }
   
   #scoreboard table {
     font-size: 0.7rem;
+    border-spacing: 0 0.3rem;
+  }
+  
+  .scoreboard-header {
+    gap: 0.3rem;
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+    padding: 0.7rem 0.8rem;
+    margin-bottom: 0;
+  }
+  
+  .round-info {
+    font-size: 0.75rem;
+  }
+  
+  .trump-info {
+    font-size: 0.75rem;
+    gap: 0.4rem;
+    padding: 0.6rem;
+  }
+  
+  .trump-suit {
+    font-size: 1.1rem;
+  }
+  
+  .cards-info {
+    font-size: 0.75rem;
+  }
+  
+  .separator {
+    font-size: 0.85rem;
+  }
+  
+  #centerMsg {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.6rem;
   }
   
   #scoreboard th, #scoreboard td {
-    padding: 0.25rem 0.15rem;
+    padding: 0.6rem 0.4rem;
   }
   
   #scoreboard th {
     font-size: 0.6rem;
-    padding: 0.35rem 0.15rem;
+    padding: 0.7rem 0.4rem;
     letter-spacing: 0.2px;
   }
   
-  /* Trick cards - minimal overlap on mobile for best visibility */
+  #scoreboard tbody td:first-child {
+    font-size: 0.8rem;
+  }
+  
+  #scoreboard tbody td:not(:first-child) {
+    font-size: 0.85rem;
+  }
+  
   .trick .card {
     margin-left: -30px;
     transform: scale(1);
@@ -2856,7 +2991,6 @@ button:active {
     font-size: 1.8rem;
   }
   
-  /* Scorecard Modal - Extra Small Mobile */
   #scorecardModal {
     padding: 1rem 0.75rem;
     border-radius: 16px;
@@ -2926,9 +3060,6 @@ button:active {
   }
 }
 
-/* ========================================
-   RECONNECTION OVERLAY
-   ======================================== */
 .reconnect-overlay {
   position: fixed;
   top: 0;
@@ -3080,6 +3211,16 @@ button:active {
 @keyframes pulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.1); }
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
 }
 
 @keyframes slideDown {

@@ -103,30 +103,9 @@ function updateUI(){
 }
 
 function updateRoundInfo(){
-  const trump = storage.trump || '♠';
-  const roundInfoEl = document.getElementById('roundInfo');
-  
-  // Map suit symbols to names
-  const suitNames = {
-    '♠': 'Spades',
-    '♥': 'Hearts',
-    '♦': 'Diamonds',
-    '♣': 'Clubs'
-  };
-  
-  const trumpName = suitNames[trump] || 'Spades';
-  
-  // Determine suit color class: black for spades/clubs, red for hearts/diamonds
-  const suitClass = (trump === '♠' || trump === '♣') ? 'suit-black' : 'suit-red';
-  
-  debugLog('DEBUG updateRoundInfo:', {trump, trumpName});
-  
-  if(roundInfoEl) {
-    roundInfoEl.innerHTML = `Trump <span class="${suitClass}" style="font-size: 1.8em; margin: 0 0.5rem;">${trump}</span> ${trumpName}`;
-    debugLog('DEBUG roundInfo updated:', roundInfoEl.textContent);
-  } else {
-    debugLog('DEBUG roundInfo element not found!');
-  }
+  // No-op: Trump info is now displayed in the scoreboard header
+  // This function is kept for backward compatibility with existing calls
+  return;
 }
 
 function showCenterMessage(text, duration = 2000){
@@ -220,12 +199,29 @@ function renderScoreboard(){
   const trump = storage.trump || '♠';
   const cardsThisRound = cardsPerRound - round + 1;
   
-  // Determine suit color class (reusing same logic as updateRoundInfo)
+  // Determine suit color class
   const suitClass = (trump === '♠' || trump === '♣') ? 'suit-black' : 'suit-red';
   
-  // Add round info header above the table with colored suit
-  let html = `<div style="text-align: center; margin-bottom: 1rem; font-size: 1.1rem; font-weight: 600;">
-    Round ${round} <span class="${suitClass}" style="font-size: 1.3em; margin: 0 0.3rem;">${trump}</span> ${cardsThisRound > 0 ? cardsThisRound : 0} Cards
+  // Map suit symbols to names
+  const suitNames = {
+    '♠': 'Spade',
+    '♥': 'Heart',
+    '♦': 'Diamond',
+    '♣': 'Club'
+  };
+  const trumpName = suitNames[trump] || 'Spade';
+  
+  // Determine plural/singular for cards
+  const cardLabel = cardsThisRound === 1 ? 'CARD' : 'CARDS';
+  
+  // Add enhanced round info header with vertical stack design
+  let html = `<div class="scoreboard-header">
+    <div class="round-info">ROUND ${round}<span class="round-divider"></span>${cardsThisRound > 0 ? cardsThisRound : 0} ${cardLabel}</div>
+    <div class="trump-info">
+      <span>TRUMP</span>
+      <span class="trump-suit ${suitClass}">${trump}</span>
+      <span>${trumpName.toUpperCase()}</span>
+    </div>
   </div>`;
   
   html += '<table><thead><tr><th>Player</th><th>Hands Bid</th><th>Hands Win</th></tr></thead><tbody>';
@@ -235,8 +231,8 @@ function renderScoreboard(){
     const won = storage.tricksWon[p.id] || 0;
     const isActive = p.id === storage.currentBidder ? ' class="active-turn"' : '';
     const isDealer = p.id === storage.dealerId;
-    const dealerBadge = isDealer ? ' <span style="background: var(--accent); color: white; padding: 0.1rem 0.4rem; border-radius: 0.2rem; font-size: 0.65rem; font-weight: 600; margin-left: 0.3rem;">DEALER</span>' : '';
-    html += `<tr${isActive}><td>${p.name}${dealerBadge}</td><td>${bid}</td><td>${won}</td></tr>`;
+    const dealerBadge = isDealer ? '<span class="dealer-badge">DEALER</span>' : '';
+    html += `<tr${isActive}><td><span>${p.name}</span>${dealerBadge}</td><td>${bid}</td><td>${won}</td></tr>`;
   });
   
   html += '</tbody></table>';
@@ -341,8 +337,6 @@ function renderTable(){
   
   // Update mini cards based on current trick
   updateMiniCards();
-  
-  updateRoundInfo();
 }
 
 function renderMyHand(){
