@@ -1748,7 +1748,7 @@ button:active {
 }
 
 #scoreboard thead {
-  border-bottom: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 #scoreboard th {
@@ -1803,7 +1803,7 @@ button:active {
 
 .dealer-badge {
   background: linear-gradient(135deg, #ffd700, #ffb900);
-  color: #000;
+  color: #1a1a1a;
   padding: 0.2rem 0.5rem;
   border-radius: 12px;
   font-size: 0.6rem;
