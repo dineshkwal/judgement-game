@@ -24,10 +24,14 @@
   padding: 0;
 }
 
+html {
+  background: var(--gradient-end);
+  min-height: 100%;
+}
+
 body {
   font-family: 'Poppins', Helvetica, Arial, sans-serif;
   background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
-  background-attachment: fixed;
   color: #eee;
   display: flex;
   flex-direction: column;
@@ -35,6 +39,7 @@ body {
   justify-content: center;
   padding: 1rem;
   min-height: 100vh;
+  position: relative;
 }
 
 h1 {
@@ -793,12 +798,12 @@ button:active {
 
 /* ===== LOBBY SCREEN STYLING ===== */
 .lobby-container {
-  background: rgba(255, 255, 255, 0.03);
+  background: linear-gradient(135deg, rgba(26, 47, 26, 0.95) 0%, rgba(10, 26, 10, 0.95) 100%);
   backdrop-filter: blur(10px);
   border-radius: 24px;
   padding: 2rem 1.5rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.2);
   max-width: 500px;
   width: 100%;
   margin: 0 auto;
@@ -1113,6 +1118,7 @@ button:active {
   padding: 0.5rem;
   min-height: 100vh;
   position: relative;
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
 }
 
 #game.active {
@@ -1787,7 +1793,7 @@ button:active {
   top: calc(5rem + 1.5rem + 1.5rem + 3rem + 24vmin);
   left: 50%;
   transform: translate(-50%, -50%);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  background: linear-gradient(135deg, rgba(26, 47, 26, 0.98) 0%, rgba(10, 26, 10, 0.98) 100%);
   backdrop-filter: blur(20px);
   border: 2px solid rgba(76, 175, 80, 0.4);
   border-radius: 16px;

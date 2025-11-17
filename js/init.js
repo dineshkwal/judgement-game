@@ -432,14 +432,30 @@ function checkAndShowResumeBanner() {
           return;
         }
         
-        // Check if there are any OTHER active (online) players in the lobby besides the current player
-        const activePlayers = Object.values(players).filter(p => p.status === 'online' && p.id !== savedPlayerId);
-        debugLog('Active players count (excluding current player):', activePlayers.length);
-        debugLog('All players:', Object.values(players).map(p => ({id: p.id, status: p.status, name: p.name})));
+        // Check if there are any OTHER players in the lobby besides the current player
+        // We check for both active AND recently active players (within last 5 minutes)
+        const now = Date.now();
+        const FIVE_MINUTES = 5 * 60 * 1000;
         
-        if (activePlayers.length === 0) {
+        const otherPlayers = Object.values(players).filter(p => {
+          if (p.id === savedPlayerId) return false; // Exclude current player
+          
+          // Consider player "active" if:
+          // 1. They're marked as online, OR
+          // 2. Their last seen was within the last 5 minutes
+          const recentlyActive = p.lastSeen && (now - p.lastSeen < FIVE_MINUTES);
+          return p.status === 'online' || recentlyActive;
+        });
+        
+        debugLog('Other players count (active or recently active):', otherPlayers.length);
+        debugLog('All players:', Object.values(players).map(p => ({id: p.id, status: p.status, name: p.name, lastSeen: p.lastSeen})));
+        
+        if (otherPlayers.length === 0) {
           debugLog('No other active players in lobby, not showing resume banner');
-          // Don't clear localStorage yet - player might reconnect
+          // Clear localStorage since the lobby is effectively empty
+          localStorage.removeItem('lastLobbyId');
+          localStorage.removeItem('lastPlayerId');
+          localStorage.removeItem('myPlayerInfo');
           return;
         }
         
