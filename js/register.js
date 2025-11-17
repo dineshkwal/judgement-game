@@ -194,8 +194,11 @@ function rejoinAsExistingPlayer(existingPlayerId, existingPlayer, name, avatar, 
   
   // Show user info in top right
   const avatarElem = document.getElementById('userInfoAvatar');
-  avatarElem.src = getValidAvatar(avatar, name);
+  const avatarUrl = getValidAvatar(avatar, name);
+  debugLog('Setting userInfo avatar on rejoin:', avatarUrl);
+  avatarElem.src = avatarUrl || `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(name)}&backgroundColor=4caf50`;
   avatarElem.onerror = function() {
+    debugLog('Avatar load error on rejoin, using fallback');
     this.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(name)}&backgroundColor=4caf50`;
   };
   document.getElementById('userInfo').classList.add('active');
@@ -280,8 +283,11 @@ function joinAsNewPlayer(name, avatar, normalizedLobbyId) {
     
     // Show user info in top right
     const avatarElem = document.getElementById('userInfoAvatar');
-    avatarElem.src = getValidAvatar(avatar, name);
+    const avatarUrl = getValidAvatar(avatar, name);
+    debugLog('Setting userInfo avatar on new join:', avatarUrl);
+    avatarElem.src = avatarUrl || `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(name)}&backgroundColor=4caf50`;
     avatarElem.onerror = function() {
+      debugLog('Avatar load error on new join, using fallback');
       this.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(name)}&backgroundColor=4caf50`;
     };
     document.getElementById('userInfo').classList.add('active');
