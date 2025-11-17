@@ -1204,7 +1204,7 @@ button:active {
   max-width: 650px;
   width: 90%;
   overflow-x: auto;
-  margin: 1.5rem auto;
+  margin: 1rem auto 1.5rem auto;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
@@ -1294,7 +1294,7 @@ button:active {
   max-height: 400px;
   background: radial-gradient(circle at center, #2c5f2c 0%, #1e4520 100%);
   border-radius: 50%;
-  margin: 3rem auto;
+  margin: 2.5rem auto;
   box-shadow: 
     0 0 0 8px rgba(76, 175, 80, 0.15),
     0 0 0 12px rgba(76, 175, 80, 0.08),
