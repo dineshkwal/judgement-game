@@ -2706,7 +2706,7 @@ button:active {
   
   .trick .card {
     transform: scale(0.9);
-    margin-left: -40px;
+    margin-left: -45px;
   }
   
   .trick .card:first-child {
@@ -2783,8 +2783,8 @@ button:active {
   }
   
   .card {
-    width: 70px;
-    height: 100px;
+    width: 80px;
+    height: 115px;
   }
   
   .card .card-corner {
@@ -3003,7 +3003,7 @@ button:active {
   
   .trick .card {
     transform: scale(0.9);
-    margin-left: -35px;
+    margin-left: -42px;
   }
   
   .trick .card:first-child {
@@ -3016,8 +3016,8 @@ button:active {
   }
   
   .card {
-    width: 60px;
-    height: 85px;
+    width: 70px;
+    height: 100px;
   }
   
   .card .card-corner {
