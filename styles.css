@@ -1246,7 +1246,7 @@ button:active {
 
 #dealBtn {
   position: absolute;
-  top: calc(3rem + 30vmin);
+  top: calc(2rem + 30vmin);
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 0.8rem 2rem;
@@ -1312,6 +1312,26 @@ button:active {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+/* Move bottom player closer to edge (similar to top player) */
+.seat[style*="top: 88%"],
+.seat[style*="top: 89%"],
+.seat[style*="top: 90%"],
+.seat[style*="top: 91%"],
+.seat[style*="top: 92%"],
+.seat[style*="top: 93%"] {
+  top: 93% !important;
+}
+
+/* Adjust bid popup for bottom player */
+.seat[style*="top: 88%"] .bid-popup,
+.seat[style*="top: 89%"] .bid-popup,
+.seat[style*="top: 90%"] .bid-popup,
+.seat[style*="top: 91%"] .bid-popup,
+.seat[style*="top: 92%"] .bid-popup,
+.seat[style*="top: 93%"] .bid-popup {
+  top: -40px;
 }
 
 .seat .mini-card {
@@ -1620,13 +1640,12 @@ button:active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 0;
+  gap: 1rem;
 }
 
 .trick .card {
   box-shadow: 0 6px 16px rgba(0, 0, 0, .5), 0 3px 6px rgba(0, 0, 0, .3);
   transform: scale(1.15);
-  margin-left: -40px;
 }
 
 .trick .card:first-child {
@@ -1867,7 +1886,7 @@ button:active {
 
 #biddingUI {
   position: absolute;
-  top: calc(3rem + 30vmin);
+  top: calc(2rem + 30vmin);
   left: 50%;
   transform: translate(-50%, -50%);
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
@@ -2677,7 +2696,6 @@ button:active {
   }
   
   .trick .card {
-    margin-left: -25px;
     transform: scale(1.05);
   }
   
@@ -2969,7 +2987,6 @@ button:active {
   }
   
   .trick .card {
-    margin-left: -30px;
     transform: scale(1);
   }
   
