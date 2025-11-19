@@ -1314,36 +1314,6 @@ button:active {
   align-items: center;
 }
 
-/* Move bottom player closer to edge (similar to top player) */
-.seat[style*="top: 88%"],
-.seat[style*="top: 89%"],
-.seat[style*="top: 90%"],
-.seat[style*="top: 91%"],
-.seat[style*="top: 92%"],
-.seat[style*="top: 93%"] {
-  top: 93% !important;
-}
-
-/* Adjust bid popup for bottom player */
-.seat[style*="top: 88%"] .bid-popup,
-.seat[style*="top: 89%"] .bid-popup,
-.seat[style*="top: 90%"] .bid-popup,
-.seat[style*="top: 91%"] .bid-popup,
-.seat[style*="top: 92%"] .bid-popup,
-.seat[style*="top: 93%"] .bid-popup {
-  top: -40px;
-}
-
-/* Adjust mini-card position for bottom player to avoid overlapping with hand */
-.seat[style*="top: 88%"] .mini-card,
-.seat[style*="top: 89%"] .mini-card,
-.seat[style*="top: 90%"] .mini-card,
-.seat[style*="top: 91%"] .mini-card,
-.seat[style*="top: 92%"] .mini-card,
-.seat[style*="top: 93%"] .mini-card {
-  transform: translate(-50%, calc(-50% - 60px)) !important;
-}
-
 .seat .mini-card {
   position: absolute;
   width: 26px;
@@ -1650,12 +1620,13 @@ button:active {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 1rem;
+  gap: 0;
 }
 
 .trick .card {
   box-shadow: 0 6px 16px rgba(0, 0, 0, .5), 0 3px 6px rgba(0, 0, 0, .3);
-  transform: scale(1.15);
+  transform: scale(0.9);
+  margin-left: -50px;
 }
 
 .trick .card:first-child {
@@ -2706,7 +2677,12 @@ button:active {
   }
   
   .trick .card {
-    transform: scale(1.05);
+    transform: scale(0.85);
+    margin-left: -40px;
+  }
+  
+  .trick .card:first-child {
+    margin-left: 0;
   }
   
   #centerMsg {
@@ -2997,7 +2973,12 @@ button:active {
   }
   
   .trick .card {
-    transform: scale(1);
+    transform: scale(0.8);
+    margin-left: -45px;
+  }
+  
+  .trick .card:first-child {
+    margin-left: 0;
   }
   
   #centerMsg {

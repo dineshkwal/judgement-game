@@ -273,7 +273,7 @@ function renderTable(){
   const N = storage.players.length;
   storage.players.forEach((p, i) => {
     const angle = (i / N) * 2 * Math.PI - Math.PI / 2;
-    const radius = 38;
+    const radius = 42; // Increased from 38 to push all players closer to edge
     const x = 50 + radius * Math.cos(angle);
     const y = 50 + radius * Math.sin(angle);
     const seat = document.createElement('div');
@@ -294,17 +294,10 @@ function renderTable(){
     miniCard.className = 'mini-card';
     miniCard.setAttribute('data-mini-card', p.id);
     
-    // Position mini card based on avatar's angle around the table
-    // Use percentage-based positioning relative to seat
-    // Push outward from center but keep within reasonable bounds
-    const offsetDistance = 65; // pixels from seat center
-    const miniCardX = offsetDistance * Math.cos(angle);
-    const miniCardY = offsetDistance * Math.sin(angle);
-    
-    // Apply positioning
+    // Position mini card above the avatar (centered horizontally, offset vertically)
     miniCard.style.left = '50%';
-    miniCard.style.top = '50%';
-    miniCard.style.transform = `translate(calc(-50% + ${miniCardX}px), calc(-50% + ${miniCardY}px))`;
+    miniCard.style.top = '-28px'; // Position above avatar with slight overlap
+    miniCard.style.transform = 'translateX(-50%)';
     
     // Add avatar image with fallback
     const img = document.createElement('img');
