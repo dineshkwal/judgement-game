@@ -2693,6 +2693,7 @@ button:active {
   #roundInfo {
     font-size: 1rem;
     padding: 0.5rem;
+    margin-top: 1rem;
   }
   
   #table {
@@ -2974,7 +2975,7 @@ button:active {
   
   .trick .card {
     transform: scale(0.8);
-    margin-left: -45px;
+    margin-left: -35px;
   }
   
   .trick .card:first-child {
