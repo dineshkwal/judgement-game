@@ -90,6 +90,8 @@ function listenForPlayers(){
       
       // CRITICAL: Use lastKnownBids to track what we had BEFORE this Firebase update
       // This prevents missing bid popups when multiple updates happen rapidly
+      // On first load (when lastKnownBids is undefined), initialize it with current bids to prevent showing old bid popups
+      const isFirstLoad = storage.lastKnownBids === undefined;
       const prevBids = storage.lastKnownBids ? {...storage.lastKnownBids} : {};
       const currentBids = gameData.bids && typeof gameData.bids === 'object' ? {...gameData.bids} : {};
       
@@ -212,8 +214,9 @@ function listenForPlayers(){
           
           // Detect new bids and show popup (after table is rendered so seats exist)
           // Show popup to all players including the bidder
-          console.log('🎯 [TRICK-RESOLVED PATH] Checking for new bids. Previous:', prevBids, 'Current:', currentBids);
-          if (currentBids && typeof currentBids === 'object') {
+          // Skip on first load to avoid showing old bid popups
+          console.log('🎯 [TRICK-RESOLVED PATH] Checking for new bids. Previous:', prevBids, 'Current:', currentBids, 'isFirstLoad:', isFirstLoad);
+          if (!isFirstLoad && currentBids && typeof currentBids === 'object') {
             for (let playerId in currentBids) {
               console.log(`🔍 Player ${playerId}: prevBids[${playerId}]=${prevBids[playerId]}, currentBids[${playerId}]=${currentBids[playerId]}, myId=${storage.myId}`);
               if (prevBids[playerId] === undefined && currentBids[playerId] !== undefined) {
@@ -288,8 +291,9 @@ function listenForPlayers(){
       
       // Detect new bids and show popup (after table is rendered so seats exist)
       // Show popup to all players including the bidder
-      console.log('🎯 [NORMAL PATH] Checking for new bids. Previous:', prevBids, 'Current:', currentBids);
-      if (currentBids && typeof currentBids === 'object') {
+      // Skip on first load to avoid showing old bid popups
+      console.log('🎯 [NORMAL PATH] Checking for new bids. Previous:', prevBids, 'Current:', currentBids, 'isFirstLoad:', isFirstLoad);
+      if (!isFirstLoad && currentBids && typeof currentBids === 'object') {
         for (let playerId in currentBids) {
           console.log(`🔍 Player ${playerId}: prevBids[${playerId}]=${prevBids[playerId]}, currentBids[${playerId}]=${currentBids[playerId]}, myId=${storage.myId}`);
           if (prevBids[playerId] === undefined && currentBids[playerId] !== undefined) {
