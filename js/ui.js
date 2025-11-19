@@ -354,6 +354,11 @@ function renderMyHand(){
     const el = document.createElement('div');
     el.className = `card ${suitColor(c.suit)}`;
     
+    // Add trump class if this card is trump suit
+    if (storage.trump && c.suit === storage.trump) {
+      el.classList.add('trump');
+    }
+    
     // Gray out cards if bidding, not my turn, card is unplayable due to follow-suit, or card being played
     if(isBidding){
       el.style.opacity = '0.4';
