@@ -462,7 +462,7 @@ function renderCurrentTrick(){
   const div = document.getElementById('currentTrick');
   if(!div) return;
   div.innerHTML = '';
-  storage.trick.forEach(t => {
+  storage.trick.forEach((t, index) => {
     const el = document.createElement('div');
     el.className = `card ${suitColor(t.card.suit)}`;
     const cardLabel = t.card.rank + t.card.suit;
@@ -473,6 +473,12 @@ function renderCurrentTrick(){
       <span class="card-corner bottom-left">${cardLabel}</span>
       <span class="card-corner bottom-right">${cardLabel}</span>
     `;
+    
+    // Re-apply winner class if this card is marked as winner
+    if(storage.winningCardIndex !== undefined && storage.winningCardIndex === index) {
+      el.classList.add('winner');
+    }
+    
     div.appendChild(el);
   });
   

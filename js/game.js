@@ -323,13 +323,15 @@ function resolveTrick(){
   // Calculate winner (all clients do this for display)
   let winner = null;
   let bestVal = -1;
-  storage.trick.forEach(t => {
+  let winningCardIndex = -1;
+  storage.trick.forEach((t, index) => {
     let val = t.card.value;
     if(t.card.suit === storage.trump) val += 100;
     else if(t.card.suit !== storage.leadSuit) val = -100;
     if(val > bestVal){
       bestVal = val;
       winner = t.playerId;
+      winningCardIndex = index;
     }
   });
   
@@ -345,14 +347,26 @@ function resolveTrick(){
 
   const winnerName = storage.players.find(p => p.id === winner)?.name || 'Player';
   debugLog('DEBUG: resolveTrick showing winner message:', winnerName);
-  showCenterMessage(`${winnerName} won the hand!`, 2000); // Show for 2 seconds
+  showCenterMessage(`${winnerName} won the hand!`, 3000); // Show for 3 seconds
   
   // Set flag to prevent updateUI from changing message during winner display
   storage.showingWinnerMessage = true;
   debugLog('DEBUG: Set showingWinnerMessage = true');
 
+  // Store winning card index so it persists across re-renders
+  storage.winningCardIndex = winningCardIndex;
+  
+  // Highlight winning card with green glow
+  const trickDiv = document.getElementById('currentTrick');
+  if(trickDiv && winningCardIndex >= 0) {
+    const cards = trickDiv.querySelectorAll('.card');
+    if(cards[winningCardIndex]) {
+      cards[winningCardIndex].classList.add('winner');
+    }
+  }
+
   setTimeout(() => {
-    debugLog('DEBUG: resolveTrick 2s timeout fired');
+    debugLog('DEBUG: resolveTrick 3s timeout fired');
     storage.trickResolving = false;
     debugLog('DEBUG: Set trickResolving = false (keeping showingWinnerMessage = true for now)');
     const allEmpty = Object.values(storage.hands).every(h => !h || h.length === 0);
@@ -382,6 +396,9 @@ function resolveTrick(){
     } else {
       debugLog('DEBUG: I am NOT dealer, waiting for dealer to update Firebase');
     }
+    
+    // Clear winning card index after animation completes
+    storage.winningCardIndex = undefined;
     
     // All players clear local trick UI
     storage.trick = [];
