@@ -1078,6 +1078,11 @@ button:active {
   margin-top: 2rem;
 }
 
+/* Trump card highlighting */
+.card.trump {
+  border: 3px solid #FFD700;
+}
+
 .start-game-btn:hover {
   background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%);
   transform: translateY(-2px);
@@ -1519,7 +1524,7 @@ button:active {
   margin: 1.5rem auto;
   overflow-x: auto;
   overflow-y: visible;
-  padding: .5rem;
+  padding: 12px .5rem .5rem .5rem;
   width: 100%;
   max-width: 100%;
   -webkit-overflow-scrolling: touch;
