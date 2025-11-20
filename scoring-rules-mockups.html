@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Scoring Rules - UI Mockups</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1e4520 0%, #2c5f2c 100%);
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #FFD700;
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .subtitle {
+      color: #a5d6a7;
+      text-align: center;
+      margin-bottom: 3rem;
+      font-size: 1.2rem;
+    }
+
+    .concepts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .concept-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .concept-box.recommended {
+      border: 3px solid #4caf50;
+      box-shadow: 0 0 30px rgba(76, 175, 80, 0.3);
+    }
+
+    .concept-title {
+      color: #FFD700;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .badge {
+      background: #4caf50;
+      color: white;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    .concept-desc {
+      color: #a5d6a7;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .mockup {
+      background: rgba(30, 69, 32, 0.8);
+      border-radius: 12px;
+      padding: 2rem;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .settings-section {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-header {
+      color: #FFD700;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .preset-cards {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .preset-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .preset-card:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: #4caf50;
+      transform: translateY(-2px);
+    }
+
+    .preset-card.selected {
+      background: rgba(76, 175, 80, 0.2);
+      border-color: #4caf50;
+      border-width: 3px;
+    }
+
+    .preset-card.selected::before {
+      content: '✓';
+      position: absolute;
+      top: 0.8rem;
+      right: 0.8rem;
+      background: #4caf50;
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .preset-name {
+      color: #FFD700;
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .preset-description {
+      color: #a5d6a7;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 0.8rem;
+    }
+
+    .scoring-details {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+      padding: 0.8rem;
+      font-size: 0.85rem;
+      line-height: 1.8;
+    }
+
+    .scoring-details div {
+      color: #fff;
+      margin: 0.2rem 0;
+    }
+
+    .scoring-details .highlight {
+      color: #4caf50;
+      font-weight: 600;
+    }
+
+    .scoring-details .negative {
+      color: #f44336;
+      font-weight: 600;
+    }
+
+    .custom-rules {
+      margin-top: 1rem;
+    }
+
+    .rule-input-group {
+      margin-bottom: 1rem;
+    }
+
+    .rule-label {
+      color: #a5d6a7;
+      font-size: 0.9rem;
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
+    }
+
+    .rule-input {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 0.6rem;
+      color: white;
+      font-size: 0.95rem;
+      width: 80px;
+      text-align: center;
+    }
+
+    .rule-input:focus {
+      outline: none;
+      border-color: #4caf50;
+    }
+
+    .rule-text {
+      color: #a5d6a7;
+      font-size: 0.95rem;
+    }
+
+    .example-box {
+      background: rgba(33, 150, 243, 0.15);
+      border-left: 3px solid #2196F3;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+
+    .example-title {
+      color: #2196F3;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .example-content {
+      color: #a5d6a7;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    }
+
+    .comparison-table {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .comparison-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .comparison-table th {
+      background: rgba(255, 215, 0, 0.2);
+      color: #FFD700;
+      padding: 0.8rem;
+      font-size: 0.85rem;
+      text-align: center;
+      border-bottom: 2px solid rgba(255, 215, 0, 0.4);
+    }
+
+    .comparison-table td {
+      color: #a5d6a7;
+      padding: 0.6rem;
+      text-align: center;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .comparison-table tr:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tab {
+      background: transparent;
+      border: none;
+      color: #a5d6a7;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .tab:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tab.active {
+      color: #FFD700;
+      border-bottom-color: #FFD700;
+    }
+
+    .dropdown-select {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 0.8rem;
+      color: white;
+      font-size: 1rem;
+      width: 100%;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath fill='%23fff' d='M7 10L2 5h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 3rem;
+    }
+
+    .dropdown-select:focus {
+      outline: none;
+      border-color: #4caf50;
+    }
+
+    .info-banner {
+      background: rgba(33, 150, 243, 0.1);
+      border: 2px solid #2196F3;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .info-icon {
+      color: #2196F3;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .info-text {
+      color: #a5d6a7;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .recommendation {
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.2) 0%, rgba(76, 175, 80, 0.1) 100%);
+      border: 3px solid #4caf50;
+      border-radius: 15px;
+      padding: 2rem;
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .recommendation h2 {
+      color: #4caf50;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .recommendation p {
+      color: #fff;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎯 Custom Scoring Rules - UI Mockups</h1>
+    <p class="subtitle">Different approaches for letting players customize scoring</p>
+
+    <div class="concepts-grid">
+      <!-- Concept 1: Preset Cards -->
+      <div class="concept-box recommended">
+        <div class="concept-title">
+          📋 Concept 1: Preset Cards Selection
+          <span class="badge">RECOMMENDED</span>
+        </div>
+        <div class="concept-desc">
+          Show pre-configured scoring rules as clickable cards. Players pick one preset - simple and clear.
+        </div>
+        
+        <div class="mockup">
+          <div class="settings-section">
+            <div class="section-header">
+              ⚙️ Game Settings
+            </div>
+            
+            <div class="info-banner">
+              <div class="info-icon">ℹ️</div>
+              <div class="info-text">
+                Choose how players earn points. Different rules create different strategies!
+              </div>
+            </div>
+
+            <div class="preset-cards">
+              <div class="preset-card selected" onclick="toggleSelection(this)">
+                <div class="preset-name">🎯 Classic (Default)</div>
+                <div class="preset-description">
+                  Balanced scoring - rewards accuracy
+                </div>
+                <div class="scoring-details">
+                  <div>Exact bid: <span class="highlight">+20 points</span></div>
+                  <div>Under bid: <span class="negative">0 points</span></div>
+                  <div>Over bid: <span class="highlight">+[tricks made]</span></div>
+                </div>
+              </div>
+
+              <div class="preset-card" onclick="toggleSelection(this)">
+                <div class="preset-name">💎 High Stakes</div>
+                <div class="preset-description">
+                  Big rewards for exact bids, risky gameplay
+                </div>
+                <div class="scoring-details">
+                  <div>Exact bid: <span class="highlight">+[bid × 10] points</span></div>
+                  <div>Under bid: <span class="negative">0 points</span></div>
+                  <div>Over bid: <span class="highlight">+[bid] points</span></div>
+                </div>
+                <div class="example-box">
+                  <div class="example-title">Example:</div>
+                  <div class="example-content">
+                    Bid 3, make 3 → +30 points<br>
+                    Bid 3, make 2 → 0 points<br>
+                    Bid 3, make 4 → +3 points
+                  </div>
+                </div>
+              </div>
+
+              <div class="preset-card" onclick="toggleSelection(this)">
+                <div class="preset-name">⚡ Aggressive</div>
+                <div class="preset-description">
+                  Penalties for failing, high risk/reward
+                </div>
+                <div class="scoring-details">
+                  <div>Exact bid: <span class="highlight">+[bid × 10 + 10]</span></div>
+                  <div>Under bid: <span class="negative">-[difference × 5]</span></div>
+                  <div>Over bid: <span class="highlight">+[bid]</span></div>
+                </div>
+                <div class="example-box">
+                  <div class="example-title">Example:</div>
+                  <div class="example-content">
+                    Bid 4, make 4 → +50 points<br>
+                    Bid 4, make 2 → -10 points<br>
+                    Bid 4, make 5 → +4 points
+                  </div>
+                </div>
+              </div>
+
+              <div class="preset-card" onclick="toggleSelection(this)">
+                <div class="preset-name">🎲 Casual</div>
+                <div class="preset-description">
+                  Forgiving scoring, good for beginners
+                </div>
+                <div class="scoring-details">
+                  <div>Exact bid: <span class="highlight">+[bid × 5 + 15]</span></div>
+                  <div>Within 1: <span class="highlight">+[tricks × 3]</span></div>
+                  <div>Off by 2+: <span class="highlight">+[tricks]</span></div>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn">
+              Start Game with High Stakes Rules
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Concept 2: Dropdown Selection -->
+      <div class="concept-box">
+        <div class="concept-title">
+          📝 Concept 2: Dropdown Menu
+        </div>
+        <div class="concept-desc">
+          Simple dropdown with preset names. Click to see details in a panel below.
+        </div>
+        
+        <div class="mockup">
+          <div class="settings-section">
+            <div class="section-header">
+              ⚙️ Scoring Rules
+            </div>
+
+            <div class="rule-input-group">
+              <label class="rule-label">Select Scoring Preset:</label>
+              <select class="dropdown-select" onchange="showRuleDetails(this.value)">
+                <option value="classic">🎯 Classic (Default)</option>
+                <option value="highstakes" selected>💎 High Stakes</option>
+                <option value="aggressive">⚡ Aggressive</option>
+                <option value="casual">🎲 Casual</option>
+                <option value="custom">✏️ Custom Rules...</option>
+              </select>
+            </div>
+
+            <div class="scoring-details" style="margin-top: 1rem; padding: 1rem;">
+              <div style="color: #FFD700; font-weight: bold; margin-bottom: 0.8rem; font-size: 1rem;">
+                💎 High Stakes Rules
+              </div>
+              <div>✓ Exact bid: <span class="highlight">+[bid × 10] points</span></div>
+              <div>✗ Under bid: <span class="negative">0 points</span></div>
+              <div>⚠ Over bid: <span class="highlight">+[bid] points</span></div>
+            </div>
+
+            <div class="comparison-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Bid</th>
+                    <th>Made</th>
+                    <th>Points</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>3</td>
+                    <td>3 ✓</td>
+                    <td style="color: #4caf50; font-weight: bold;">+30</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>2 ✗</td>
+                    <td style="color: #f44336; font-weight: bold;">0</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>4 ⚠</td>
+                    <td style="color: #FFD700; font-weight: bold;">+3</td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>5 ✓</td>
+                    <td style="color: #4caf50; font-weight: bold;">+50</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <button class="btn">
+              Confirm Rules & Start
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Concept 3: Tabs with Presets + Custom -->
+      <div class="concept-box">
+        <div class="concept-title">
+          🗂️ Concept 3: Tabs (Presets + Custom)
+        </div>
+        <div class="concept-desc">
+          Tabs separate preset rules from custom builder. Advanced users can create their own.
+        </div>
+        
+        <div class="mockup">
+          <div class="settings-section">
+            <div class="tabs">
+              <button class="tab active">📋 Presets</button>
+              <button class="tab">✏️ Custom</button>
+            </div>
+
+            <div class="preset-cards">
+              <div class="preset-card selected" onclick="toggleSelection(this)">
+                <div class="preset-name">💎 High Stakes</div>
+                <div class="scoring-details">
+                  <div>Exact: <span class="highlight">bid × 10</span></div>
+                  <div>Under: <span class="negative">0</span></div>
+                  <div>Over: <span class="highlight">bid</span></div>
+                </div>
+              </div>
+
+              <div class="preset-card" onclick="toggleSelection(this)">
+                <div class="preset-name">⚡ Aggressive</div>
+                <div class="scoring-details">
+                  <div>Exact: <span class="highlight">bid × 10 + 10</span></div>
+                  <div>Under: <span class="negative">-diff × 5</span></div>
+                  <div>Over: <span class="highlight">bid</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 8px;">
+              <div style="color: #a5d6a7; font-size: 0.9rem; text-align: center;">
+                💡 Want different rules? Switch to <strong style="color: #FFD700;">Custom</strong> tab
+              </div>
+            </div>
+
+            <button class="btn">
+              Start Game
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Concept 4: Custom Builder -->
+      <div class="concept-box">
+        <div class="concept-title">
+          ✏️ Concept 4: Custom Rule Builder
+        </div>
+        <div class="concept-desc">
+          Let players define exact formulas for each scenario. For advanced users.
+        </div>
+        
+        <div class="mockup">
+          <div class="settings-section">
+            <div class="section-header">
+              ✏️ Build Your Own Scoring Rules
+            </div>
+
+            <div class="custom-rules">
+              <div class="rule-input-group">
+                <label class="rule-label">When bid is EXACT:</label>
+                <div class="input-row">
+                  <input type="number" class="rule-input" value="10" min="0">
+                  <span class="rule-text">× bid +</span>
+                  <input type="number" class="rule-input" value="0" min="0">
+                  <span class="rule-text">bonus</span>
+                </div>
+              </div>
+
+              <div class="rule-input-group">
+                <label class="rule-label">When UNDER bid:</label>
+                <div class="input-row">
+                  <input type="number" class="rule-input" value="0" min="-50">
+                  <span class="rule-text">base +</span>
+                  <input type="number" class="rule-input" value="0" min="-20">
+                  <span class="rule-text">× tricks made</span>
+                </div>
+              </div>
+
+              <div class="rule-input-group">
+                <label class="rule-label">When OVER bid:</label>
+                <div class="input-row">
+                  <input type="number" class="rule-input" value="1" min="0">
+                  <span class="rule-text">× bid +</span>
+                  <input type="number" class="rule-input" value="0" min="0">
+                  <span class="rule-text">bonus</span>
+                </div>
+              </div>
+
+              <div class="example-box">
+                <div class="example-title">Preview (if bid = 3):</div>
+                <div class="example-content">
+                  Make 3: <strong style="color: #4caf50;">+30 points</strong><br>
+                  Make 2: <strong style="color: #f44336;">0 points</strong><br>
+                  Make 4: <strong style="color: #FFD700;">+3 points</strong>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-secondary">
+              💾 Save Custom Rules
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendation -->
+    <div class="recommendation">
+      <h2>🎯 Recommended Approach</h2>
+      <p><strong>Concept 1: Preset Cards</strong> is the best for most players!</p>
+      <p>✅ <strong>Visual & Clear:</strong> Each rule preset shown as a card with examples</p>
+      <p>✅ <strong>Easy to Compare:</strong> See all options at once</p>
+      <p>✅ <strong>No Confusion:</strong> Pre-configured rules work out of the box</p>
+      <p>✅ <strong>Mobile-Friendly:</strong> Large touch targets</p>
+      
+      <p style="margin-top: 1.5rem; font-size: 0.95rem; color: #a5d6a7;">
+        <strong>Optional:</strong> Add a "Custom" preset card that opens Concept 4's builder for advanced players
+      </p>
+
+      <p style="margin-top: 1rem; font-size: 1rem; color: #fff;">
+        <strong>Suggested Presets to Include:</strong>
+      </p>
+      <div style="text-align: left; max-width: 600px; margin: 1rem auto; color: #a5d6a7; font-size: 0.95rem; line-height: 2;">
+        1. 🎯 <strong>Classic</strong> - Current default rules<br>
+        2. 💎 <strong>High Stakes</strong> - Bid × 10 for exact<br>
+        3. ⚡ <strong>Aggressive</strong> - Penalties for missing<br>
+        4. 🎲 <strong>Casual</strong> - Forgiving for beginners<br>
+        5. ✏️ <strong>Custom</strong> - Build your own
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleSelection(card) {
+      // Remove selected from all cards in the same container
+      const container = card.parentElement;
+      container.querySelectorAll('.preset-card').forEach(c => {
+        c.classList.remove('selected');
+      });
+      // Add selected to clicked card
+      card.classList.add('selected');
+    }
+
+    function showRuleDetails(value) {
+      console.log('Selected rule:', value);
+      // In real implementation, this would update the details panel
+    }
+  </script>
+</body>
+</html>

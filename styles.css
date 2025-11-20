@@ -3316,3 +3316,57 @@ button:active {
     width: 100%;
   }
 }
+
+/* iOS-specific fixes for color scheme issues (applies to all iOS browsers - Safari, Chrome, Firefox, Edge) */
+@supports (-webkit-touch-callout: none) {
+  /* Fix backdrop-filter rainbow effect on iOS WebKit - using solid colors that match original feel */
+  .lobby-info-card {
+    background: rgba(76, 175, 80, 0.12) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  .lobby-code-display {
+    background: rgba(255, 215, 0, 0.25) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  .player-item {
+    background: rgba(76, 175, 80, 0.15) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  .game-settings select {
+    background: rgba(76, 175, 80, 0.25) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  /* Fix bidding dropdown background */
+  .dropdown-selected {
+    background: rgba(76, 175, 80, 0.25) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  .dropdown-options {
+    background: rgba(45, 95, 45, 0.98) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* Additional iOS detection for older devices */
+@media only screen and (-webkit-min-device-pixel-ratio: 2) and (max-device-width: 1024px) {
+  .lobby-info-card,
+  .lobby-code-display,
+  .player-item,
+  .game-settings select,
+  .dropdown-selected,
+  .dropdown-options {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
