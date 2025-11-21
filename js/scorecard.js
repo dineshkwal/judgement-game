@@ -21,6 +21,9 @@ function toggleScorecard() {
       }, 100);
     }
   } else {
+    // Track scorecard opened
+    Analytics.trackScorecardOpened('game');
+    
     renderScorecard();
     overlay.classList.add('show');
     // Remove game-over-screen class when showing regular scorecard
@@ -179,9 +182,9 @@ function renderFinalScorecard(sortedPlayers) {
   // Action buttons
   html += '<div style="text-align:center; margin-top:2rem; display:flex; flex-wrap:wrap; gap:1rem; justify-content:center;">';
   html += '<button onclick="shareGameResults()" style="padding:1rem 2rem; font-size:1.2rem; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 15px rgba(102,126,234,0.4); transition:all 0.3s ease;" onmouseover="this.style.transform=\'translateY(-2px)\'; this.style.boxShadow=\'0 6px 20px rgba(102,126,234,0.6)\';" onmouseout="this.style.transform=\'translateY(0)\'; this.style.boxShadow=\'0 4px 15px rgba(102,126,234,0.4)\';">📤 Share Results</button>';
-  html += '<button onclick="renderScorecard(); window.scoreboardFromGameOver = true;" style="padding:1rem 2rem; font-size:1.2rem; background:var(--accent); color:white; border:none; border-radius:10px; cursor:pointer;">View Full Scoreboard</button>';
+  html += '<button onclick="Analytics.trackViewFullScorecard(); renderScorecard(); window.scoreboardFromGameOver = true;" style="padding:1rem 2rem; font-size:1.2rem; background:var(--accent); color:white; border:none; border-radius:10px; cursor:pointer;">View Full Scoreboard</button>';
   html += '<button onclick="playAgain()" style="padding:1rem 2rem; font-size:1.2rem; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer;">🎮 Play Again</button>';
-  html += '<button onclick="window.location.href = window.location.origin + window.location.pathname" style="padding:1rem 2rem; font-size:1.2rem; background:#666; color:white; border:none; border-radius:10px; cursor:pointer;">New Game</button>';
+  html += '<button onclick="Analytics.trackNewGameClicked(); window.location.href = window.location.origin + window.location.pathname" style="padding:1rem 2rem; font-size:1.2rem; background:#666; color:white; border:none; border-radius:10px; cursor:pointer;">New Game</button>';
   html += '</div>';
   
   content.innerHTML = html;
@@ -270,6 +273,9 @@ function shareGameResults() {
   
   const gameUrl = window.location.origin + window.location.pathname;
   shareText += `🎴 Play now: ${gameUrl}\n`;
+  
+  // Track share attempt
+  Analytics.trackShareResults(navigator.share ? 'native_share' : 'clipboard');
   
   // Try to use native share API first (mobile-friendly)
   if (navigator.share) {

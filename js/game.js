@@ -531,6 +531,10 @@ function endGame(){
   }
   storage.gameEnded = true;
   
+  // Track game completion
+  const durationMinutes = storage.gameStartTime ? Math.round((Date.now() - storage.gameStartTime) / 60000) : 0;
+  Analytics.trackGameCompleted(storage.lobbyId, storage.players.length, storage.round, durationMinutes);
+  
   // Sort players by score (descending)
   const sortedPlayers = [...storage.players].sort((a, b) => {
     const scoreA = storage.scores[a.id] || 0;
