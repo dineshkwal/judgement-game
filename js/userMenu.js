@@ -1,11 +1,22 @@
 /* ---------- USER MENU DROPDOWN ---------- */
 function toggleUserMenu(){
   const menu = document.getElementById('userMenu');
+  const isOpening = !menu.classList.contains('show');
+  
+  if (isOpening) {
+    Analytics.trackUserMenuOpened();
+  }
+  
   menu.classList.toggle('show');
 }
 
 function leaveGame(){
   if(!confirm('Leave this game?')) return;
+  
+  // Track game abandonment if game was in progress
+  if(storage.round && storage.cardsPerRound && !storage.gameEnded) {
+    Analytics.trackGameAbandoned(storage.lobbyId, storage.round, storage.cardsPerRound);
+  }
   
   if(storage.lobbyId && storage.myId){
     db.ref(`lobbies/${storage.lobbyId}/players/${storage.myId}`).remove();

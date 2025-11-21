@@ -37,6 +37,9 @@ function sendReaction(emoji, button) {
   // Send to Firebase
   db.ref(`lobbies/${storage.lobbyId}/reactions`).push(reaction);
   
+  // Track emoji reaction
+  Analytics.trackEmojiReaction(emoji);
+  
   debugLog('Reaction sent:', emoji, 'by', player.name);
   
   // Add haptic feedback on mobile

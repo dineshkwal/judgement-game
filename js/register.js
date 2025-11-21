@@ -66,6 +66,11 @@ function createLobby() {
   db.ref(`lobbies/${lobbyId}/players`).child(id).set(player).then(()=>{
     debugLog('Lobby created successfully:', lobbyId);
     
+    // Track lobby creation
+    const rounds = parseInt(document.getElementById('roundSelect')?.dataset?.value || 7);
+    Analytics.trackLobbyCreated(lobbyId, rounds);
+    Analytics.trackAvatarSelected(avatar.split('style=')[1] || 'adventurer', name);
+    
     // Update browser URL
     updateBrowserURL(lobbyId);
     
@@ -297,6 +302,13 @@ function joinAsNewPlayer(name, avatar, normalizedLobbyId) {
     if (myNameLabel) myNameLabel.textContent = name;
     
     db.ref(`lobbies/${normalizedLobbyId}/players`).child(id).set(player).then(()=>{
+      // Track lobby join
+      db.ref(`lobbies/${normalizedLobbyId}/players`).once('value', (snap) => {
+        const playerCount = snap.numChildren();
+        Analytics.trackLobbyJoined(normalizedLobbyId, playerCount);
+        Analytics.trackAvatarSelected(avatar.split('style=')[1] || 'adventurer', name);
+      });
+      
       // Update browser URL
       updateBrowserURL(normalizedLobbyId);
       
@@ -326,6 +338,9 @@ function playAgain() {
     alert('No active lobby found');
     return;
   }
+
+  // Track play again clicked
+  Analytics.trackPlayAgainClicked();
 
   debugLog('Starting Play Again - creating new lobby with all players');
   

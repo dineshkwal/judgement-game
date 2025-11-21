@@ -22,6 +22,9 @@ let selectedAvatar = avatars[0];
 window.addEventListener('DOMContentLoaded', () => {
   debugLog('DOM loaded, initializing...');
   
+  // Track page view
+  Analytics.trackPageView('Home - Game Registration');
+  
   // Initialize avatar grids for both tabs
   setTimeout(() => {
     const avatarGridCreate = document.getElementById('avatarGridCreate');

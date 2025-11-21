@@ -498,6 +498,13 @@ function startGame(){
   console.log('Setting initial game state to Firebase...');
   storage.gameRef.set(initialState).then(() => {
     console.log('Game started, switching to game screen');
+    
+    // Track game start
+    Analytics.trackGameStarted(storage.lobbyId, storage.players.length, storage.cardsPerRound);
+    
+    // Store game start time for completion tracking
+    storage.gameStartTime = Date.now();
+    
     showScreen('game');
     // Start listening for emoji reactions
     console.log('Calling listenForReactions from startGame');
