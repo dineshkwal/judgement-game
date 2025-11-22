@@ -402,6 +402,55 @@ function animateDealCards(cards, callback) {
   });
 }
 
+/**
+ * Animate cards from trick center to winner's avatar
+ * @param {string} winnerId - The player ID who won the trick
+ * @param {Function} callback - Called when animation completes
+ */
+function animateCardsToWinner(winnerId, callback) {
+  const trickDiv = document.getElementById('currentTrick');
+  const winnerSeat = document.querySelector(`.seat[data-player-id="${winnerId}"]`);
+  
+  if (!trickDiv || !winnerSeat) {
+    if (callback) callback();
+    return;
+  }
+  
+  const cards = Array.from(trickDiv.querySelectorAll('.card'));
+  if (cards.length === 0) {
+    if (callback) callback();
+    return;
+  }
+  
+  // Get winner avatar position (center of the seat)
+  const winnerRect = winnerSeat.getBoundingClientRect();
+  const winnerX = winnerRect.left + winnerRect.width / 2;
+  const winnerY = winnerRect.top + winnerRect.height / 2;
+  
+  // Animate each card to the winner
+  cards.forEach((card, index) => {
+    const cardRect = card.getBoundingClientRect();
+    const cardX = cardRect.left + cardRect.width / 2;
+    const cardY = cardRect.top + cardRect.height / 2;
+    
+    // Calculate translation needed
+    const deltaX = winnerX - cardX;
+    const deltaY = winnerY - cardY;
+    
+    // Stagger card animations slightly
+    setTimeout(() => {
+      card.style.transition = 'transform 0.8s ease-in-out, opacity 0.6s ease-in';
+      card.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.2)`;
+      card.style.opacity = '0';
+    }, index * 100);
+  });
+  
+  // Call callback after all animations complete
+  setTimeout(() => {
+    if (callback) callback();
+  }, cards.length * 100 + 800);
+}
+
 function renderMyHand(){
   const handDiv = document.getElementById('myHand');
   const myCards = storage.hands[storage.myId] || [];

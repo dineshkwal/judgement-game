@@ -1092,6 +1092,12 @@ button:active {
   transform: translateY(-10px) scale(0.9) !important;
 }
 
+/* Card flying to winner animation - smooth transitions */
+.trick .card {
+  transition: transform 0.8s ease-in-out, opacity 0.6s ease-in;
+  will-change: transform, opacity;
+}
+
 @keyframes winnerGlow {
   0%, 100% { 
     box-shadow: 
