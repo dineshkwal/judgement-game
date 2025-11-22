@@ -332,7 +332,97 @@ function renderTable(){
   updateMiniCards();
 }
 
+/**
+ * Deal card animation: Cards appear one by one with slide-in reveal
+ * @param {Array} cards - The cards to animate
+ * @param {Function} callback - Called when animation completes
+ */
+function animateDealCards(cards, callback) {
+  const handDiv = document.getElementById('myHand');
+  handDiv.innerHTML = '';
+  
+  if (!cards || cards.length === 0) {
+    if (callback) callback();
+    return;
+  }
+  
+  // Add class to center cards during animation
+  handDiv.classList.add('dealing-animation');
+  
+  // Reset scroll position to start
+  handDiv.scrollLeft = 0;
+  
+  // Deal cards one by one face-up with slide animation
+  cards.forEach((card, index) => {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = `card ${suitColor(card.suit)} dealing`;
+      
+      // Add trump class if applicable
+      if (storage.trump && card.suit === storage.trump) {
+        el.classList.add('trump');
+      }
+      
+      const cardLabel = card.rank + card.suit;
+      el.innerHTML = `
+        <span class="card-corner top-left">${cardLabel}</span>
+        <span class="card-corner top-right">${cardLabel}</span>
+        <span class="card-center">${card.suit}</span>
+        <span class="card-corner bottom-left">${cardLabel}</span>
+        <span class="card-corner bottom-right">${cardLabel}</span>
+      `;
+      
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(-20px) scale(0.8)';
+      el.dataset.cardIndex = index;
+      
+      // Store card data
+      el.cardData = card;
+      
+      handDiv.appendChild(el);
+      
+      // Trigger animation
+      setTimeout(() => {
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0) scale(1)';
+      }, 50);
+      
+      // After last card is dealt, finalize
+      if (index === cards.length - 1) {
+        setTimeout(() => {
+          // Remove animation class to restore normal justify-content
+          handDiv.classList.remove('dealing-animation');
+          
+          // Now render with full interactivity
+          renderMyHandInteractive();
+          if (callback) callback();
+        }, 400); // Wait for last card animation to complete
+      }
+    }, index * 150); // Stagger each card by 150ms
+  });
+}
+
 function renderMyHand(){
+  const handDiv = document.getElementById('myHand');
+  const myCards = storage.hands[storage.myId] || [];
+  
+  // Check if this is a fresh deal (no cards rendered yet or different cards)
+  const existingCards = handDiv.querySelectorAll('.card');
+  const isNewDeal = existingCards.length === 0 || 
+                     existingCards.length !== myCards.length ||
+                     storage.status === 'waiting_deal';
+  
+  // Use animation for new deals, skip for updates during play
+  if (isNewDeal && myCards.length > 0 && storage.status === 'bidding') {
+    animateDealCards(myCards);
+    return;
+  }
+  
+  // Regular render for updates during play
+  renderMyHandInteractive();
+}
+
+function renderMyHandInteractive(){
   const handDiv = document.getElementById('myHand');
   handDiv.innerHTML = '';
   const myCards = storage.hands[storage.myId] || [];

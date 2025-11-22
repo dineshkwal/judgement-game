@@ -5,7 +5,15 @@ const APP_VERSION = '1.3.0'; // UI redesign: Trump moved to scoreboard, message 
 console.log(`%c🎮 Game of Judgement v${APP_VERSION}`, 'color: #4caf50; font-weight: bold; font-size: 14px;');
 
 // Debug flag - set to true for development, false for production
-const DEBUG = false;
+const DEBUG = true;
+
+// Show debug UI elements when DEBUG is enabled
+if (DEBUG) {
+  document.addEventListener('DOMContentLoaded', () => {
+    const debugBtn = document.getElementById('debugSkipRoundBtn');
+    if (debugBtn) debugBtn.style.display = 'block';
+  });
+}
 
 // Debug logging helper - only logs when DEBUG is true
 function debugLog(...args) {
