@@ -1080,7 +1080,8 @@ button:active {
 
 /* Trump card highlighting */
 .card.trump {
-  border: 3px solid #FFD700;
+  border: 3px solid #00bcd4;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .3), 0 2px 4px rgba(0, 0, 0, .2), 0 0 12px rgba(0, 188, 212, 0.6), 0 0 0 2px rgba(0, 188, 212, 0.4);
 }
 
 /* Winning card animation */
@@ -1554,6 +1555,11 @@ button:active {
   scroll-behavior: smooth;
 }
 
+/* Center cards during deal animation */
+.hand.dealing-animation {
+  justify-content: center;
+}
+
 .hand::-webkit-scrollbar {
   height: 8px;
 }
@@ -1659,6 +1665,22 @@ button:active {
 
 .trick .card:first-child {
   margin-left: 0;
+}
+
+/* Card Deal Animation */
+.card.dealing {
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+@keyframes slideInCard {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 #centerMsg {
