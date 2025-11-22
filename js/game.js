@@ -365,6 +365,13 @@ function resolveTrick(){
     }
   }
 
+  // Animate cards flying to winner's avatar after a brief highlight
+  setTimeout(() => {
+    animateCardsToWinner(winner, () => {
+      debugLog('DEBUG: Cards animation to winner completed');
+    });
+  }, 1200); // Wait 1.2s for winner highlight, then animate
+
   setTimeout(() => {
     debugLog('DEBUG: resolveTrick 3s timeout fired');
     storage.trickResolving = false;
