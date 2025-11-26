@@ -413,6 +413,7 @@ function resolveTrick(){
     // All players clear local trick UI
     storage.trick = [];
     storage.leadSuit = null;
+    storage.previousTrickLength = 0; // Reset for next trick
     // Note: currentPlayer is updated via Firebase sync, not locally
     renderCurrentTrick();
     renderMyHand();

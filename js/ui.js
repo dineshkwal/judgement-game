@@ -500,6 +500,76 @@ function animateCardPlay(cardElement, card, callback) {
   });
 }
 
+/**
+ * Animate a card from another player's avatar to trick center
+ * @param {string} playerId - The player who played the card
+ * @param {Object} card - The card data
+ * @param {Function} callback - Called when animation completes
+ */
+function animateCardPlayFromAvatar(playerId, card, callback) {
+  const trickDiv = document.getElementById('currentTrick');
+  const playerSeat = document.querySelector(`.seat[data-player-id="${playerId}"]`);
+  
+  if (!trickDiv || !playerSeat) {
+    if (callback) callback();
+    return;
+  }
+  
+  // Get positions
+  const seatRect = playerSeat.getBoundingClientRect();
+  const trickRect = trickDiv.getBoundingClientRect();
+  
+  // Calculate centers
+  const seatCenterX = seatRect.left + seatRect.width / 2;
+  const seatCenterY = seatRect.top + seatRect.height / 2;
+  const trickCenterX = trickRect.left + trickRect.width / 2;
+  const trickCenterY = trickRect.top + trickRect.height / 2;
+  
+  // Create card element for animation
+  const cardEl = document.createElement('div');
+  cardEl.className = `card ${suitColor(card.suit)}`;
+  const cardLabel = card.rank + card.suit;
+  cardEl.innerHTML = `
+    <span class="card-corner top-left">${cardLabel}</span>
+    <span class="card-corner top-right">${cardLabel}</span>
+    <span class="card-center">${card.suit}</span>
+    <span class="card-corner bottom-left">${cardLabel}</span>
+    <span class="card-corner bottom-right">${cardLabel}</span>
+  `;
+  
+  // Position at player's avatar
+  cardEl.style.position = 'fixed';
+  cardEl.style.left = (seatCenterX - 45) + 'px'; // 45 = half card width
+  cardEl.style.top = (seatCenterY - 65) + 'px'; // 65 = half card height
+  cardEl.style.width = '90px';
+  cardEl.style.height = '130px';
+  cardEl.style.zIndex = '9999';
+  cardEl.style.transition = 'transform 0.5s ease-out, opacity 0.1s ease-out';
+  cardEl.style.pointerEvents = 'none';
+  cardEl.style.transform = 'scale(0.7)';
+  
+  document.body.appendChild(cardEl);
+  
+  // Calculate translation to trick center
+  const deltaX = trickCenterX - seatCenterX;
+  const deltaY = trickCenterY - seatCenterY;
+  
+  // Trigger animation
+  requestAnimationFrame(() => {
+    cardEl.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.95)`;
+    
+    setTimeout(() => {
+      // Fade out
+      cardEl.style.opacity = '0';
+      
+      setTimeout(() => {
+        cardEl.remove();
+        if (callback) callback();
+      }, 100);
+    }, 500);
+  });
+}
+
 function renderMyHand(){
   const handDiv = document.getElementById('myHand');
   const myCards = storage.hands[storage.myId] || [];
@@ -649,6 +719,38 @@ function getPlayableCards(myCards){
 function renderCurrentTrick(){
   const div = document.getElementById('currentTrick');
   if(!div) return;
+  
+  // Track previous trick length to detect new cards
+  if (!storage.previousTrickLength) {
+    storage.previousTrickLength = 0;
+  }
+  
+  const currentTrickLength = storage.trick.length;
+  const hasNewCard = currentTrickLength > storage.previousTrickLength;
+  
+  // If there's a new card and it's not from me, animate it
+  if (hasNewCard && currentTrickLength > 0) {
+    const lastPlay = storage.trick[currentTrickLength - 1];
+    if (lastPlay.playerId !== storage.myId) {
+      // Animate card from other player's avatar
+      animateCardPlayFromAvatar(lastPlay.playerId, lastPlay.card, () => {
+        // After animation, render the card in trick
+        renderTrickCards();
+      });
+      storage.previousTrickLength = currentTrickLength;
+      return;
+    }
+  }
+  
+  // Update previous length and render normally
+  storage.previousTrickLength = currentTrickLength;
+  renderTrickCards();
+}
+
+function renderTrickCards() {
+  const div = document.getElementById('currentTrick');
+  if(!div) return;
+  
   div.innerHTML = '';
   storage.trick.forEach((t, index) => {
     const el = document.createElement('div');
