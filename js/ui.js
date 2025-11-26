@@ -538,11 +538,19 @@ function animateCardPlayFromAvatar(playerId, card, callback) {
   `;
   
   // Position at player's avatar
+  // Use responsive card dimensions
+  const isMobile = window.innerWidth <= 768;
+  const isSmallMobile = window.innerWidth <= 500;
+  const cardWidth = isSmallMobile ? 70 : (isMobile ? 80 : 90);
+  const cardHeight = isSmallMobile ? 100 : (isMobile ? 115 : 130);
+  const halfWidth = cardWidth / 2;
+  const halfHeight = cardHeight / 2;
+  
   cardEl.style.position = 'fixed';
-  cardEl.style.left = (seatCenterX - 45) + 'px'; // 45 = half card width
-  cardEl.style.top = (seatCenterY - 65) + 'px'; // 65 = half card height
-  cardEl.style.width = '90px';
-  cardEl.style.height = '130px';
+  cardEl.style.left = (seatCenterX - halfWidth) + 'px';
+  cardEl.style.top = (seatCenterY - halfHeight) + 'px';
+  cardEl.style.width = cardWidth + 'px';
+  cardEl.style.height = cardHeight + 'px';
   cardEl.style.zIndex = '9999';
   cardEl.style.transition = 'transform 0.5s ease-out, opacity 0.1s ease-out';
   cardEl.style.pointerEvents = 'none';
@@ -556,7 +564,7 @@ function animateCardPlayFromAvatar(playerId, card, callback) {
   
   // Trigger animation
   requestAnimationFrame(() => {
-    cardEl.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.95)`;
+    cardEl.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.9)`;
     
     setTimeout(() => {
       // Fade out

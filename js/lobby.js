@@ -342,21 +342,7 @@ function updateLobbyInfo(){
   const copyBtn = document.getElementById('copyLinkBtn');
   
   copyBtn.onclick = function(){
-    // Get current player's name for invitation message
-    const myPlayer = storage.players.find(p => p.id === storage.myId);
-    const myName = myPlayer ? myPlayer.name : 'Your friend';
-    
-    // Create invitation message
-    const inviteMessage = `🎮 ${myName} has invited you to play Game of Judgement!
-
-Join the game now:
-${shareUrl}
-
-Lobby Code: ${storage.lobbyId}
-
-Let's play together! 🃏`;
-    
-    navigator.clipboard.writeText(inviteMessage);
+    navigator.clipboard.writeText(shareUrl);
     this.innerHTML = '✓ Copied!';
     this.classList.add('copied');
     setTimeout(() => {
