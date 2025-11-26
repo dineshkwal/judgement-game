@@ -1567,21 +1567,21 @@ button:active {
 }
 
 .hand::-webkit-scrollbar {
-  height: 8px;
+  height: 2px;
 }
 
 .hand::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
 }
 
 .hand::-webkit-scrollbar-thumb {
-  background: rgba(76, 175, 80, 0.5);
+  background: rgba(76, 175, 80, 0.4);
   border-radius: 10px;
 }
 
 .hand::-webkit-scrollbar-thumb:hover {
-  background: rgba(76, 175, 80, 0.7);
+  background: rgba(76, 175, 80, 0.6);
 }
 
 .card {
@@ -1883,7 +1883,7 @@ button:active {
   background: rgba(76, 175, 80, 0.1);
   border-radius: 16px;
   padding: 0.5rem 0.8rem;
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
   margin-bottom: 1rem;
 }
 
