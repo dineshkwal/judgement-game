@@ -1080,8 +1080,8 @@ button:active {
 
 /* Trump card highlighting */
 .card.trump {
-  border: 3px solid #00bcd4;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, .3), 0 2px 4px rgba(0, 0, 0, .2), 0 0 12px rgba(0, 188, 212, 0.6), 0 0 0 2px rgba(0, 188, 212, 0.4);
+  border: 3px solid #9c27b0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .3), 0 2px 4px rgba(0, 0, 0, .2), 0 0 12px rgba(156, 39, 176, 0.6), 0 0 0 2px rgba(156, 39, 176, 0.4);
 }
 
 /* Winning card animation */
@@ -1551,7 +1551,7 @@ button:active {
   gap: .4rem;
   flex-wrap: nowrap;
   justify-content: flex-start;
-  margin: 1.5rem auto;
+  margin: 1.5rem auto 0.5rem auto;
   overflow-x: auto;
   overflow-y: visible;
   padding: 12px .5rem .5rem .5rem;
@@ -1880,8 +1880,11 @@ button:active {
   display: flex;
   gap: 0.5rem;
   justify-content: center;
-  padding-top: 1rem;
-  margin-top: 0.5rem;
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 16px;
+  padding: 0.5rem 0.8rem;
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
 }
 
 .emoji-reaction-bar .emoji-btn {
@@ -2700,8 +2703,10 @@ button:active {
   
   .emoji-reaction-bar {
     gap: 0.3rem;
-    padding-top: 0.8rem;
-    margin-top: 0.8rem;
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: 16px;
+    padding: 0.5rem 0.8rem;
+    margin-top: 0.25rem;
   }
   
   .emoji-reaction-bar .emoji-btn {

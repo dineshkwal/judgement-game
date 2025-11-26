@@ -237,19 +237,6 @@ function renderScoreboard(){
   
   html += '</tbody></table>';
   
-  // Add emoji reaction bar
-  html += `
-    <div class="emoji-reaction-bar">
-      <button class="emoji-btn" onclick="sendReaction('👍', this)" title="Thumbs up">👍</button>
-      <button class="emoji-btn" onclick="sendReaction('🔥', this)" title="Fire">🔥</button>
-      <button class="emoji-btn" onclick="sendReaction('😂', this)" title="Laughing">😂</button>
-      <button class="emoji-btn" onclick="sendReaction('😮', this)" title="Wow">😮</button>
-      <button class="emoji-btn" onclick="sendReaction('❤️', this)" title="Heart">❤️</button>
-      <button class="emoji-btn" onclick="sendReaction('👏', this)" title="Clap">👏</button>
-      <button class="emoji-btn" onclick="sendReaction('💩', this)" title="Poo">💩</button>
-    </div>
-  `;
-  
   sb.innerHTML = html;
   
   // Show scorecard button when game is active
