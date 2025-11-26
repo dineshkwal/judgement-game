@@ -271,47 +271,50 @@ function playCard(card, el){
     }
   }
   
-  storage.hands[storage.myId] = storage.hands[storage.myId].filter(x => x !== card);
-  el.remove();
-  storage.trick.push({playerId: storage.myId, card});
-  if(!storage.leadSuit) storage.leadSuit = card.suit;
-  
-  // Immediately gray out remaining cards since turn is over
-  renderMyHand();
-  
-  // Check if trick is complete
-  const trickComplete = storage.trick.length === storage.players.length;
-  
-  if(trickComplete){
-    // Update Firebase - Firebase listener will detect trick completion and trigger resolveTrick
-    storage.gameRef.update({ 
-      hands: storage.hands, 
-      trick: storage.trick, 
-      leadSuit: storage.leadSuit,
-      currentPlayer: null
-    }).then(() => {
-      // Don't clear cardPlaying here - it will be cleared when new trick starts
-    }).catch((err) => {
-      console.error('Firebase update failed:', err);
-      storage.cardPlaying = false;
-    });
-  } else {
-    const currentIdx = storage.players.findIndex(p => p.id === storage.myId);
-    const nextIdx = (currentIdx + 1) % storage.players.length;
-    const nextPlayer = storage.players[nextIdx].id;
+  // Animate card flying to center, then update state
+  animateCardPlay(el, card, () => {
+    storage.hands[storage.myId] = storage.hands[storage.myId].filter(x => x !== card);
+    el.remove();
+    storage.trick.push({playerId: storage.myId, card});
+    if(!storage.leadSuit) storage.leadSuit = card.suit;
     
-    storage.gameRef.update({ 
-      hands: storage.hands, 
-      trick: storage.trick, 
-      leadSuit: storage.leadSuit,
-      currentPlayer: nextPlayer
-    }).then(() => {
-      storage.cardPlaying = false;
-    }).catch((err) => {
-      console.error('Firebase update failed:', err);
-      storage.cardPlaying = false;
-    });
-  }
+    // Immediately gray out remaining cards since turn is over
+    renderMyHand();
+    
+    // Check if trick is complete
+    const trickComplete = storage.trick.length === storage.players.length;
+    
+    if(trickComplete){
+      // Update Firebase - Firebase listener will detect trick completion and trigger resolveTrick
+      storage.gameRef.update({ 
+        hands: storage.hands, 
+        trick: storage.trick, 
+        leadSuit: storage.leadSuit,
+        currentPlayer: null
+      }).then(() => {
+        // Don't clear cardPlaying here - it will be cleared when new trick starts
+      }).catch((err) => {
+        console.error('Firebase update failed:', err);
+        storage.cardPlaying = false;
+      });
+    } else {
+      const currentIdx = storage.players.findIndex(p => p.id === storage.myId);
+      const nextIdx = (currentIdx + 1) % storage.players.length;
+      const nextPlayer = storage.players[nextIdx].id;
+      
+      storage.gameRef.update({ 
+        hands: storage.hands, 
+        trick: storage.trick, 
+        leadSuit: storage.leadSuit,
+        currentPlayer: nextPlayer
+      }).then(() => {
+        storage.cardPlaying = false;
+      }).catch((err) => {
+        console.error('Firebase update failed:', err);
+        storage.cardPlaying = false;
+      });
+    }
+  });
 }
 
 

@@ -874,11 +874,18 @@ button:active {
   white-space: nowrap;
 }
 
+/* Hide label on small screens to save space */
+@media (max-width: 400px) {
+  .code-label {
+    display: none;
+  }
+}
+
 .code-value {
   font-size: 1.1rem;
   font-weight: 700;
   color: #ffd700;
-  font-family: 'Courier New', monospace;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
   letter-spacing: 1.5px;
 }
 
