@@ -171,8 +171,8 @@ function checkForDisconnectedPlayers() {
         disconnectedAt: Date.now(),
         graceTimeout: setTimeout(() => {
           // After 30 seconds, show the modal
-          debugLog('Grace period expired, showing reconnect modal for:', disconnectedPlayer.name);
-          showReconnectModal(disconnectedPlayer);
+          debugLog('Grace period expired, but disconnection UI is disabled');
+          // showReconnectModal(disconnectedPlayer); // DISABLED - no longer showing disconnection modal
         }, 30000) // 30 seconds
       };
     }
