@@ -438,6 +438,68 @@ function animateCardsToWinner(winnerId, callback) {
   }, cards.length * 100 + 800);
 }
 
+/**
+ * Animate a card from hand to trick center when played
+ * @param {HTMLElement} cardElement - The card element being played
+ * @param {Object} card - The card data
+ * @param {Function} callback - Called when animation completes
+ */
+function animateCardPlay(cardElement, card, callback) {
+  const trickDiv = document.getElementById('currentTrick');
+  if (!trickDiv || !cardElement) {
+    if (callback) callback();
+    return;
+  }
+  
+  // Get positions
+  const cardRect = cardElement.getBoundingClientRect();
+  const trickRect = trickDiv.getBoundingClientRect();
+  
+  // Calculate center of trick area
+  const trickCenterX = trickRect.left + trickRect.width / 2;
+  const trickCenterY = trickRect.top + trickRect.height / 2;
+  
+  // Calculate card center
+  const cardCenterX = cardRect.left + cardRect.width / 2;
+  const cardCenterY = cardRect.top + cardRect.height / 2;
+  
+  // Calculate translation
+  const deltaX = trickCenterX - cardCenterX;
+  const deltaY = trickCenterY - cardCenterY;
+  
+  // Clone the card for animation
+  const clone = cardElement.cloneNode(true);
+  clone.style.position = 'fixed';
+  clone.style.left = cardRect.left + 'px';
+  clone.style.top = cardRect.top + 'px';
+  clone.style.width = cardRect.width + 'px';
+  clone.style.height = cardRect.height + 'px';
+  clone.style.zIndex = '9999';
+  clone.style.transition = 'transform 0.5s ease-out, opacity 0.1s ease-out';
+  clone.style.pointerEvents = 'none';
+  
+  // Hide original card immediately
+  cardElement.style.opacity = '0';
+  cardElement.style.transform = 'scale(0.8)';
+  
+  document.body.appendChild(clone);
+  
+  // Trigger animation
+  requestAnimationFrame(() => {
+    clone.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.95)`;
+    
+    setTimeout(() => {
+      // Fade out clone
+      clone.style.opacity = '0';
+      
+      setTimeout(() => {
+        clone.remove();
+        if (callback) callback();
+      }, 100);
+    }, 500);
+  });
+}
+
 function renderMyHand(){
   const handDiv = document.getElementById('myHand');
   const myCards = storage.hands[storage.myId] || [];
