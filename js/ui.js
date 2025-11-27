@@ -125,6 +125,8 @@ function showCenterMessage(text, duration = 2000){
       if(storage && storage.showingWinnerMessage){
         storage.showingWinnerMessage = false;
         debugLog('DEBUG: Cleared showingWinnerMessage after message timeout');
+        // Call updateUI() to show the next player's turn message
+        updateUI();
       }
     }, duration);
   } else {
