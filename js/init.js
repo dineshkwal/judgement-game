@@ -1,19 +1,27 @@
 /* ---------- INITIALIZATION ---------- */
 
-// Avatar data with fun styles
+// Avatar data - 20 DiceBear Adventurer style avatars
 const avatars = [
-  { seed: 'Felix', name: 'Felix', bg: '4caf50' },
-  { seed: 'Aneka', name: 'Aneka', bg: '2196f3' },
-  { seed: 'Charlie', name: 'Charlie', bg: 'ff9800' },
-  { seed: 'Lucy', name: 'Lucy', bg: 'e91e63' },
-  { seed: 'Max', name: 'Max', bg: '9c27b0' },
-  { seed: 'Sophie', name: 'Sophie', bg: '00bcd4' },
-  { seed: 'Oscar', name: 'Oscar', bg: 'ff5722' },
-  { seed: 'Emma', name: 'Emma', bg: 'cddc39' },
-  { seed: 'Jack', name: 'Jack', bg: 'ff6f00' },
-  { seed: 'Mia', name: 'Mia', bg: '8bc34a' },
-  { seed: 'Luna', name: 'Luna', bg: '3f51b5' },
-  { seed: 'Oliver', name: 'Oliver', bg: 'f44336' }
+  { seed: 'Felix', name: 'Felix', bg: '4caf50', style: 'adventurer' },
+  { seed: 'Aneka', name: 'Aneka', bg: '2196f3', style: 'adventurer' },
+  { seed: 'Charlie', name: 'Charlie', bg: 'ff9800', style: 'adventurer' },
+  { seed: 'Lucy', name: 'Lucy', bg: 'e91e63', style: 'adventurer' },
+  { seed: 'Max', name: 'Max', bg: '9c27b0', style: 'adventurer' },
+  { seed: 'Sophie', name: 'Sophie', bg: '00bcd4', style: 'adventurer' },
+  { seed: 'Oscar', name: 'Oscar', bg: 'ff5722', style: 'adventurer' },
+  { seed: 'Emma', name: 'Emma', bg: 'cddc39', style: 'adventurer' },
+  { seed: 'Jack', name: 'Jack', bg: 'ff6f00', style: 'adventurer' },
+  { seed: 'Mia', name: 'Mia', bg: '8bc34a', style: 'adventurer' },
+  { seed: 'Luna', name: 'Luna', bg: '3f51b5', style: 'adventurer' },
+  { seed: 'Oliver', name: 'Oliver', bg: 'f44336', style: 'adventurer' },
+  { seed: 'Zoe', name: 'Zoe', bg: 'ff6b9d', style: 'adventurer' },
+  { seed: 'Leo', name: 'Leo', bg: 'ffb74d', style: 'adventurer' },
+  { seed: 'Aria', name: 'Aria', bg: '81c784', style: 'adventurer' },
+  { seed: 'Noah', name: 'Noah', bg: '64b5f6', style: 'adventurer' },
+  { seed: 'Maya', name: 'Maya', bg: 'ba68c8', style: 'adventurer' },
+  { seed: 'Ethan', name: 'Ethan', bg: 'ffb300', style: 'adventurer' },
+  { seed: 'Stella', name: 'Stella', bg: 'ff80ab', style: 'adventurer' },
+  { seed: 'Liam', name: 'Liam', bg: '26c6da', style: 'adventurer' }
 ];
 
 let selectedAvatar = avatars[0];
@@ -39,12 +47,17 @@ window.addEventListener('DOMContentLoaded', () => {
         const avatarBtn = document.createElement('button');
         avatarBtn.className = 'avatar-option' + (index === 0 ? ' selected' : '');
         avatarBtn.type = 'button';
-        avatarBtn.dataset.avatar = `https://api.dicebear.com/9.x/adventurer/svg?seed=${avatar.seed}&backgroundColor=${avatar.bg}`;
+        
+        // Generate DiceBear URL
+        const style = avatar.style || 'adventurer';
+        const avatarUrl = `https://api.dicebear.com/9.x/${style}/svg?seed=${encodeURIComponent(avatar.seed)}&backgroundColor=${avatar.bg}`;
+        
+        avatarBtn.dataset.avatar = avatarUrl;
         avatarBtn.onclick = () => selectAvatarInGrid(avatar, avatarBtn, 'avatarGridCreate');
         avatarBtn.onfocus = () => selectAvatarInGrid(avatar, avatarBtn, 'avatarGridCreate');
         
         const img = document.createElement('img');
-        img.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${avatar.seed}&backgroundColor=${avatar.bg}`;
+        img.src = avatarUrl;
         img.alt = avatar.name;
         
         avatarBtn.appendChild(img);
@@ -61,12 +74,17 @@ window.addEventListener('DOMContentLoaded', () => {
         const avatarBtn = document.createElement('button');
         avatarBtn.className = 'avatar-option' + (index === 0 ? ' selected' : '');
         avatarBtn.type = 'button';
-        avatarBtn.dataset.avatar = `https://api.dicebear.com/9.x/adventurer/svg?seed=${avatar.seed}&backgroundColor=${avatar.bg}`;
+        
+        // Generate DiceBear URL
+        const style = avatar.style || 'adventurer';
+        const avatarUrl = `https://api.dicebear.com/9.x/${style}/svg?seed=${encodeURIComponent(avatar.seed)}&backgroundColor=${avatar.bg}`;
+        
+        avatarBtn.dataset.avatar = avatarUrl;
         avatarBtn.onclick = () => selectAvatarInGrid(avatar, avatarBtn, 'avatarGridJoin');
         avatarBtn.onfocus = () => selectAvatarInGrid(avatar, avatarBtn, 'avatarGridJoin');
         
         const img = document.createElement('img');
-        img.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${avatar.seed}&backgroundColor=${avatar.bg}`;
+        img.src = avatarUrl;
         img.alt = avatar.name;
         
         avatarBtn.appendChild(img);
