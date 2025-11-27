@@ -765,6 +765,12 @@ function renderTrickCards() {
   storage.trick.forEach((t, index) => {
     const el = document.createElement('div');
     el.className = `card ${suitColor(t.card.suit)}`;
+    
+    // Add trump class if this card is trump suit
+    if (storage.trump && t.card.suit === storage.trump) {
+      el.classList.add('trump');
+    }
+    
     const cardLabel = t.card.rank + t.card.suit;
     el.innerHTML = `
       <span class="card-corner top-left">${cardLabel}</span>
