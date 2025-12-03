@@ -244,7 +244,7 @@ function renderScoreboard(){
     <button class="emoji-btn" onclick="sendReaction('👍', this)" title="Thumbs up">👍</button>
     <button class="emoji-btn" onclick="sendReaction('🔥', this)" title="Fire">🔥</button>
     <button class="emoji-btn" onclick="sendReaction('😂', this)" title="Laughing">😂</button>
-    <button class="emoji-btn" onclick="sendReaction('😮', this)" title="Surprised">😮</button>
+    <button class="emoji-btn" onclick="sendReaction('😭', this)" title="Loud cry">😭</button>
     <button class="emoji-btn" onclick="sendReaction('❤️', this)" title="Heart">❤️</button>
     <button class="emoji-btn" onclick="sendReaction('👏', this)" title="Clap">👏</button>
     <button class="emoji-btn" onclick="sendReaction('💩', this)" title="Poo">💩</button>

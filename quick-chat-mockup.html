@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Chat Mockup - Game of Judgement</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #1a2a1a 0%, #0d1f0d 100%);
+      min-height: 100vh;
+      color: #fff;
+      padding: 2rem;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #4caf50;
+      margin-bottom: 1rem;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 3rem;
+    }
+    
+    .mockup-section {
+      margin-bottom: 4rem;
+      border: 2px solid rgba(76, 175, 80, 0.3);
+      border-radius: 20px;
+      padding: 2rem;
+      background: rgba(0,0,0,0.3);
+    }
+    
+    .mockup-title {
+      color: #ffd700;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .mockup-desc {
+      color: #aaa;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    /* ============ OPTION 1: Expandable Chat Button ============ */
+    .option1-container {
+      position: relative;
+      height: 350px;
+      background: radial-gradient(circle at center, #2c5f2c 0%, #1e4520 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 1rem;
+    }
+    
+    .emoji-bar {
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(0,0,0,0.4);
+      padding: 0.5rem 1rem;
+      border-radius: 30px;
+      align-items: center;
+    }
+    
+    .emoji-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      padding: 0.3rem;
+      transition: transform 0.2s;
+    }
+    
+    .emoji-btn:hover {
+      transform: scale(1.2);
+    }
+    
+    .chat-toggle {
+      background: linear-gradient(135deg, #4caf50, #2e7d32);
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-left: 0.5rem;
+    }
+    
+    .chat-popup {
+      position: absolute;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(30, 30, 30, 0.95);
+      border: 2px solid rgba(76, 175, 80, 0.4);
+      border-radius: 16px;
+      padding: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      max-width: 320px;
+      justify-content: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    
+    .quick-msg {
+      background: rgba(76, 175, 80, 0.2);
+      border: 1px solid rgba(76, 175, 80, 0.4);
+      color: #c8e6c9;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .quick-msg:hover {
+      background: rgba(76, 175, 80, 0.4);
+      transform: scale(1.05);
+    }
+    
+    /* ============ OPTION 2: Inside Scoreboard ============ */
+    .option2-container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    
+    .scoreboard {
+      background: rgba(0,0,0,0.5);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 1.5rem;
+    }
+    
+    .scoreboard-header {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    
+    .round-info {
+      background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.3), transparent);
+      padding: 0.5rem;
+      color: #c8e6c9;
+      font-size: 0.9rem;
+    }
+    
+    .trump-info {
+      background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+      padding: 0.5rem;
+      color: #ffd700;
+      margin-top: 0.3rem;
+    }
+    
+    .trump-info .suit {
+      font-size: 1.5rem;
+      color: #ff5252;
+    }
+    
+    .score-table {
+      width: 100%;
+      margin: 1rem 0;
+      border-collapse: collapse;
+    }
+    
+    .score-table th {
+      color: #888;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      padding: 0.5rem;
+      text-align: left;
+    }
+    
+    .score-table td {
+      padding: 0.6rem 0.5rem;
+      color: #a5d6a7;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .emoji-row {
+      display: flex;
+      gap: 0.4rem;
+      justify-content: center;
+      padding: 0.6rem 0;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .emoji-row .emoji-btn {
+      font-size: 1.2rem;
+    }
+    
+    .quick-chat-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      justify-content: center;
+      padding: 0.5rem 0 0.2rem;
+    }
+    
+    .quick-chat-row .quick-msg {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.7rem;
+    }
+    
+    /* ============ OPTION 3: Floating Side Panel ============ */
+    .option3-container {
+      position: relative;
+      height: 400px;
+      background: radial-gradient(circle at center, #2c5f2c 0%, #1e4520 100%);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    
+    .side-panel {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(30, 30, 30, 0.9);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+      border-radius: 12px;
+      padding: 0.8rem 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    
+    .side-btn {
+      background: rgba(76, 175, 80, 0.15);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+      color: #a5d6a7;
+      padding: 0.5rem;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    
+    .side-btn:hover {
+      background: rgba(76, 175, 80, 0.3);
+    }
+    
+    .side-btn.emoji-only {
+      font-size: 1.1rem;
+      padding: 0.4rem 0.6rem;
+    }
+    
+    .center-table {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.3);
+      border: 2px solid rgba(76, 175, 80, 0.2);
+    }
+    
+    /* ============ OPTION 4: Bottom Drawer ============ */
+    .option4-container {
+      position: relative;
+      height: 400px;
+      background: radial-gradient(circle at center, #2c5f2c 0%, #1e4520 100%);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    
+    .bottom-drawer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(20, 20, 20, 0.95);
+      border-top: 2px solid rgba(76, 175, 80, 0.3);
+      padding: 1rem;
+    }
+    
+    .drawer-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.8rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 0.5rem;
+    }
+    
+    .drawer-tab {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 0.3rem 0;
+    }
+    
+    .drawer-tab.active {
+      color: #4caf50;
+      border-bottom: 2px solid #4caf50;
+    }
+    
+    .drawer-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    
+    /* ============ OPTION 5: Radial Menu ============ */
+    .option5-container {
+      position: relative;
+      height: 400px;
+      background: radial-gradient(circle at center, #2c5f2c 0%, #1e4520 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .radial-trigger {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4caf50, #2e7d32);
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(76, 175, 80, 0.4);
+      position: relative;
+      z-index: 10;
+    }
+    
+    .radial-menu {
+      position: absolute;
+      width: 250px;
+      height: 250px;
+    }
+    
+    .radial-item {
+      position: absolute;
+      background: rgba(30, 30, 30, 0.95);
+      border: 1px solid rgba(76, 175, 80, 0.4);
+      padding: 0.5rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #c8e6c9;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .radial-item:hover {
+      background: rgba(76, 175, 80, 0.3);
+      transform: scale(1.1);
+    }
+    
+    .radial-item:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); }
+    .radial-item:nth-child(2) { top: 20%; right: 0; }
+    .radial-item:nth-child(3) { bottom: 20%; right: 0; }
+    .radial-item:nth-child(4) { bottom: 0; left: 50%; transform: translateX(-50%); }
+    .radial-item:nth-child(5) { bottom: 20%; left: 0; }
+    .radial-item:nth-child(6) { top: 20%; left: 0; }
+    
+    /* Message bubble floating animation */
+    .message-bubble {
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(76, 175, 80, 0.9);
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      animation: floatUp 2s ease-out forwards;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    
+    .message-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid rgba(76, 175, 80, 0.9);
+    }
+    
+    .message-bubble .sender {
+      font-size: 0.7rem;
+      opacity: 0.8;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+    
+    @keyframes floatUp {
+      0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      20% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    }
+    
+    .pros-cons {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    .pros, .cons {
+      padding: 0.8rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+    }
+    
+    .pros {
+      background: rgba(76, 175, 80, 0.1);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+    
+    .cons {
+      background: rgba(255, 82, 82, 0.1);
+      border: 1px solid rgba(255, 82, 82, 0.3);
+    }
+    
+    .pros h4 { color: #4caf50; margin-bottom: 0.5rem; }
+    .cons h4 { color: #ff5252; margin-bottom: 0.5rem; }
+    
+    .pros li, .cons li {
+      margin-left: 1rem;
+      margin-bottom: 0.3rem;
+      color: #ccc;
+    }
+    
+    .recommendation {
+      margin-top: 3rem;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+    }
+    
+    .recommendation h2 {
+      color: #ffd700;
+      margin-bottom: 1rem;
+    }
+    
+    .recommendation p {
+      color: #ccc;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎮 Quick Chat Feature - Mockups</h1>
+  <p class="subtitle">Different placement options for pre-defined messages</p>
+  
+  <!-- OPTION 1: Expandable Button with Emoji Bar -->
+  <div class="mockup-section">
+    <h3 class="mockup-title">Option 1: Expandable Chat Button (with Emoji Bar)</h3>
+    <p class="mockup-desc">Chat button next to emoji bar, opens popup with quick messages</p>
+    
+    <div class="option1-container">
+      <div class="message-bubble">
+        <span class="sender">Ballu says:</span>
+        Nice bid! 👍
+      </div>
+      
+      <div class="chat-popup">
+        <button class="quick-msg">Good game! 🎮</button>
+        <button class="quick-msg">Nice bid! 👍</button>
+        <button class="quick-msg">Well played! 👏</button>
+        <button class="quick-msg">Oops! 😅</button>
+        <button class="quick-msg">Wow! 🔥</button>
+        <button class="quick-msg">Hurry up! ⏰</button>
+        <button class="quick-msg">Thanks! 🙏</button>
+        <button class="quick-msg">Haha! 😂</button>
+      </div>
+      
+      <div class="emoji-bar">
+        <button class="emoji-btn">👍</button>
+        <button class="emoji-btn">🔥</button>
+        <button class="emoji-btn">😂</button>
+        <button class="emoji-btn">😮</button>
+        <button class="emoji-btn">❤️</button>
+        <button class="emoji-btn">👏</button>
+        <button class="emoji-btn">💩</button>
+        <button class="chat-toggle">💬 Chat</button>
+      </div>
+    </div>
+    
+    <div class="pros-cons">
+      <div class="pros">
+        <h4>✅ Pros</h4>
+        <ul>
+          <li>Doesn't clutter the UI</li>
+          <li>Easy to access</li>
+          <li>Works well on mobile</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4>❌ Cons</h4>
+        <ul>
+          <li>Requires extra tap to open</li>
+          <li>Popup may overlap game area</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- OPTION 2: Inside Scoreboard -->
+  <div class="mockup-section">
+    <h3 class="mockup-title">Option 2: Inside Scoreboard (Below Emoji Row)</h3>
+    <p class="mockup-desc">Quick messages integrated into the scoreboard, always visible</p>
+    
+    <div class="option2-container">
+      <div class="scoreboard">
+        <div class="scoreboard-header">
+          <div class="round-info">ROUND 2 | 3 CARDS</div>
+          <div class="trump-info">TRUMP <span class="suit">♥</span> HEART</div>
+        </div>
+        
+        <table class="score-table">
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Hands Bid</th>
+              <th>Hands Win</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Tingu</td>
+              <td>2</td>
+              <td>1</td>
+            </tr>
+            <tr>
+              <td>Ballu</td>
+              <td>1</td>
+              <td>0</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div class="emoji-row">
+          <button class="emoji-btn">👍</button>
+          <button class="emoji-btn">🔥</button>
+          <button class="emoji-btn">😂</button>
+          <button class="emoji-btn">😮</button>
+          <button class="emoji-btn">❤️</button>
+          <button class="emoji-btn">👏</button>
+          <button class="emoji-btn">💩</button>
+        </div>
+        
+        <div class="quick-chat-row">
+          <button class="quick-msg">GG!</button>
+          <button class="quick-msg">Nice!</button>
+          <button class="quick-msg">Oops</button>
+          <button class="quick-msg">Wow</button>
+          <button class="quick-msg">GL</button>
+          <button class="quick-msg">😅</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="pros-cons">
+      <div class="pros">
+        <h4>✅ Pros</h4>
+        <ul>
+          <li>Always visible, one-tap access</li>
+          <li>Grouped with other social features</li>
+          <li>No popup needed</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4>❌ Cons</h4>
+        <ul>
+          <li>Makes scoreboard taller</li>
+          <li>Limited space for messages</li>
+          <li>May need to scroll on mobile</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- OPTION 3: Side Panel -->
+  <div class="mockup-section">
+    <h3 class="mockup-title">Option 3: Floating Side Panel</h3>
+    <p class="mockup-desc">Vertical panel on the right side of the game table</p>
+    
+    <div class="option3-container">
+      <div class="center-table"></div>
+      
+      <div class="side-panel">
+        <button class="side-btn emoji-only">👍</button>
+        <button class="side-btn emoji-only">🔥</button>
+        <button class="side-btn emoji-only">😂</button>
+        <button class="side-btn">GG!</button>
+        <button class="side-btn">Nice!</button>
+        <button class="side-btn">Oops</button>
+        <button class="side-btn">Wow!</button>
+      </div>
+    </div>
+    
+    <div class="pros-cons">
+      <div class="pros">
+        <h4>✅ Pros</h4>
+        <ul>
+          <li>Compact and out of the way</li>
+          <li>Always accessible</li>
+          <li>Good for desktop</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4>❌ Cons</h4>
+        <ul>
+          <li>May overlap player seats</li>
+          <li>Not ideal for mobile (too small)</li>
+          <li>Harder to tap on small screens</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- OPTION 4: Bottom Drawer with Tabs -->
+  <div class="mockup-section">
+    <h3 class="mockup-title">Option 4: Bottom Drawer with Tabs</h3>
+    <p class="mockup-desc">Tabbed drawer at bottom - switch between emojis and quick messages</p>
+    
+    <div class="option4-container">
+      <div class="bottom-drawer">
+        <div class="drawer-tabs">
+          <button class="drawer-tab">😀 Emojis</button>
+          <button class="drawer-tab active">💬 Quick Chat</button>
+        </div>
+        <div class="drawer-content">
+          <button class="quick-msg">Good game! 🎮</button>
+          <button class="quick-msg">Nice bid! 👍</button>
+          <button class="quick-msg">Well played! 👏</button>
+          <button class="quick-msg">Oops! 😅</button>
+          <button class="quick-msg">Hurry up! ⏰</button>
+          <button class="quick-msg">Thanks! 🙏</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="pros-cons">
+      <div class="pros">
+        <h4>✅ Pros</h4>
+        <ul>
+          <li>More space for messages</li>
+          <li>Clean organization</li>
+          <li>Good for mobile</li>
+        </ul>
+      </div>
+      <div class="cons">
+        <h4>❌ Cons</h4>
+        <ul>
+          <li>Takes up screen space</li>
+          <li>Extra tap to switch tabs</li>
+          <li>May hide game elements</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- RECOMMENDATION -->
+  <div class="recommendation">
+    <h2>⭐ My Recommendation</h2>
+    <p>
+      <strong>Option 2 (Inside Scoreboard)</strong> is the best choice for your game!<br><br>
+      It keeps everything in one place, requires no extra taps, and fits naturally with the existing emoji bar. 
+      We can use short labels like "GG!", "Nice!", "Oops" to save space.<br><br>
+      The messages will appear as floating bubbles above the sender's avatar (like shown in Option 1).
+    </p>
+  </div>
+  
+</body>
+</html>
