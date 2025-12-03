@@ -1543,7 +1543,7 @@ button:active {
 }
 
 .hand::-webkit-scrollbar {
-  height: 2px;
+  height: 4px;
 }
 
 .hand::-webkit-scrollbar-track {
