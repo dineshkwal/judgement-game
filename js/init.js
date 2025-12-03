@@ -516,6 +516,14 @@ function checkAndShowResumeBanner() {
   }).catch(err => {
     console.error('Error checking saved session:', err);
     debugLog('Error checking saved session:', err);
+    
+    // If permission denied, clear localStorage to prevent repeated errors
+    if (err.code === 'PERMISSION_DENIED' || err.message.includes('permission_denied')) {
+      console.log('Permission denied accessing saved session data, clearing localStorage');
+      localStorage.removeItem('lastLobbyId');
+      localStorage.removeItem('lastPlayerId');
+      localStorage.removeItem('myPlayerInfo');
+    }
   });
 }
 
