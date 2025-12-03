@@ -239,6 +239,17 @@ function renderScoreboard(){
   
   html += '</tbody></table>';
   
+  // Add emoji reaction bar as part of the scoreboard
+  html += `<div class="emoji-reaction-row">
+    <button class="emoji-btn" onclick="sendReaction('👍', this)" title="Thumbs up">👍</button>
+    <button class="emoji-btn" onclick="sendReaction('🔥', this)" title="Fire">🔥</button>
+    <button class="emoji-btn" onclick="sendReaction('😂', this)" title="Laughing">😂</button>
+    <button class="emoji-btn" onclick="sendReaction('😮', this)" title="Surprised">😮</button>
+    <button class="emoji-btn" onclick="sendReaction('❤️', this)" title="Heart">❤️</button>
+    <button class="emoji-btn" onclick="sendReaction('👏', this)" title="Clap">👏</button>
+    <button class="emoji-btn" onclick="sendReaction('💩', this)" title="Poo">💩</button>
+  </div>`;
+  
   sb.innerHTML = html;
   
   // Show scorecard button when game is active
@@ -581,22 +592,7 @@ function animateCardPlayFromAvatar(playerId, card, callback) {
 }
 
 function renderMyHand(){
-  const handDiv = document.getElementById('myHand');
-  const myCards = storage.hands[storage.myId] || [];
-  
-  // Check if this is a fresh deal (no cards rendered yet or different cards)
-  const existingCards = handDiv.querySelectorAll('.card');
-  const isNewDeal = existingCards.length === 0 || 
-                     existingCards.length !== myCards.length ||
-                     storage.status === 'waiting_deal';
-  
-  // Use animation for new deals, skip for updates during play
-  if (isNewDeal && myCards.length > 0 && storage.status === 'bidding') {
-    animateDealCards(myCards);
-    return;
-  }
-  
-  // Regular render for updates during play
+  // Directly render cards without animation
   renderMyHandInteractive();
 }
 

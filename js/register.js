@@ -82,8 +82,15 @@ function createLobby() {
     // Reset flag after successful registration
     isRegistering = false;
   }).catch(err => {
+    console.error('Firebase error creating lobby:', err);
     isRegistering = false;
-    alert('Error creating lobby: ' + err.message);
+    
+    // Provide user-friendly error message
+    if (err.code === 'PERMISSION_DENIED' || err.message.includes('permission_denied')) {
+      alert('⚠️ Database Error\n\nUnable to create lobby due to Firebase permissions.\n\nPlease contact the developer to update database rules.');
+    } else {
+      alert('Error creating lobby: ' + err.message);
+    }
   });
 }
 

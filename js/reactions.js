@@ -101,7 +101,7 @@ function listenForReactions() {
   
   const reactionsRef = db.ref(`lobbies/${storage.lobbyId}/reactions`);
   
-  // Listen for new reactions
+  // Listen for new reactions with error handling
   reactionsRef.on('child_added', (snapshot) => {
     const reaction = snapshot.val();
     console.log('Reaction received:', reaction);
