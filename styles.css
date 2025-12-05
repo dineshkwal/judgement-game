@@ -157,7 +157,7 @@ button:active {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(10px);
   border-radius: 24px;
-  padding: 3rem 2.5rem;
+  padding: 3rem 2.5rem 1rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
   max-width: 480px;
@@ -626,6 +626,87 @@ button:active {
 
 .primary-btn:hover .btn-icon {
   transform: translateX(5px);
+}
+
+/* How to Play Section */
+.how-to-play-section {
+  margin-top: 0.25rem;
+  text-align: center;
+}
+
+.how-to-play-toggle {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.75rem;
+  font-weight: 400;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+  font-family: inherit;
+  letter-spacing: 0.3px;
+  outline: none;
+  box-shadow: none;
+}
+
+.how-to-play-toggle:focus,
+.how-to-play-toggle:hover,
+.how-to-play-toggle:active {
+  outline: none;
+  box-shadow: none;
+  border: none;
+  background: transparent;
+}
+
+.how-to-play-toggle .toggle-arrow {
+  font-size: 0.55rem;
+  transition: transform 0.3s ease;
+  opacity: 0.7;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 1px;
+}
+
+.how-to-play-toggle.active .toggle-arrow {
+  transform: rotate(180deg);
+}
+
+.how-to-play-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  text-align: left;
+  margin-top: 0;
+}
+
+.how-to-play-content.show {
+  max-height: 300px;
+  padding: 0.75rem 1rem;
+  margin-top: 0.5rem;
+}
+
+.how-to-play-content .tip {
+  padding: 0.4rem 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.how-to-play-content .tip:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.how-to-play-content .tip:first-child {
+  padding-top: 0;
+}
+
+.how-to-play-content .tip strong {
+  color: rgba(76, 175, 80, 0.8);
 }
 
 .features {

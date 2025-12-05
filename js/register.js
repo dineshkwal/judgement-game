@@ -434,3 +434,12 @@ function playAgain() {
     alert('Error creating new lobby: ' + err.message);
   });
 }
+
+/**
+ * Toggle the "How to Play" section visibility
+ */
+function toggleHowToPlay(button) {
+  const content = button.nextElementSibling;
+  button.classList.toggle('active');
+  content.classList.toggle('show');
+}
