@@ -10,7 +10,12 @@ function makeDeck(){
       d.push({suit:s, rank:r, value: ranks.indexOf(r)+2});
     }
   }
-  return d.sort(()=>Math.random()-.5);
+  // Fisher-Yates shuffle for true randomness
+  for (let i = d.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [d[i], d[j]] = [d[j], d[i]];
+  }
+  return d;
 }
 
 function suitColor(s){ 
