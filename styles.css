@@ -1292,7 +1292,7 @@ button:active {
   backdrop-filter: blur(20px);
   border-radius: 24px;
   border: 2px solid rgba(255, 255, 255, 0.18);
-  padding: 1.5rem 1.5rem 1rem;
+  /* padding: 1rem; */
   max-width: 650px;
   width: 90%;
   overflow-x: auto;
@@ -1807,7 +1807,7 @@ button:active {
 .round-info {
   background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.3), transparent);
   padding: 0.6rem;
-  margin-bottom: 0.2rem;
+  /* margin-bottom: 0.2rem; */
   color: #c8e6c9;
   font-weight: 500;
   font-size: 0.9rem;
@@ -2766,7 +2766,7 @@ button:active {
   #scoreboard {
     max-width: 320px;
     font-size: 0.75rem;
-    padding: 1rem;
+    /* padding: 1rem; */
   }
   
   #scoreboard table {
@@ -2777,7 +2777,7 @@ button:active {
   .scoreboard-header {
     gap: 0.4rem;
     font-size: 0.85rem;
-    padding: 0.8rem 1rem;
+    padding: 0.0rem 1rem 0.2rem 1rem;
     margin-bottom: 0;
   }
   
@@ -3069,7 +3069,7 @@ button:active {
   
   #scoreboard {
     max-width: 280px;
-    padding: 1rem;
+    /* padding: 1rem; */
   }
   
   #scoreboard table {
@@ -3081,7 +3081,7 @@ button:active {
     gap: 0.3rem;
     font-size: 0.75rem;
     flex-wrap: wrap;
-    padding: 0.7rem 0.8rem;
+    padding: 0.0rem 0.8rem;
     margin-bottom: 0;
   }
   
