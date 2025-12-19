@@ -152,10 +152,11 @@ function joinLobby() {
     let existingPlayerId = null;
     
     if(snapshot.exists()) {
-      // Look for a player with matching name
+      // Look for a DISCONNECTED player with matching name (for reconnection)
       snapshot.forEach((childSnapshot) => {
         const player = childSnapshot.val();
-        if(player.name === name) {
+        // Only match if same name AND player is offline/disconnected
+        if(player.name === name && player.status !== 'online') {
           existingPlayer = player;
           existingPlayerId = childSnapshot.key;
         }
@@ -167,9 +168,9 @@ function joinLobby() {
       return;
     }
     
-    // If found an existing player with same name, rejoin as them
+    // If found a disconnected player with same name, rejoin as them
     if(existingPlayer && existingPlayerId) {
-      debugLog('Found existing player, rejoining as:', existingPlayerId);
+      debugLog('Found disconnected player with same name, rejoining as:', existingPlayerId);
       rejoinAsExistingPlayer(existingPlayerId, existingPlayer, name, avatar, normalizedLobbyId);
     } else {
       // New player joining - check if game is in progress
