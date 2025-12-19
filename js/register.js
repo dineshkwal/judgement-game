@@ -71,6 +71,21 @@ function createLobby() {
     Analytics.trackLobbyCreated(lobbyId, rounds);
     Analytics.trackAvatarSelected(avatar.split('style=')[1] || 'adventurer', name);
     
+    // Show user info in top right
+    const avatarElem = document.getElementById('userInfoAvatar');
+    const avatarUrl = getValidAvatar(avatar, name);
+    debugLog('Setting userInfo avatar on create:', avatarUrl);
+    avatarElem.src = avatarUrl || `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(name)}&backgroundColor=4caf50`;
+    avatarElem.onerror = function() {
+      debugLog('Avatar load error on create, using fallback');
+      this.src = `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(name)}&backgroundColor=4caf50`;
+    };
+    document.getElementById('userInfo').classList.add('active');
+    
+    // Update top bar label
+    const myNameLabel = document.getElementById('myNameLabel');
+    if (myNameLabel) myNameLabel.textContent = name;
+    
     // Update browser URL
     updateBrowserURL(lobbyId);
     
