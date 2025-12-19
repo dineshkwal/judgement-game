@@ -1807,7 +1807,7 @@ button:active {
 .round-info {
   background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.3), transparent);
   padding: 0.6rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.2rem;
   color: #c8e6c9;
   font-weight: 500;
   font-size: 0.9rem;
