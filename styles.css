@@ -1801,7 +1801,7 @@ button:active {
 
 .scoreboard-header {
   text-align: center;
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
 }
 
 .round-info {
@@ -2777,7 +2777,7 @@ button:active {
   .scoreboard-header {
     gap: 0.4rem;
     font-size: 0.85rem;
-    padding: 0.0rem 1rem 0.2rem 1rem;
+    padding: 0.0rem 1rem 0.0rem 1rem;
     margin-bottom: 0;
   }
   
