@@ -51,9 +51,7 @@ document.addEventListener('click', closeDropdowns);
  * @param {HTMLElement} button - The button element that was clicked (optional)
  */
 function sendQuickChat(message, button) {
-  // Close the dropdown
-  const dropdown = document.getElementById('quickChatDropdown');
-  if (dropdown) dropdown.classList.remove('show');
+  // Keep dropdown open - it will close when clicking outside or on button again
   
   // Remove focus from button
   if (button && button.blur) {
@@ -135,9 +133,7 @@ function showQuickChatAnimation(message) {
  * @param {HTMLElement} button - The button element that was clicked (optional)
  */
 function sendReaction(emoji, button) {
-  // Close the dropdown
-  const dropdown = document.getElementById('reactionDropdown');
-  if (dropdown) dropdown.classList.remove('show');
+  // Keep dropdown open - it will close when clicking outside or on button again
   
   // Remove focus from button to prevent visual feedback remaining
   if (button && button.blur) {
