@@ -473,7 +473,11 @@ function refreshLobby(){
   const roundSelContainer = document.getElementById('roundSelectContainer');
   const roundSel = document.getElementById('roundSelect');
   const startBtn = document.getElementById('startBtn');
-  if(storage.players.length >= 2){
+  
+  // Only show start button and round selector if: at least 2 players AND current user is the host
+  const canStartGame = storage.players.length >= 2 && storage.isLobbyCreator;
+  
+  if(canStartGame){
     roundSelContainer.style.display = 'block';
     startBtn.style.display = 'inline-block';
     
@@ -505,9 +509,22 @@ function refreshLobby(){
     
     // Initialize dropdown toggle functionality
     initLobbyDropdowns();
+    
+    // Hide how-to-play for host (they have settings to deal with)
+    const lobbyHowToPlay = document.getElementById('lobbyHowToPlay');
+    if (lobbyHowToPlay) {
+      lobbyHowToPlay.style.display = 'none';
+    }
   } else {
-    roundSelContainer.style.display = 'none';
+    // Hide start button and round selector for non-hosts
     startBtn.style.display = 'none';
+    roundSelContainer.style.display = 'none';
+    
+    // Show how-to-play section for non-hosts while they wait
+    const lobbyHowToPlay = document.getElementById('lobbyHowToPlay');
+    if (lobbyHowToPlay) {
+      lobbyHowToPlay.style.display = 'block';
+    }
   }
 }
 

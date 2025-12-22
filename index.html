@@ -243,6 +243,21 @@
     <button id="startBtn" class="start-game-btn" style="display:none;" onclick="startGame()">
       <span>Start Game</span>
     </button>
+    
+    <!-- How to Play section for waiting players -->
+    <div id="lobbyHowToPlay" class="how-to-play-section lobby-how-to-play" style="display:none;">
+      <button class="how-to-play-toggle" onclick="toggleHowToPlay(this)">
+        <span>New to the game? Learn how to play</span>
+        <span class="toggle-arrow">▼</span>
+      </button>
+      <div class="how-to-play-content">
+        <div class="tip"><strong>Goal:</strong> Predict exactly how many hands you'll win each round (0 or more)</div>
+        <div class="tip"><strong>Cards:</strong> Each round uses fewer cards (7→6→5...) with a different trump suit</div>
+        <div class="tip"><strong>Scoring:</strong> Exact match = 20 pts | Under = 0 pts | Over = hands won</div>
+        <div class="tip"><strong>Example:</strong> Bid 3 → Win 3 = 20 pts | Win 2 = 0 pts | Win 4 = 4 pts</div>
+        <div class="tip"><strong>Winner:</strong> Highest total score after all rounds</div>
+      </div>
+    </div>
   </div>
 </div>
 
