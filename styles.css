@@ -1942,6 +1942,8 @@ button:active {
 
 .quickchat-dropdown {
   left: 4px;
+  padding: 4px;
+  border-radius: 8px;
 }
 
 /* Emoji grid in dropdown */
@@ -1976,31 +1978,42 @@ button:active {
 .dropdown-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-width: 110px;
+  gap: 0;
+  min-width: 95px;
 }
 
 .dropdown-list button {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.8);
   padding: 6px 10px;
+  margin: 0;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   text-align: left;
   transition: all 0.12s ease;
   -webkit-tap-highlight-color: transparent;
   white-space: nowrap;
+  outline: none;
+  box-shadow: none;
+  width: 100%;
+  display: block;
 }
 
 .dropdown-list button:hover {
   background: rgba(76, 175, 80, 0.2);
   color: #fff;
+  transform: scale(1.02);
 }
 
 .dropdown-list button:active {
-  transform: scale(0.95);
+  transform: scale(0.98);
+}
+
+.dropdown-list button:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 /* Animation for quick chat bubble from other players */
