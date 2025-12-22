@@ -1948,8 +1948,8 @@ button:active {
 
 /* Emoji grid in dropdown */
 .dropdown-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-direction: row;
   gap: 2px;
 }
 
