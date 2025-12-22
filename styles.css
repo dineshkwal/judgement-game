@@ -3004,7 +3004,6 @@ button:active {
   .scoreboard-header {
     gap: 0.4rem;
     font-size: 0.85rem;
-    padding: 0.0rem 1rem 0.0rem 1rem;
     margin-bottom: 0;
   }
   
@@ -3300,7 +3299,6 @@ button:active {
     gap: 0.3rem;
     font-size: 0.75rem;
     flex-wrap: wrap;
-    padding: 0.0rem 0.8rem;
     margin-bottom: 0;
   }
   
