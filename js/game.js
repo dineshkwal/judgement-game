@@ -559,6 +559,143 @@ function endGame(){
   renderFinalScorecard(sortedPlayers);
 }
 
+/**
+ * Handle when a player leaves during an active game
+ * Called from lobby.js when players list changes
+ * Note: storage.players is already updated (left player removed) when this is called
+ * @param {string} leftPlayerId - The ID of the player who left
+ */
+function handlePlayerLeft(leftPlayerId) {
+  // Only handle if game is active
+  if (!storage.gameRef || storage.gameEnded) return;
+  
+  debugLog('handlePlayerLeft called for:', leftPlayerId);
+  debugLog('Current state - dealerId:', storage.dealerId, 'myId:', storage.myId, 'isLobbyCreator:', storage.isLobbyCreator);
+  debugLog('currentBidder:', storage.currentBidder, 'currentPlayer:', storage.currentPlayer);
+  
+  // Only the dealer or lobby creator should make game state changes to avoid conflicts
+  const isDealer = storage.dealerId === storage.myId;
+  const dealerLeft = storage.dealerId === leftPlayerId;
+  
+  // Handle if: I'm the dealer, OR I'm the creator and dealer left, OR I'm the creator (fallback)
+  const shouldHandle = isDealer || (dealerLeft && storage.isLobbyCreator) || storage.isLobbyCreator;
+  
+  if (!shouldHandle) {
+    debugLog('Not handling - shouldHandle is false');
+    return;
+  }
+  
+  debugLog('Handling player left:', leftPlayerId, 'Remaining players:', storage.players.map(p => p.name));
+  
+  const updates = {};
+  const remainingPlayers = storage.players; // Already updated, doesn't include left player
+  
+  if (remainingPlayers.length === 0) return;
+  
+  // If leaving player was the current bidder, advance to next bidder
+  if (storage.currentBidder === leftPlayerId) {
+    debugLog('Left player was current bidder');
+    
+    // Check if all remaining players have already bid
+    const remainingBids = Object.keys(storage.bids || {}).filter(id => 
+      remainingPlayers.find(p => p.id === id)
+    );
+    const allBidded = remainingBids.length === remainingPlayers.length;
+    
+    if (allBidded) {
+      // Move to playing phase - all remaining players have bid
+      const dealerIdx = remainingPlayers.findIndex(p => p.id === storage.dealerId);
+      const validDealerIdx = dealerIdx >= 0 ? dealerIdx : 0;
+      const firstPlayerIdx = (validDealerIdx + 1) % remainingPlayers.length;
+      updates.currentBidder = null;
+      updates.currentPlayer = remainingPlayers[firstPlayerIdx].id;
+      updates.status = 'playing';
+      debugLog('All remaining players have bid, moving to playing phase');
+    } else {
+      // Find next bidder from remaining players (just pick the first one who hasn't bid)
+      const nextBidder = remainingPlayers.find(p => storage.bids[p.id] === undefined);
+      if (nextBidder) {
+        updates.currentBidder = nextBidder.id;
+        debugLog('Next bidder:', nextBidder.name);
+      } else {
+        // Fallback: first remaining player
+        updates.currentBidder = remainingPlayers[0].id;
+      }
+    }
+  }
+  
+  // If leaving player was the current player (during playing phase), advance to next player
+  if (storage.currentPlayer === leftPlayerId) {
+    debugLog('Left player was current player, advancing to next');
+    updates.currentPlayer = remainingPlayers[0].id;
+    debugLog('New currentPlayer will be:', remainingPlayers[0].name);
+  }
+  
+  // If leaving player was the dealer, assign new dealer
+  if (storage.dealerId === leftPlayerId) {
+    debugLog('Left player was dealer');
+    updates.dealerId = remainingPlayers[0].id;
+  }
+  
+  // Clean up left player's bid from the record (so it doesn't affect game logic)
+  if (storage.bids && storage.bids[leftPlayerId] !== undefined) {
+    updates[`bids/${leftPlayerId}`] = null;
+  }
+  
+  // Clean up left player's tricksWon
+  if (storage.tricksWon && storage.tricksWon[leftPlayerId] !== undefined) {
+    updates[`tricksWon/${leftPlayerId}`] = null;
+  }
+  
+  // Remove left player's card from the current trick if they played one
+  if (storage.trick && storage.trick.length > 0) {
+    const leftPlayerCardIndex = storage.trick.findIndex(t => t.player === leftPlayerId);
+    if (leftPlayerCardIndex >= 0) {
+      const newTrick = storage.trick.filter(t => t.player !== leftPlayerId);
+      updates.trick = newTrick;
+      debugLog('Removed left player card from trick');
+    }
+  }
+  
+  // Apply updates if any
+  if (Object.keys(updates).length > 0) {
+    debugLog('Applying game updates after player left:', updates);
+    storage.gameRef.update(updates).then(() => {
+      debugLog('Firebase updated successfully');
+      // Re-render UI after update
+      renderScoreboard();
+      renderOpponents();
+    }).catch(err => {
+      console.error('Failed to update Firebase after player left:', err);
+    });
+  } else {
+    debugLog('No updates needed');
+  }
+}
+
+/**
+ * Check if game should end due to insufficient players
+ * Called from lobby.js when players list changes
+ */
+function checkGameViability() {
+  // Only check during active game
+  if (!storage.gameRef || storage.gameEnded) return;
+  
+  // Only the dealer/host should end the game
+  if (storage.dealerId !== storage.myId && !storage.isLobbyCreator) return;
+  
+  if (storage.players.length < 2) {
+    debugLog('Not enough players to continue, ending game');
+    
+    // Show message and end game
+    showCenterMessage('Not enough players to continue');
+    
+    setTimeout(() => {
+      endGame();
+    }, 2000);
+  }
+}
+
 function resetGame(){
   if(storage.lobbyId){
     db.ref(`lobbies/${storage.lobbyId}`).remove();

@@ -11,14 +11,46 @@ function listenForPlayers(){
   // Listen for being kicked
   listenForKick();
   
+  // Track previous players to detect who left
+  let previousPlayerIds = [];
+  
   db.ref(`lobbies/${storage.lobbyId}/players`).on('value', (snapshot) => {
     const data = snapshot.val();
     // Filter out invalid/corrupted player entries (must have name and avatar)
-    storage.players = data 
+    const newPlayers = data 
       ? Object.values(data).filter(p => p && p.name && p.avatar && p.id)
       : [];
-    storage.players.sort((a,b) => (a.joinedAt || 0) - (b.joinedAt || 0));
+    newPlayers.sort((a,b) => (a.joinedAt || 0) - (b.joinedAt || 0));
+    
+    const newPlayerIds = newPlayers.map(p => p.id);
+    
+    // Detect players who left (were in previous list but not in new list)
+    const leftPlayerIds = previousPlayerIds.filter(id => !newPlayerIds.includes(id));
+    
+    // Update storage with new players list
+    storage.players = newPlayers;
+    previousPlayerIds = newPlayerIds;
+    
     refreshLobby();
+    
+    // Handle players who left during active game
+    if (storage.gameRef && !storage.gameEnded && leftPlayerIds.length > 0) {
+      leftPlayerIds.forEach(leftId => {
+        if (leftId !== storage.myId) {
+          debugLog('Player left the game:', leftId);
+          handlePlayerLeft(leftId);
+        }
+      });
+      
+      // Re-render UI for all players (including non-hosts) to remove left player from display
+      if (document.getElementById('game').classList.contains('active')) {
+        renderScoreboard();
+        renderOpponents();
+      }
+      
+      // Check if game is still viable (at least 2 players)
+      checkGameViability();
+    }
     
     // Check for disconnected players (only during active game)
     checkForDisconnectedPlayers();
@@ -76,10 +108,48 @@ function listenForPlayers(){
     }
   });
   
-  // Also listen for game start
+  // Also listen for game start AND game reset (back to lobby)
   const gameRef = db.ref(`lobbies/${storage.lobbyId}/game`);
   gameRef.on('value', (snapshot) => {
     const gameData = snapshot.val();
+    
+    // Game was removed (Reset to Lobby) - return to lobby screen
+    if (!gameData && document.getElementById('game').classList.contains('active')) {
+      console.log('Game removed, returning to lobby screen');
+      
+      // Reset local game state
+      storage.gameRef = null;
+      storage.gameEnded = false;
+      storage.round = 1;
+      storage.cardsPerRound = 0;
+      storage.hand = [];
+      storage.trick = [];
+      storage.leadSuit = null;
+      storage.trump = null;
+      storage.bids = {};
+      storage.tricksWon = {};
+      storage.scores = {};
+      storage.roundHistory = [];
+      storage.dealerId = null;
+      storage.currentBidder = null;
+      storage.currentPlayer = null;
+      storage.trickResolving = false;
+      storage.cardPlaying = false;
+      storage.lastKnownBids = undefined;
+      
+      // Close scorecard overlay if open
+      const overlay = document.getElementById('scorecardOverlay');
+      if (overlay) {
+        overlay.classList.remove('show');
+        overlay.classList.remove('game-over-screen');
+      }
+      
+      // Navigate to lobby screen
+      showScreen('lobby');
+      updateLobbyInfo();
+      return;
+    }
+    
     if(gameData && document.getElementById('game').classList.contains('active') === false){
       // Game started, switch to game screen
       storage.gameRef = gameRef; // Set this only when game actually starts
