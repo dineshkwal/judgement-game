@@ -572,25 +572,58 @@ function handlePlayerLeft(leftPlayerId) {
   debugLog('handlePlayerLeft called for:', leftPlayerId);
   debugLog('Current state - dealerId:', storage.dealerId, 'myId:', storage.myId, 'isLobbyCreator:', storage.isLobbyCreator);
   debugLog('currentBidder:', storage.currentBidder, 'currentPlayer:', storage.currentPlayer);
+  debugLog('status:', storage.status, 'trick length:', storage.trick?.length);
   
-  // Only the dealer or lobby creator should make game state changes to avoid conflicts
+  const remainingPlayers = storage.players; // Already updated, doesn't include left player
+  
+  if (remainingPlayers.length === 0) return;
+  
+  // Clean up local storage immediately for all players
+  if (storage.bids && storage.bids[leftPlayerId] !== undefined) {
+    delete storage.bids[leftPlayerId];
+    debugLog('Cleaned up local bids for left player');
+  }
+  if (storage.tricksWon && storage.tricksWon[leftPlayerId] !== undefined) {
+    delete storage.tricksWon[leftPlayerId];
+    debugLog('Cleaned up local tricksWon for left player');
+  }
+  if (storage.hands && storage.hands[leftPlayerId]) {
+    delete storage.hands[leftPlayerId];
+    debugLog('Cleaned up local hands for left player');
+  }
+  if (storage.scores && storage.scores[leftPlayerId] !== undefined) {
+    delete storage.scores[leftPlayerId];
+    debugLog('Cleaned up local scores for left player');
+  }
+  
+  // Remove left player's card from local trick
+  if (storage.trick && storage.trick.length > 0) {
+    const hadCard = storage.trick.some(t => t.playerId === leftPlayerId || t.player === leftPlayerId);
+    if (hadCard) {
+      storage.trick = storage.trick.filter(t => t.playerId !== leftPlayerId && t.player !== leftPlayerId);
+      debugLog('Removed left player card from local trick');
+    }
+  }
+  
+  // Only the dealer or lobby creator should make Firebase state changes to avoid conflicts
   const isDealer = storage.dealerId === storage.myId;
   const dealerLeft = storage.dealerId === leftPlayerId;
   
   // Handle if: I'm the dealer, OR I'm the creator and dealer left, OR I'm the creator (fallback)
-  const shouldHandle = isDealer || (dealerLeft && storage.isLobbyCreator) || storage.isLobbyCreator;
+  const shouldUpdateFirebase = isDealer || (dealerLeft && storage.isLobbyCreator) || storage.isLobbyCreator;
   
-  if (!shouldHandle) {
-    debugLog('Not handling - shouldHandle is false');
+  if (!shouldUpdateFirebase) {
+    debugLog('Not updating Firebase - not the designated handler');
+    // Still re-render UI for this player
+    renderScoreboard();
+    renderOpponents();
+    renderTrickCards();
     return;
   }
   
-  debugLog('Handling player left:', leftPlayerId, 'Remaining players:', storage.players.map(p => p.name));
+  debugLog('Handling player left (Firebase update):', leftPlayerId, 'Remaining players:', remainingPlayers.map(p => p.name));
   
   const updates = {};
-  const remainingPlayers = storage.players; // Already updated, doesn't include left player
-  
-  if (remainingPlayers.length === 0) return;
   
   // If leaving player was the current bidder, advance to next bidder
   if (storage.currentBidder === leftPlayerId) {
@@ -602,22 +635,22 @@ function handlePlayerLeft(leftPlayerId) {
     );
     const allBidded = remainingBids.length === remainingPlayers.length;
     
-    if (allBidded) {
+    if (allBidded && remainingPlayers.length > 0) {
       // Move to playing phase - all remaining players have bid
-      const dealerIdx = remainingPlayers.findIndex(p => p.id === storage.dealerId);
-      const validDealerIdx = dealerIdx >= 0 ? dealerIdx : 0;
-      const firstPlayerIdx = (validDealerIdx + 1) % remainingPlayers.length;
+      let dealerIdx = remainingPlayers.findIndex(p => p.id === storage.dealerId);
+      if (dealerIdx < 0) dealerIdx = 0;
+      const firstPlayerIdx = (dealerIdx + 1) % remainingPlayers.length;
       updates.currentBidder = null;
       updates.currentPlayer = remainingPlayers[firstPlayerIdx].id;
       updates.status = 'playing';
       debugLog('All remaining players have bid, moving to playing phase');
     } else {
-      // Find next bidder from remaining players (just pick the first one who hasn't bid)
-      const nextBidder = remainingPlayers.find(p => storage.bids[p.id] === undefined);
+      // Find next bidder from remaining players (first one who hasn't bid)
+      const nextBidder = remainingPlayers.find(p => !storage.bids || storage.bids[p.id] === undefined);
       if (nextBidder) {
         updates.currentBidder = nextBidder.id;
         debugLog('Next bidder:', nextBidder.name);
-      } else {
+      } else if (remainingPlayers.length > 0) {
         // Fallback: first remaining player
         updates.currentBidder = remainingPlayers[0].id;
       }
@@ -627,50 +660,51 @@ function handlePlayerLeft(leftPlayerId) {
   // If leaving player was the current player (during playing phase), advance to next player
   if (storage.currentPlayer === leftPlayerId) {
     debugLog('Left player was current player, advancing to next');
-    updates.currentPlayer = remainingPlayers[0].id;
-    debugLog('New currentPlayer will be:', remainingPlayers[0].name);
+    if (remainingPlayers.length > 0) {
+      updates.currentPlayer = remainingPlayers[0].id;
+      debugLog('New currentPlayer will be:', remainingPlayers[0].name);
+    }
   }
   
   // If leaving player was the dealer, assign new dealer
   if (storage.dealerId === leftPlayerId) {
     debugLog('Left player was dealer');
-    updates.dealerId = remainingPlayers[0].id;
-  }
-  
-  // Clean up left player's bid from the record (so it doesn't affect game logic)
-  if (storage.bids && storage.bids[leftPlayerId] !== undefined) {
-    updates[`bids/${leftPlayerId}`] = null;
-  }
-  
-  // Clean up left player's tricksWon
-  if (storage.tricksWon && storage.tricksWon[leftPlayerId] !== undefined) {
-    updates[`tricksWon/${leftPlayerId}`] = null;
-  }
-  
-  // Remove left player's card from the current trick if they played one
-  if (storage.trick && storage.trick.length > 0) {
-    const leftPlayerCardIndex = storage.trick.findIndex(t => t.player === leftPlayerId);
-    if (leftPlayerCardIndex >= 0) {
-      const newTrick = storage.trick.filter(t => t.player !== leftPlayerId);
-      updates.trick = newTrick;
-      debugLog('Removed left player card from trick');
+    if (remainingPlayers.length > 0) {
+      updates.dealerId = remainingPlayers[0].id;
     }
   }
   
-  // Apply updates if any
-  if (Object.keys(updates).length > 0) {
-    debugLog('Applying game updates after player left:', updates);
-    storage.gameRef.update(updates).then(() => {
-      debugLog('Firebase updated successfully');
-      // Re-render UI after update
-      renderScoreboard();
-      renderOpponents();
-    }).catch(err => {
-      console.error('Failed to update Firebase after player left:', err);
-    });
-  } else {
-    debugLog('No updates needed');
+  // Clean up left player's data in Firebase
+  updates[`bids/${leftPlayerId}`] = null;
+  updates[`tricksWon/${leftPlayerId}`] = null;
+  updates[`hands/${leftPlayerId}`] = null;
+  updates[`scores/${leftPlayerId}`] = null;
+  
+  // CRITICAL: Update the game's players array to reflect current players
+  // This ensures trick completion checks use the correct player count
+  updates.players = remainingPlayers;
+  debugLog('Updating game players array:', remainingPlayers.map(p => p.name));
+  
+  // Update trick in Firebase if we removed a card
+  if (storage.trick) {
+    const cleanedTrick = storage.trick.filter(t => t.playerId !== leftPlayerId && t.player !== leftPlayerId);
+    if (cleanedTrick.length !== storage.trick.length || storage.trick.some(t => t.playerId === leftPlayerId || t.player === leftPlayerId)) {
+      updates.trick = cleanedTrick.length > 0 ? cleanedTrick : [];
+    }
   }
+  
+  // Apply updates
+  debugLog('Applying game updates after player left:', updates);
+  storage.gameRef.update(updates).then(() => {
+    debugLog('Firebase updated successfully after player left');
+    // Re-render UI after update
+    renderScoreboard();
+    renderOpponents();
+    renderTrickCards();
+    updateUI();
+  }).catch(err => {
+    console.error('Failed to update Firebase after player left:', err);
+  });
 }
 
 /**
