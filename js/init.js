@@ -96,9 +96,10 @@ window.addEventListener('DOMContentLoaded', () => {
   }, 100);
   
   // Check for active session and show resume banner if applicable
-  setTimeout(() => {
-    checkAndShowResumeBanner();
-  }, 200);
+  // DISABLED: Resume banner feature turned off
+  // setTimeout(() => {
+  //   checkAndShowResumeBanner();
+  // }, 200);
   
   // Check if player is rejoining an existing lobby via URL
   const urlParams = new URLSearchParams(window.location.search);
