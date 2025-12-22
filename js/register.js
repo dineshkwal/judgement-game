@@ -63,6 +63,13 @@ function createLobby() {
   
   const player = { name, avatar, id, lastSeen: Date.now(), status: 'online' };
   
+  // Mark this player as the lobby creator
+  storage.isLobbyCreator = true;
+  storage.lobbyCreatorId = id;
+  
+  // Store creatorId in Firebase along with the player
+  db.ref(`lobbies/${lobbyId}/creatorId`).set(id);
+  
   db.ref(`lobbies/${lobbyId}/players`).child(id).set(player).then(()=>{
     debugLog('Lobby created successfully:', lobbyId);
     
@@ -379,14 +386,18 @@ function playAgain() {
   
   // Create new lobby with all players
   const playersData = {};
-  currentPlayers.forEach(player => {
-    playersData[player.id] = {
-      name: player.name,
-      avatar: player.avatar,
-      id: player.id,
-      lastSeen: Date.now(),
-      status: 'online'
-    };
+  currentPlayers.forEach((player, index) => {
+    // Only include valid players with required fields
+    if (player && player.name && player.avatar && player.id) {
+      playersData[player.id] = {
+        name: player.name,
+        avatar: player.avatar,
+        id: player.id,
+        joinedAt: Date.now() + index, // Preserve order with slight offset
+        lastSeen: Date.now(),
+        status: 'online'
+      };
+    }
   });
   
   // Write all players to new lobby at once

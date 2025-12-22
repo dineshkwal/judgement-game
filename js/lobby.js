@@ -1,9 +1,23 @@
 /* ---------- LOBBY SYNC ---------- */
 function listenForPlayers(){
+  // First, fetch the lobby creator ID to determine if current user is the host
+  db.ref(`lobbies/${storage.lobbyId}/creatorId`).once('value', (snapshot) => {
+    const creatorId = snapshot.val();
+    storage.lobbyCreatorId = creatorId;
+    storage.isLobbyCreator = (creatorId === storage.myId);
+    debugLog('Lobby creator:', creatorId, 'Am I creator?', storage.isLobbyCreator);
+  });
+  
+  // Listen for being kicked
+  listenForKick();
+  
   db.ref(`lobbies/${storage.lobbyId}/players`).on('value', (snapshot) => {
     const data = snapshot.val();
-    storage.players = data ? Object.values(data) : [];
-    storage.players.sort((a,b) => a.joinedAt - b.joinedAt);
+    // Filter out invalid/corrupted player entries (must have name and avatar)
+    storage.players = data 
+      ? Object.values(data).filter(p => p && p.name && p.avatar && p.id)
+      : [];
+    storage.players.sort((a,b) => (a.joinedAt || 0) - (b.joinedAt || 0));
     refreshLobby();
     
     // Check for disconnected players (only during active game)
@@ -358,7 +372,20 @@ function refreshLobby(){
   storage.players.forEach(p => {
     const div = document.createElement('div');
     div.className = 'player-item';
-    div.innerHTML = `<img src="${p.avatar}" width="40" height="40" style="border-radius:50%;"> ${p.name}`;
+    
+    // Show kick button only if: current user is lobby creator AND this is not their own row
+    const showKickBtn = storage.isLobbyCreator && p.id !== storage.myId;
+    const kickBtnHtml = showKickBtn 
+      ? `<button class="kick-btn" onclick="kickPlayer('${p.id}', '${p.name.replace(/'/g, "\\'")}')" title="Remove player"><img src="assets/exit.svg" alt="Remove"></button>`
+      : '';
+    
+    div.innerHTML = `
+      <div class="player-info">
+        <img src="${p.avatar}" width="40" height="40" style="border-radius:50%;">
+        <span>${p.name}</span>
+      </div>
+      ${kickBtnHtml}
+    `;
     list.appendChild(div);
   });
 
@@ -512,5 +539,70 @@ function startGame(){
     console.log('listenForReactions called');
   }).catch((error) => {
     console.error('Error setting game state:', error);
+  });
+}
+
+/**
+ * Kick a player from the lobby (only lobby creator can do this)
+ */
+function kickPlayer(playerId, playerName) {
+  if (!storage.isLobbyCreator) {
+    console.warn('Only the lobby creator can kick players');
+    return;
+  }
+  
+  if (playerId === storage.myId) {
+    console.warn('Cannot kick yourself');
+    return;
+  }
+  
+  // Confirmation dialog
+  if (!confirm(`Remove ${playerName} from the lobby?`)) {
+    return;
+  }
+  
+  debugLog('Kicking player:', playerId, playerName);
+  
+  // Remove player from Firebase
+  db.ref(`lobbies/${storage.lobbyId}/players/${playerId}`).remove()
+    .then(() => {
+      debugLog('Player kicked successfully:', playerName);
+    })
+    .catch(err => {
+      console.error('Error kicking player:', err);
+      alert('Failed to remove player. Please try again.');
+    });
+}
+
+/**
+ * Listen for being kicked from the lobby
+ */
+function listenForKick() {
+  db.ref(`lobbies/${storage.lobbyId}/players/${storage.myId}`).on('value', (snapshot) => {
+    // If our player entry no longer exists and we're in the lobby screen
+    if (!snapshot.exists() && document.getElementById('lobby').classList.contains('active')) {
+      debugLog('You have been removed from the lobby');
+      
+      // Clean up listeners
+      db.ref(`lobbies/${storage.lobbyId}`).off();
+      
+      // Clear local storage
+      localStorage.removeItem('lastLobbyId');
+      localStorage.removeItem('lastPlayerId');
+      
+      // Reset storage
+      storage.lobbyId = null;
+      storage.myId = null;
+      storage.players = [];
+      storage.isLobbyCreator = false;
+      storage.lobbyCreatorId = null;
+      
+      // Show message and redirect to registration
+      alert('You have been removed from the lobby by the host.');
+      showScreen('register');
+      
+      // Clear URL parameters
+      window.history.pushState({}, '', window.location.pathname);
+    }
   });
 }

@@ -42,6 +42,8 @@ const storage = {
   lobbyId: null,
   gameRef: null,
   isHost: false,
+  isLobbyCreator: false,  // Track if current player created the lobby
+  lobbyCreatorId: null,   // ID of the player who created the lobby
   trickResolving: false,
   cardPlaying: false,  // Flag to prevent double-playing cards
   disconnectedPlayers: {},  // Track disconnected players: {playerId: {name, disconnectedAt, timerId}}
