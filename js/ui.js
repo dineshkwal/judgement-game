@@ -216,9 +216,39 @@ function renderScoreboard(){
   // Determine plural/singular for cards
   const cardLabel = cardsThisRound === 1 ? 'CARD' : 'CARDS';
   
-  // Add enhanced round info header with vertical stack design
+  // Add enhanced round info header with corner buttons for reactions and quick chat
   let html = `<div class="scoreboard-header">
-    <div class="round-info">ROUND ${round}<span class="round-divider"></span>${cardsThisRound > 0 ? cardsThisRound : 0} ${cardLabel}</div>
+    <div class="header-row">
+      <button class="corner-btn left" onclick="toggleQuickChatDropdown(event)" title="Quick Chat">
+        <img src="assets/chat.svg" alt="Chat" class="corner-btn-icon">
+      </button>
+      <div class="quickchat-dropdown" id="quickChatDropdown">
+        <div class="dropdown-list">
+          <button onclick="sendQuickChat('Nice! 👍', this)">Nice! 👍</button>
+          <button onclick="sendQuickChat('Well played! 🎯', this)">Well played! 🎯</button>
+          <button onclick="sendQuickChat('GG 🤝', this)">GG 🤝</button>
+          <button onclick="sendQuickChat('Wow! 😮', this)">Wow! 😮</button>
+          <button onclick="sendQuickChat('Oops 😅', this)">Oops 😅</button>
+          <button onclick="sendQuickChat('Hurry up! ⏰', this)">Hurry up! ⏰</button>
+        </div>
+      </div>
+      <div class="round-info">ROUND ${round}<span class="round-divider"></span>${cardsThisRound > 0 ? cardsThisRound : 0} ${cardLabel}</div>
+      <button class="corner-btn right" onclick="toggleReactionDropdown(event)" title="Send Reaction">
+        <img src="assets/emoji.svg" alt="Emoji" class="corner-btn-icon">
+      </button>
+      <div class="reaction-dropdown" id="reactionDropdown">
+        <div class="dropdown-grid">
+          <button onclick="sendReaction('👍', this)">👍</button>
+          <button onclick="sendReaction('🔥', this)">🔥</button>
+          <button onclick="sendReaction('😂', this)">😂</button>
+          <button onclick="sendReaction('😭', this)">😭</button>
+          <button onclick="sendReaction('❤️', this)">❤️</button>
+          <button onclick="sendReaction('👏', this)">👏</button>
+          <button onclick="sendReaction('🎉', this)">🎉</button>
+          <button onclick="sendReaction('💩', this)">💩</button>
+        </div>
+      </div>
+    </div>
     <div class="trump-info">
       <span>TRUMP</span>
       <span class="trump-suit ${suitClass}">${trump}</span>
@@ -238,17 +268,6 @@ function renderScoreboard(){
   });
   
   html += '</tbody></table>';
-  
-  // Add emoji reaction bar as part of the scoreboard
-  html += `<div class="emoji-reaction-row">
-    <button class="emoji-btn" onclick="sendReaction('👍', this)" title="Thumbs up">👍</button>
-    <button class="emoji-btn" onclick="sendReaction('🔥', this)" title="Fire">🔥</button>
-    <button class="emoji-btn" onclick="sendReaction('😂', this)" title="Laughing">😂</button>
-    <button class="emoji-btn" onclick="sendReaction('😭', this)" title="Loud cry">😭</button>
-    <button class="emoji-btn" onclick="sendReaction('❤️', this)" title="Heart">❤️</button>
-    <button class="emoji-btn" onclick="sendReaction('👏', this)" title="Clap">👏</button>
-    <button class="emoji-btn" onclick="sendReaction('💩', this)" title="Poo">💩</button>
-  </div>`;
   
   sb.innerHTML = html;
   

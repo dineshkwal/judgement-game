@@ -1345,7 +1345,7 @@ button:active {
   /* padding: 1rem; */
   max-width: 650px;
   width: 90%;
-  overflow-x: auto;
+  overflow: visible;
   margin: 0 auto 1rem auto;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
@@ -1851,11 +1851,181 @@ button:active {
 
 .scoreboard-header {
   text-align: center;
+  position: relative;
+}
+
+/* Header row with corner buttons */
+.header-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Corner buttons for reactions and quick chat - subtle ghost style */
+.corner-btn {
+  position: absolute;
+  top: 50%;
+  /* transform: translateY(-50%); */
+  width: 32px;
+  height: 32px;
+  /* border-radius: 50%; */
+  /* border: none; */
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.25rem;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  -webkit-tap-highlight-color: transparent;
+  opacity: 0.75;
+  filter: grayscale(30%);
+}
+
+.corner-btn.left {
+  left: 5px;
+}
+
+.corner-btn.right {
+  right: 5px;
+}
+
+.corner-btn:hover {
+  opacity: 1;
+  filter: grayscale(0%);
+  transform: scale(1.15);
+}
+
+.corner-btn:active {
+  transform: scale(0.9);
+  opacity: 0.8;
+}
+
+/* Icon inside corner button */
+.corner-btn-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* Dropdown base styles - reveals upward */
+.reaction-dropdown,
+.quickchat-dropdown {
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 4px;
+  background: rgba(15, 25, 15, 0.92);
+  backdrop-filter: blur(16px);
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(76, 175, 80, 0.2);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px) scale(0.95);
+  transition: all 0.15s ease;
+}
+
+.reaction-dropdown.show,
+.quickchat-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.reaction-dropdown {
+  right: 4px;
+}
+
+.quickchat-dropdown {
+  left: 4px;
+}
+
+/* Emoji grid in dropdown */
+.dropdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+.dropdown-grid button {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+  line-height: 1;
+}
+
+.dropdown-grid button:hover {
+  background: rgba(76, 175, 80, 0.2);
+  transform: scale(1.1);
+}
+
+.dropdown-grid button:active {
+  transform: scale(0.9);
+}
+
+/* Quick chat list in dropdown */
+.dropdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 110px;
+}
+
+.dropdown-list button {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  text-align: left;
+  transition: all 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+}
+
+.dropdown-list button:hover {
+  background: rgba(76, 175, 80, 0.2);
+  color: #fff;
+}
+
+.dropdown-list button:active {
+  transform: scale(0.95);
+}
+
+/* Animation for quick chat bubble from other players */
+@keyframes chatBubbleFromPlayer {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(0);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1) translateY(-10px);
+  }
+  85% {
+    opacity: 1;
+    transform: scale(1) translateY(-20px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-40px);
+  }
 }
 
 .round-info {
   background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.3), transparent);
-  padding: 0.5rem;
+  padding: 0.5rem 3rem;
   color: #c8e6c9;
   font-weight: 500;
   font-size: 0.9rem;
@@ -1864,6 +2034,7 @@ button:active {
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
+  flex: 1;
 }
 
 .round-divider {
@@ -1992,16 +2163,11 @@ button:active {
 }
 
 .emoji-reaction-bar {
-  display: none; /* Hide the separate emoji bar, we use emoji-reaction-row now */
+  display: none; /* Hide the separate emoji bar, we use corner buttons now */
 }
 
 .emoji-reaction-row {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: center;
-  padding: 0.5rem 0.5rem 0;
-  margin-top: 0.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: none; /* Hidden - replaced by corner button dropdowns */
 }
 
 .emoji-reaction-row .emoji-btn {
@@ -3125,8 +3291,43 @@ button:active {
     margin-bottom: 0;
   }
   
+  /* Corner buttons mobile */
+  .corner-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 0.95rem;
+  }
+  
+  .corner-btn.left {
+    left: 4px;
+  }
+  
+  .corner-btn.right {
+    right: 4px;
+  }
+  
+  .reaction-dropdown,
+  .quickchat-dropdown {
+    padding: 8px;
+  }
+  
+  .dropdown-grid button {
+    font-size: 1.3rem;
+    padding: 6px;
+  }
+  
+  .dropdown-list button {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .dropdown-list {
+    min-width: 120px;
+  }
+  
   .round-info {
     font-size: 0.75rem;
+    padding: 0.5rem 2.5rem;
   }
   
   .trump-info {
@@ -3137,14 +3338,6 @@ button:active {
   
   .trump-suit {
     font-size: 1.1rem;
-  }
-  
-  .cards-info {
-    font-size: 0.75rem;
-  }
-  
-  .separator {
-    font-size: 0.85rem;
   }
   
   #centerMsg {
