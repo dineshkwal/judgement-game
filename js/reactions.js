@@ -1,4 +1,133 @@
-/* ---------- EMOJI REACTIONS ---------- */
+/* ---------- EMOJI REACTIONS & QUICK CHAT ---------- */
+
+/**
+ * Toggle the reaction dropdown
+ */
+function toggleReactionDropdown(event) {
+  event.stopPropagation();
+  const dropdown = document.getElementById('reactionDropdown');
+  const chatDropdown = document.getElementById('quickChatDropdown');
+  
+  // Close the other dropdown
+  if (chatDropdown) chatDropdown.classList.remove('show');
+  
+  // Toggle this dropdown
+  if (dropdown) dropdown.classList.toggle('show');
+}
+
+/**
+ * Toggle the quick chat dropdown
+ */
+function toggleQuickChatDropdown(event) {
+  event.stopPropagation();
+  const dropdown = document.getElementById('quickChatDropdown');
+  const reactionDropdown = document.getElementById('reactionDropdown');
+  
+  // Close the other dropdown
+  if (reactionDropdown) reactionDropdown.classList.remove('show');
+  
+  // Toggle this dropdown
+  if (dropdown) dropdown.classList.toggle('show');
+}
+
+/**
+ * Close dropdowns when clicking outside
+ */
+function closeDropdowns(event) {
+  if (!event.target.closest('.corner-btn') && !event.target.closest('.reaction-dropdown') && !event.target.closest('.quickchat-dropdown')) {
+    const reactionDropdown = document.getElementById('reactionDropdown');
+    const chatDropdown = document.getElementById('quickChatDropdown');
+    if (reactionDropdown) reactionDropdown.classList.remove('show');
+    if (chatDropdown) chatDropdown.classList.remove('show');
+  }
+}
+
+// Add global click listener to close dropdowns
+document.addEventListener('click', closeDropdowns);
+
+/**
+ * Send a quick chat message to other players
+ * @param {string} message - The message to send
+ * @param {HTMLElement} button - The button element that was clicked (optional)
+ */
+function sendQuickChat(message, button) {
+  // Close the dropdown
+  const dropdown = document.getElementById('quickChatDropdown');
+  if (dropdown) dropdown.classList.remove('show');
+  
+  // Remove focus from button
+  if (button && button.blur) {
+    button.blur();
+  }
+  
+  if (!storage.lobbyId || !storage.myId) {
+    debugLog('Cannot send quick chat: no lobby or player ID');
+    return;
+  }
+
+  // Get player info
+  const player = storage.players.find(p => p.id === storage.myId);
+  if (!player) {
+    debugLog('Cannot send quick chat: player not found');
+    return;
+  }
+
+  // Create chat object
+  const chat = {
+    message: message,
+    playerId: storage.myId,
+    playerName: player.name,
+    timestamp: Date.now(),
+    type: 'quickchat'
+  };
+
+  console.log('Sending quick chat to Firebase:', chat);
+  
+  // Send to Firebase (using same reactions path for simplicity)
+  db.ref(`lobbies/${storage.lobbyId}/reactions`).push(chat);
+  
+  debugLog('Quick chat sent:', message, 'by', player.name);
+  
+  // Add haptic feedback on mobile
+  if (navigator.vibrate) {
+    navigator.vibrate(50);
+  }
+  
+  // Show local feedback animation with message
+  showQuickChatAnimation(message);
+}
+
+/**
+ * Show a floating animation when user sends a quick chat
+ * @param {string} message - The message to animate
+ */
+function showQuickChatAnimation(message) {
+  const animDiv = document.createElement('div');
+  animDiv.className = 'quickchat-float';
+  animDiv.textContent = message;
+  animDiv.style.cssText = `
+    position: fixed;
+    bottom: 25%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #7bed9f;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    z-index: 9999;
+    pointer-events: none;
+    animation: floatUp 1.5s ease-out forwards;
+  `;
+  
+  document.body.appendChild(animDiv);
+  
+  // Remove after animation
+  setTimeout(() => {
+    animDiv.remove();
+  }, 1500);
+}
 
 /**
  * Send an emoji reaction to other players
@@ -6,6 +135,10 @@
  * @param {HTMLElement} button - The button element that was clicked (optional)
  */
 function sendReaction(emoji, button) {
+  // Close the dropdown
+  const dropdown = document.getElementById('reactionDropdown');
+  if (dropdown) dropdown.classList.remove('show');
+  
   // Remove focus from button to prevent visual feedback remaining
   if (button && button.blur) {
     button.blur();
@@ -155,26 +288,49 @@ function showOtherPlayerReaction(reaction) {
   const gameScreenRect = gameScreen.getBoundingClientRect();
   const seatRect = seat.getBoundingClientRect();
   
-  // Create emoji element
-  const emoji = document.createElement('div');
-  emoji.className = 'emoji-float-from-player';
-  emoji.textContent = reaction.emoji;
+  // Check if this is a quick chat message or emoji
+  const isQuickChat = reaction.type === 'quickchat';
   
-  // Position at player's avatar location
-  emoji.style.cssText = `
-    position: absolute;
-    top: ${seatRect.top - gameScreenRect.top + 30}px;
-    left: ${seatRect.left - gameScreenRect.left + 30}px;
-    font-size: 2.5rem;
-    z-index: 9999;
-    pointer-events: none;
-    animation: floatFromPlayer 2s ease-out forwards;
-  `;
+  // Create element
+  const element = document.createElement('div');
+  element.className = isQuickChat ? 'quickchat-float-from-player' : 'emoji-float-from-player';
+  element.textContent = isQuickChat ? reaction.message : reaction.emoji;
   
-  gameScreen.appendChild(emoji);
+  // Position at player's avatar location with different styles
+  if (isQuickChat) {
+    element.style.cssText = `
+      position: absolute;
+      top: ${seatRect.top - gameScreenRect.top + 10}px;
+      left: ${seatRect.left - gameScreenRect.left + 30}px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(76, 175, 80, 0.9);
+      padding: 0.4rem 0.8rem;
+      border-radius: 12px;
+      white-space: nowrap;
+      z-index: 9999;
+      pointer-events: none;
+      animation: chatBubbleFromPlayer 3s ease-out forwards;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    `;
+  } else {
+    element.style.cssText = `
+      position: absolute;
+      top: ${seatRect.top - gameScreenRect.top + 30}px;
+      left: ${seatRect.left - gameScreenRect.left + 30}px;
+      font-size: 2.5rem;
+      z-index: 9999;
+      pointer-events: none;
+      animation: floatFromPlayer 2s ease-out forwards;
+    `;
+  }
+  
+  gameScreen.appendChild(element);
   
   // Remove after animation completes
-  setTimeout(() => emoji.remove(), 2000);
+  const duration = isQuickChat ? 3000 : 2000;
+  setTimeout(() => element.remove(), duration);
 }
 
 /**
