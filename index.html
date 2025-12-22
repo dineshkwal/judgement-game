@@ -40,8 +40,9 @@
 
 <!-- User Dropdown Menu -->
 <div id="userMenu">
-  <button onclick="leaveGame()">Leave Game</button>
-  <button onclick="newGame()">New Game</button>
+  <button id="resetToLobbyBtn" onclick="resetToLobby()">Reset to Lobby</button>
+  <button id="leaveGameBtn" onclick="leaveGame()">Leave Game</button>
+  <button id="newGameBtn" onclick="newGame()">New Game</button>
   <button id="debugSkipRound" onclick="debugSkipToNextRound()" style="display:none; background:#ff9800; border-top: 1px solid rgba(255,255,255,0.1);">⚡ Skip to Next Round (DEBUG)</button>
 </div>
 

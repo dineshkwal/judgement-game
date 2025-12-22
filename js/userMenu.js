@@ -5,13 +5,80 @@ function toggleUserMenu(){
   
   if (isOpening) {
     Analytics.trackUserMenuOpened();
+    
+    // Show/hide buttons based on whether user is lobby creator
+    const resetBtn = document.getElementById('resetToLobbyBtn');
+    const leaveBtn = document.getElementById('leaveGameBtn');
+    const newGameBtn = document.getElementById('newGameBtn');
+    
+    if (storage.isLobbyCreator) {
+      // Host sees "Reset to Lobby" and "New Game"
+      resetBtn.style.display = 'block';
+      leaveBtn.style.display = 'none';
+      newGameBtn.style.display = 'block';
+    } else {
+      // Others only see "Leave Game"
+      resetBtn.style.display = 'none';
+      leaveBtn.style.display = 'block';
+      newGameBtn.style.display = 'none';
+    }
   }
   
   menu.classList.toggle('show');
 }
 
+/**
+ * Reset to Lobby (Host only) - takes all players back to lobby
+ * Game state is cleared but players stay in the lobby
+ */
+function resetToLobby(){
+  if(!confirm('Reset to lobby? All players will return to the lobby.')) return;
+  
+  // Close the menu
+  document.getElementById('userMenu').classList.remove('show');
+  
+  if(storage.lobbyId){
+    // Clear the game data but keep players - this triggers everyone to go back to lobby
+    db.ref(`lobbies/${storage.lobbyId}/game`).remove();
+    
+    // Reset local game state
+    storage.gameRef = null;
+    storage.gameEnded = false;
+    storage.round = 1;
+    storage.cardsPerRound = 0;
+    storage.hand = [];
+    storage.trick = [];
+    storage.leadSuit = null;
+    storage.trump = null;
+    storage.bids = {};
+    storage.tricksWon = {};
+    storage.scores = {};
+    storage.roundHistory = [];
+    storage.dealerId = null;
+    storage.currentBidder = null;
+    storage.currentPlayer = null;
+    storage.trickResolving = false;
+    storage.cardPlaying = false;
+    
+    // Close scorecard overlay if open
+    const overlay = document.getElementById('scorecardOverlay');
+    if (overlay) {
+      overlay.classList.remove('show');
+      overlay.classList.remove('game-over-screen');
+    }
+    
+    // Navigate to lobby screen
+    showScreen('lobby');
+    listenForPlayers();
+    updateLobbyInfo();
+  }
+}
+
 function leaveGame(){
-  if(!confirm('Leave this game?')) return;
+  if(!confirm('Leave this game? The game will continue without you.')) return;
+  
+  // Close the menu
+  document.getElementById('userMenu').classList.remove('show');
   
   // Track game abandonment if game was in progress
   if(storage.round && storage.cardsPerRound && !storage.gameEnded) {
@@ -19,10 +86,23 @@ function leaveGame(){
   }
   
   if(storage.lobbyId && storage.myId){
+    // Remove player from players list
     db.ref(`lobbies/${storage.lobbyId}/players/${storage.myId}`).remove();
+    
+    // Also remove from game state (hands, bids, tricksWon) so game can continue
+    const gameUpdates = {};
+    gameUpdates[`hands/${storage.myId}`] = null;
+    gameUpdates[`bids/${storage.myId}`] = null;
+    gameUpdates[`tricksWon/${storage.myId}`] = null;
+    
+    db.ref(`lobbies/${storage.lobbyId}/game`).update(gameUpdates);
   }
   
+  // Clear local storage
   localStorage.removeItem('myPlayerInfo');
+  localStorage.removeItem('lastLobbyId');
+  localStorage.removeItem('lastPlayerId');
+  
   storage.myId = null;
   storage.lobbyId = null;
   document.getElementById('userInfo').classList.remove('active');
