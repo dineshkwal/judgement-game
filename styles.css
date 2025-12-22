@@ -1851,13 +1851,11 @@ button:active {
 
 .scoreboard-header {
   text-align: center;
-  /* margin-bottom: 1rem; */
 }
 
 .round-info {
   background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.3), transparent);
-  padding: 0.6rem;
-  /* margin-bottom: 0.2rem; */
+  padding: 0.5rem;
   color: #c8e6c9;
   font-weight: 500;
   font-size: 0.9rem;
@@ -1877,7 +1875,7 @@ button:active {
 
 .trump-info {
   background: linear-gradient(90deg, transparent 0%, rgba(255, 215, 0, 0.2) 50%, transparent 100%);
-  padding: 0.6rem;
+  padding: 0.5rem;
   color: #ffd700;
   font-size: 1rem;
   font-weight: 600;
