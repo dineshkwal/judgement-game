@@ -145,7 +145,7 @@ function renderFinalScorecard(sortedPlayers) {
   html += '<div class="game-over-accent-line"></div>';
   
   // Status text
-  html += '<div class="game-over-status">Game Complete</div>';
+  html += '<div class="game-over-status">🎉 Game Complete 🎉</div>';
   
   // Winner section - Card style with border
   html += '<div class="game-over-winner-section">';
