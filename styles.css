@@ -3115,7 +3115,7 @@ button:active {
   color: #555;
   text-transform: uppercase;
   letter-spacing: 2px;
-  margin-bottom: 1.5rem;
+  margin: 2.5rem 0;
 }
 
 .game-over-winner-section {
@@ -3155,7 +3155,7 @@ button:active {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin: 1.5rem 0;
+  margin: 2rem 0;
 }
 
 .game-over-separator .separator-line {
