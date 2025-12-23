@@ -514,10 +514,10 @@ function refreshLobby(){
     // Initialize dropdown toggle functionality
     initLobbyDropdowns();
     
-    // Hide how-to-play for host (they have settings to deal with)
+    // Show how-to-play section for host too when players have joined
     const lobbyHowToPlay = document.getElementById('lobbyHowToPlay');
     if (lobbyHowToPlay) {
-      lobbyHowToPlay.style.display = 'none';
+      lobbyHowToPlay.style.display = 'block';
     }
   } else {
     // Hide start button and round selector for non-hosts
