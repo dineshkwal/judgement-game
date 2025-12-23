@@ -296,19 +296,21 @@ function showOtherPlayerReaction(reaction) {
   if (isQuickChat) {
     element.style.cssText = `
       position: absolute;
-      top: ${seatRect.top - gameScreenRect.top + 10}px;
-      left: ${seatRect.left - gameScreenRect.left + 30}px;
-      font-size: 0.85rem;
+      top: ${seatRect.top - gameScreenRect.top + 20}px;
+      left: ${seatRect.left - gameScreenRect.left + 40}px;
+      font-size: 0.9rem;
       font-weight: 600;
-      color: #fff;
-      background: rgba(76, 175, 80, 0.9);
-      padding: 0.4rem 0.8rem;
-      border-radius: 12px;
+      color: #1a1a1a;
+      background: linear-gradient(135deg, #ffd700 0%, #ffb900 100%);
+      padding: 0.5rem 1rem;
+      border-radius: 16px 16px 16px 4px;
       white-space: nowrap;
       z-index: 9999;
       pointer-events: none;
-      animation: chatBubbleFromPlayer 3s ease-out forwards;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      animation: floatFromPlayer 2.5s ease-out forwards;
+      box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      text-shadow: none;
     `;
   } else {
     element.style.cssText = `
@@ -325,7 +327,7 @@ function showOtherPlayerReaction(reaction) {
   gameScreen.appendChild(element);
   
   // Remove after animation completes
-  const duration = isQuickChat ? 3000 : 2000;
+  const duration = isQuickChat ? 2500 : 2000;
   setTimeout(() => element.remove(), duration);
 }
 
