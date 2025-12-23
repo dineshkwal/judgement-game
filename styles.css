@@ -2940,7 +2940,7 @@ button:active {
   border: 2px solid rgba(76, 175, 80, 0.4);
   padding: 3rem;
   max-width: 1200px;
-  width: 90%;
+  width: 30%;
   max-height: 90%;
   overflow-y: auto;
   overflow-y: auto;
@@ -3094,6 +3094,220 @@ button:active {
 #scorecardOverlay.game-over-screen #scorecardTitle {
   display: none !important;
 }
+
+/* ========== NEW GAME OVER SCREEN STYLES ========== */
+.game-over-container {
+  text-align: center;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.game-over-accent-line {
+  width: 60px;
+  height: 3px;
+  background: #4caf50;
+  margin: 0 auto 1.5rem;
+  border-radius: 2px;
+}
+
+.game-over-status {
+  font-size: 1.25rem;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+}
+
+.game-over-winner-section {
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, rgba(76,175,80,0.1) 0%, rgba(76,175,80,0.05) 100%);
+  border: 1px solid rgba(76,175,80,0.3);
+  border-radius: 12px;
+  padding: 1.25rem 2rem;
+}
+
+.game-over-winner-label {
+  font-size: 0.9rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+
+.game-over-crown {
+  display: none;
+}
+
+.game-over-winner-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffeb3b;
+  margin-bottom: 0.25rem;
+}
+
+.game-over-winner-score {
+  font-size: 1.1rem;
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.game-over-separator {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.game-over-separator .separator-line {
+  flex: 1;
+  height: 1px;
+  background: #333;
+}
+
+.game-over-separator .separator-text {
+  font-size: 0.8rem;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.game-over-rankings {
+  margin-bottom: 2rem;
+}
+
+.game-over-rankings .rank-item {
+  display: flex;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  background: rgba(255,255,255,0.02);
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  transition: background 0.2s;
+}
+
+.game-over-rankings .rank-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.game-over-rankings .rank-item.winner {
+  background: linear-gradient(135deg, rgba(76,175,80,0.15) 0%, rgba(76,175,80,0.05) 100%);
+  border: 1px solid rgba(76,175,80,0.2);
+}
+
+.game-over-rankings .rank-medal {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-right: 1rem;
+  background: #222;
+  color: #666;
+}
+
+.game-over-rankings .rank-medal.gold {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #000;
+}
+
+.game-over-rankings .rank-medal.silver {
+  background: linear-gradient(135deg, #C0C0C0, #888);
+  color: #000;
+}
+
+.game-over-rankings .rank-medal.bronze {
+  background: linear-gradient(135deg, #CD7F32, #8B4513);
+  color: #fff;
+}
+
+.game-over-rankings .rank-name {
+  flex: 1;
+  font-weight: 500;
+  text-align: left;
+  color: #ccc;
+}
+
+.game-over-rankings .rank-item.winner .rank-name {
+  color: #fff;
+}
+
+.game-over-rankings .rank-score {
+  font-weight: 600;
+  color: #666;
+}
+
+.game-over-rankings .rank-item.winner .rank-score {
+  color: #4caf50;
+}
+
+.game-over-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.game-over-btn {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.game-over-btn.primary {
+  background: #4caf50;
+  color: #fff;
+}
+
+.game-over-btn.primary:hover {
+  background: #5cbf60;
+  transform: translateY(-1px);
+}
+
+.game-over-btn.secondary {
+  background: #6b5b95;
+  color: #fff;
+  border: none;
+}
+
+.game-over-btn.secondary:hover {
+  background: #7d6ba8;
+  color: #fff;
+}
+
+.game-over-links {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.game-over-link {
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 25px;
+  color: #aaa;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s;
+}
+
+.game-over-link:hover {
+  background: #353535;
+  color: #ccc;
+  border-color: #4a4a4a;
+}
+
+/* ========== END GAME OVER SCREEN STYLES ========== */
 
 #scorecardContent table {
   width: 100%;
