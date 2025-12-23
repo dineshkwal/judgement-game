@@ -2933,6 +2933,7 @@ button:active {
   pointer-events: none;
 }
 
+/* ========== IN-GAME SCOREBOARD MODAL (default) ========== */
 #scorecardModal {
   background: linear-gradient(135deg, rgba(30, 30, 30, 0.95) 0%, rgba(20, 20, 20, 0.98) 100%);
   backdrop-filter: blur(20px);
@@ -2940,13 +2941,18 @@ button:active {
   border: 2px solid rgba(76, 175, 80, 0.4);
   padding: 3rem;
   max-width: 1200px;
-  width: 50vh;
+  width: 90vw;
   max-height: 90vh;
-  overflow-y: auto;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(76, 175, 80, 0.2);
   position: relative;
   animation: modalSlideIn 0.4s ease-out;
+}
+
+/* ========== GAME OVER SCREEN MODAL (narrower for game over design) ========== */
+#scorecardOverlay.game-over-screen #scorecardModal {
+  width: 50vh;
+  padding: 2rem;
 }
 
 @keyframes modalSlideIn {
