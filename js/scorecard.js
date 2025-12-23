@@ -141,9 +141,6 @@ function renderFinalScorecard(sortedPlayers) {
   // Build final rankings HTML - Dark Elegant + Minimal Card Design
   let html = '<div class="game-over-container">';
   
-  // Header accent line
-  html += '<div class="game-over-accent-line"></div>';
-  
   // Status text
   html += '<div class="game-over-status">🎉 Game Complete 🎉</div>';
   
