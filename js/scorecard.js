@@ -143,7 +143,6 @@ function renderFinalScorecard(sortedPlayers) {
   const winnerScore = storage.scores[winner.id] || 0;
   html += `<h2 style="font-size:2rem; margin:1.5rem 0 0.5rem 0; color:#FFD700;">CONGRATULATIONS</h2>`;
   html += `<h2 style="font-size:2rem; margin:0.5rem 0 1rem 0; color:#7FFF7F; text-shadow: 0 0 20px rgba(127,255,127,0.8), 0 0 40px rgba(76,175,80,0.6), 2px 2px 4px rgba(0,0,0,0.5);">🏆 ${winner.name.toUpperCase()} 🏆</h2>`;
-  html += `<p style="font-size:1.3rem; color:#888;">Winner with ${winnerScore} points</p>`;
   html += '</div>';
   
   // Rankings table
@@ -181,9 +180,9 @@ function renderFinalScorecard(sortedPlayers) {
   
   // Action buttons
   html += '<div style="text-align:center; margin-top:2rem; display:flex; flex-wrap:wrap; gap:1rem; justify-content:center;">';
-  html += '<button onclick="shareGameResults()" style="padding:1rem 2rem; font-size:1.2rem; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 15px rgba(102,126,234,0.4); transition:all 0.3s ease;" onmouseover="this.style.transform=\'translateY(-2px)\'; this.style.boxShadow=\'0 6px 20px rgba(102,126,234,0.6)\';" onmouseout="this.style.transform=\'translateY(0)\'; this.style.boxShadow=\'0 4px 15px rgba(102,126,234,0.4)\';">📤 Share Results</button>';
+  html += '<button onclick="shareGameResults()" style="padding:1rem 2rem; font-size:1.2rem; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 15px rgba(102,126,234,0.4); transition:all 0.3s ease;" onmouseover="this.style.transform=\'translateY(-2px)\'; this.style.boxShadow=\'0 6px 20px rgba(102,126,234,0.6)\';" onmouseout="this.style.transform=\'translateY(0)\'; this.style.boxShadow=\'0 4px 15px rgba(102,126,234,0.4)\';">Share Results</button>';
   html += '<button onclick="Analytics.trackViewFullScorecard(); renderScorecard(); window.scoreboardFromGameOver = true;" style="padding:1rem 2rem; font-size:1.2rem; background:var(--accent); color:white; border:none; border-radius:10px; cursor:pointer;">View Full Scoreboard</button>';
-  html += '<button onclick="playAgain()" style="padding:1rem 2rem; font-size:1.2rem; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer;">🎮 Play Again</button>';
+  html += '<button onclick="playAgain()" style="padding:1rem 2rem; font-size:1.2rem; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer;">Play Again</button>';
   html += '<button onclick="Analytics.trackNewGameClicked(); window.location.href = window.location.origin + window.location.pathname" style="padding:1rem 2rem; font-size:1.2rem; background:#666; color:white; border:none; border-radius:10px; cursor:pointer;">New Game</button>';
   html += '</div>';
   
