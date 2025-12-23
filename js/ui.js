@@ -644,15 +644,15 @@ function renderMyHandInteractive(){
     
     // Gray out cards if bidding, not my turn, card is unplayable due to follow-suit, or card being played
     if(isBidding){
-      el.style.opacity = '0.4';
+      el.style.opacity = '0.5';
       el.style.cursor = 'not-allowed';
       el.title = 'Wait for bidding to complete';
     } else if(trickResolving){
-      el.style.opacity = '0.4';
+      el.style.opacity = '0.5';
       el.style.cursor = 'not-allowed';
       el.title = 'Trick being resolved...';
     } else if(!myTurn){
-      el.style.opacity = '0.4';
+      el.style.opacity = '0.5';
       el.style.cursor = 'not-allowed';
       if(storage.cardPlaying){
         el.title = 'Card being played...';
@@ -660,7 +660,7 @@ function renderMyHandInteractive(){
         el.title = 'Not your turn';
       }
     } else if(!isPlayable){
-      el.style.opacity = '0.4';
+      el.style.opacity = '0.5';
       el.style.cursor = 'not-allowed';
       el.title = 'Cannot play this card - must follow suit';
     }
