@@ -134,56 +134,62 @@ function renderFinalScorecard(sortedPlayers) {
     return;
   }
   
-  // Build final rankings HTML
-  let html = '<div style="text-align:center; margin-bottom:2rem;">';
-  html += '<h1 style="font-size:3rem; margin:0; color:var(--accent); text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">🎉 Game Over! 🎉</h1>';
-  
-  // Winner announcement
+  // Winner info
   const winner = sortedPlayers[0];
   const winnerScore = storage.scores[winner.id] || 0;
-  html += `<h2 style="font-size:2rem; margin:1.5rem 0 0.5rem 0; color:#FFD700;">CONGRATULATIONS</h2>`;
-  html += `<h2 style="font-size:2rem; margin:0.5rem 0 1rem 0; color:#7FFF7F; text-shadow: 0 0 20px rgba(127,255,127,0.8), 0 0 40px rgba(76,175,80,0.6), 2px 2px 4px rgba(0,0,0,0.5);">🏆 ${winner.name.toUpperCase()} 🏆</h2>`;
+  
+  // Build final rankings HTML - Dark Elegant + Minimal Card Design
+  let html = '<div class="game-over-container">';
+  
+  // Header accent line
+  html += '<div class="game-over-accent-line"></div>';
+  
+  // Status text
+  html += '<div class="game-over-status">Game Complete</div>';
+  
+  // Winner section - Card style with border
+  html += '<div class="game-over-winner-section">';
+  html += '<div class="game-over-winner-label">WINNER</div>';
+  html += `<div class="game-over-winner-name">${winner.name.toUpperCase()}</div>`;
+  html += `<div class="game-over-winner-score">${winnerScore} points</div>`;
   html += '</div>';
   
-  // Rankings table
-  html += '<div style="max-width:600px; margin:0 auto 2rem;">';
-  html += '<h3 style="text-align:center; font-size:1.8rem; margin-bottom:1.5rem; color:#fff;">Final Rankings</h3>';
-  html += '<table style="width:100%; border-collapse:separate; border-spacing:0 0.5rem;">';
+  // Separator
+  html += '<div class="game-over-separator">';
+  html += '<div class="separator-line"></div>';
+  html += '<span class="separator-text">Final Rankings</span>';
+  html += '<div class="separator-line"></div>';
+  html += '</div>';
+  
+  // Rankings list
+  html += '<div class="game-over-rankings">';
   
   sortedPlayers.forEach((player, index) => {
     const score = storage.scores[player.id] || 0;
-    let rankStyle = '';
-    let rankEmoji = '';
+    const isWinner = index === 0;
+    const medalClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
     
-    if (index === 0) {
-      rankStyle = 'background:linear-gradient(135deg, #FFD700, #FFA500); color:#000; font-weight:bold;';
-      rankEmoji = '🥇';
-    } else if (index === 1) {
-      rankStyle = 'background:linear-gradient(135deg, #C0C0C0, #808080); color:#000; font-weight:bold;';
-      rankEmoji = '🥈';
-    } else if (index === 2) {
-      rankStyle = 'background:linear-gradient(135deg, #CD7F32, #8B4513); color:#fff; font-weight:bold;';
-      rankEmoji = '🥉';
-    } else {
-      rankStyle = 'background:rgba(255,255,255,0.05);';
-    }
-    
-    html += `<tr style="${rankStyle}">`;
-    html += `<td style="padding:1rem 1.5rem; font-size:1.5rem; text-align:center; border-radius:10px 0 0 10px;">${rankEmoji || (index + 1)}</td>`;
-    html += `<td style="padding:1rem 1.5rem; font-size:1.3rem;">${player.name}</td>`;
-    html += `<td style="padding:1rem 1.5rem; font-size:1.3rem; text-align:right; border-radius:0 10px 10px 0; font-weight:bold;">${score} pts</td>`;
-    html += '</tr>';
+    html += `<div class="rank-item ${isWinner ? 'winner' : ''}">`;
+    html += `<div class="rank-medal ${medalClass}">${index + 1}</div>`;
+    html += `<span class="rank-name">${player.name}</span>`;
+    html += `<span class="rank-score">${score} pts</span>`;
+    html += '</div>';
   });
   
-  html += '</table>';
   html += '</div>';
   
   // Action buttons
-  html += '<div style="text-align:center; margin-top:2rem; display:flex; flex-wrap:wrap; gap:1rem; justify-content:center;">';
-  html += '<button onclick="shareGameResults()" style="padding:1rem 2rem; font-size:1.2rem; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none; border-radius:10px; cursor:pointer; box-shadow:0 4px 15px rgba(102,126,234,0.4); transition:all 0.3s ease;" onmouseover="this.style.transform=\'translateY(-2px)\'; this.style.boxShadow=\'0 6px 20px rgba(102,126,234,0.6)\';" onmouseout="this.style.transform=\'translateY(0)\'; this.style.boxShadow=\'0 4px 15px rgba(102,126,234,0.4)\';">Share Results</button>';
-  html += '<button onclick="Analytics.trackViewFullScorecard(); renderScorecard(); window.scoreboardFromGameOver = true;" style="padding:1rem 2rem; font-size:1.2rem; background:var(--accent); color:white; border:none; border-radius:10px; cursor:pointer;">View Full Scoreboard</button>';
-  html += '<button onclick="playAgain()" style="padding:1rem 2rem; font-size:1.2rem; background:var(--primary); color:white; border:none; border-radius:10px; cursor:pointer;">Play Again</button>';
-  html += '<button onclick="Analytics.trackNewGameClicked(); window.location.href = window.location.origin + window.location.pathname" style="padding:1rem 2rem; font-size:1.2rem; background:#666; color:white; border:none; border-radius:10px; cursor:pointer;">New Game</button>';
+  html += '<div class="game-over-actions">';
+  html += '<button class="game-over-btn primary" onclick="playAgain()">Play Again</button>';
+  html += `<button class="game-over-btn secondary" onclick="Analytics.trackNewGameClicked(); window.location.href = window.location.origin + window.location.pathname">New Game</button>`;
+  html += '</div>';
+  
+  // Footer links
+  html += '<div class="game-over-links">';
+  html += '<button class="game-over-link" onclick="shareGameResults()">Share</button>';
+  html += '<button class="game-over-link" onclick="Analytics.trackViewFullScorecard(); renderScorecard(); window.scoreboardFromGameOver = true;">Scoreboard</button>';
+  html += '</div>';
+  
   html += '</div>';
   
   content.innerHTML = html;
@@ -199,8 +205,9 @@ function renderFinalScorecard(sortedPlayers) {
   if (lobbyCode && storage.lobbyId) {
     lobbyCode.textContent = `Lobby: ${storage.lobbyId}`;
     lobbyCode.style.display = 'block';
-    lobbyCode.style.fontSize = '1.2rem';
-    lobbyCode.style.marginBottom = '1rem';
+    lobbyCode.style.fontSize = '0.9rem';
+    lobbyCode.style.marginBottom = '0.5rem';
+    lobbyCode.style.color = '#4caf50';
   }
   
   // Show the overlay
