@@ -404,6 +404,15 @@ function playAgain() {
   db.ref(`lobbies/${newLobbyId}/players`).set(playersData).then(() => {
     debugLog('New lobby created successfully:', newLobbyId);
     
+    // Set the creatorId for the new lobby - the person who clicked "Play Again" becomes the host
+    return db.ref(`lobbies/${newLobbyId}/creatorId`).set(myPlayerId);
+  }).then(() => {
+    debugLog('Creator ID set for new lobby:', myPlayerId);
+    
+    // Update local storage to reflect this player is now the host
+    storage.isLobbyCreator = true;
+    storage.lobbyCreatorId = myPlayerId;
+    
     // Write rematch signal to old lobby so all players get redirected
     return db.ref(`lobbies/${oldLobbyId}/rematch`).set({
       newLobbyId: newLobbyId,
