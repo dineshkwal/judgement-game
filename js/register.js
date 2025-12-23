@@ -470,3 +470,32 @@ function toggleHowToPlay(button) {
   button.classList.toggle('active');
   content.classList.toggle('show');
 }
+
+/**
+ * Show a specific step in the How to Play timeline
+ * @param {HTMLElement} element - The clicked element (dot or nav-dot)
+ * @param {number} stepIndex - The step index to show (0-3)
+ */
+function showStep(element, stepIndex) {
+  // Find the parent how-to-play section
+  const section = element.closest('.how-to-play-section');
+  if (!section) return;
+  
+  // Update step dots
+  const stepDots = section.querySelectorAll('.step-dot');
+  stepDots.forEach((dot, i) => {
+    dot.classList.toggle('active', i === stepIndex);
+  });
+  
+  // Update content boxes
+  const contentBoxes = section.querySelectorAll('.step-content-box');
+  contentBoxes.forEach((box, i) => {
+    box.classList.toggle('active', i === stepIndex);
+  });
+  
+  // Update nav dots
+  const navDots = section.querySelectorAll('.nav-dot');
+  navDots.forEach((dot, i) => {
+    dot.classList.toggle('active', i === stepIndex);
+  });
+}

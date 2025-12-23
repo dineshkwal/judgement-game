@@ -136,18 +136,59 @@
           <span>Create New Lobby</span>
         </button>
 
-        <!-- How to Play Section -->
+        <!-- How to Play Section - Timeline Design -->
         <div class="how-to-play-section">
           <button class="how-to-play-toggle" onclick="toggleHowToPlay(this)">
             <span>New to the game? Learn how to play</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="how-to-play-content">
-            <div class="tip"><strong>Goal:</strong> Predict exactly how many hands you'll win each round (0 or more)</div>
-            <div class="tip"><strong>Cards:</strong> Each round uses fewer cards (7→6→5...) with a different trump suit</div>
-            <div class="tip"><strong>Scoring:</strong> Exact match = 20 pts | Under = 0 pts | Over = hands won</div>
-            <div class="tip"><strong>Example:</strong> Bid 3 → Win 3 = 20 pts | Win 2 = 0 pts | Win 4 = 4 pts</div>
-            <div class="tip"><strong>Winner:</strong> Highest total score after all rounds</div>
+            <div class="timeline-container">
+              <div class="timeline-track">
+                <div class="timeline-steps">
+                  <div class="step-wrapper" data-step="0">
+                    <div class="step-dot active" onclick="showStep(this, 0)">1</div>
+                    <div class="step-label">Bid</div>
+                  </div>
+                  <div class="step-wrapper" data-step="1">
+                    <div class="step-dot" onclick="showStep(this, 1)">2</div>
+                    <div class="step-label">Play</div>
+                  </div>
+                  <div class="step-wrapper" data-step="2">
+                    <div class="step-dot" onclick="showStep(this, 2)">3</div>
+                    <div class="step-label">Score</div>
+                  </div>
+                  <div class="step-wrapper" data-step="3">
+                    <div class="step-dot" onclick="showStep(this, 3)">4</div>
+                    <div class="step-label">Win</div>
+                  </div>
+                </div>
+              </div>
+              <div class="step-contents">
+                <div class="step-content-box active" data-step="0">
+                  <h4>🎯 Place Your Bid</h4>
+                  <p>Look at your cards and predict exactly how many hands you'll win this round (0 or more).</p>
+                </div>
+                <div class="step-content-box" data-step="1">
+                  <h4>🃏 Play Your Cards</h4>
+                  <p>Each round uses fewer cards (7→6→5...). Follow suit or play trump to win hands!</p>
+                </div>
+                <div class="step-content-box" data-step="2">
+                  <h4>⭐ Earn Points</h4>
+                  <p><strong>Exact</strong> = +20 pts • <strong>Under</strong> = 0 pts • <strong>Over</strong> = hands won<br><em>Example: Bid 3, win 3 = 20 pts | Win 2 = 0 pts | Win 4 = 4 pts</em></p>
+                </div>
+                <div class="step-content-box" data-step="3">
+                  <h4>🏆 Win the Game</h4>
+                  <p>Highest total score after all rounds wins! Accuracy beats luck.</p>
+                </div>
+              </div>
+              <div class="nav-dots">
+                <div class="nav-dot active" onclick="showStep(this, 0)" data-step="0"></div>
+                <div class="nav-dot" onclick="showStep(this, 1)" data-step="1"></div>
+                <div class="nav-dot" onclick="showStep(this, 2)" data-step="2"></div>
+                <div class="nav-dot" onclick="showStep(this, 3)" data-step="3"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -190,18 +231,59 @@
           <span>Join Lobby</span>
         </button>
 
-        <!-- How to Play Section -->
+        <!-- How to Play Section - Timeline Design -->
         <div class="how-to-play-section">
           <button class="how-to-play-toggle" onclick="toggleHowToPlay(this)">
             <span>New to the game? Learn how to play</span>
             <span class="toggle-arrow">▼</span>
           </button>
           <div class="how-to-play-content">
-            <div class="tip"><strong>Goal:</strong> Predict exactly how many hands you'll win (0 or more)</div>
-            <div class="tip"><strong>Cards:</strong> Each round uses fewer cards (7→6→5...) with a different trump suit</div>
-            <div class="tip"><strong>Scoring:</strong> Exact match = 20 pts | Under = 0 pts | Over = hands won pts</div>
-            <div class="tip"><strong>Example:</strong> Bid 3 → Win 3 = 20 pts | Win 2 = 0 pts | Win 4 = 4 pts</div>
-            <div class="tip"><strong>Winner:</strong> Highest total score after all rounds</div>
+            <div class="timeline-container">
+              <div class="timeline-track">
+                <div class="timeline-steps">
+                  <div class="step-wrapper" data-step="0">
+                    <div class="step-dot active" onclick="showStep(this, 0)">1</div>
+                    <div class="step-label">Bid</div>
+                  </div>
+                  <div class="step-wrapper" data-step="1">
+                    <div class="step-dot" onclick="showStep(this, 1)">2</div>
+                    <div class="step-label">Play</div>
+                  </div>
+                  <div class="step-wrapper" data-step="2">
+                    <div class="step-dot" onclick="showStep(this, 2)">3</div>
+                    <div class="step-label">Score</div>
+                  </div>
+                  <div class="step-wrapper" data-step="3">
+                    <div class="step-dot" onclick="showStep(this, 3)">4</div>
+                    <div class="step-label">Win</div>
+                  </div>
+                </div>
+              </div>
+              <div class="step-contents">
+                <div class="step-content-box active" data-step="0">
+                  <h4>🎯 Place Your Bid</h4>
+                  <p>Look at your cards and predict exactly how many hands you'll win this round (0 or more).</p>
+                </div>
+                <div class="step-content-box" data-step="1">
+                  <h4>🃏 Play Your Cards</h4>
+                  <p>Each round uses fewer cards (7→6→5...). Follow suit or play trump to win hands!</p>
+                </div>
+                <div class="step-content-box" data-step="2">
+                  <h4>⭐ Earn Points</h4>
+                  <p><strong>Exact</strong> = +20 pts • <strong>Under</strong> = 0 pts • <strong>Over</strong> = hands won<br><em>Example: Bid 3, win 3 = 20 pts | Win 2 = 0 pts | Win 4 = 4 pts</em></p>
+                </div>
+                <div class="step-content-box" data-step="3">
+                  <h4>🏆 Win the Game</h4>
+                  <p>Highest total score after all rounds wins! Accuracy beats luck.</p>
+                </div>
+              </div>
+              <div class="nav-dots">
+                <div class="nav-dot active" onclick="showStep(this, 0)" data-step="0"></div>
+                <div class="nav-dot" onclick="showStep(this, 1)" data-step="1"></div>
+                <div class="nav-dot" onclick="showStep(this, 2)" data-step="2"></div>
+                <div class="nav-dot" onclick="showStep(this, 3)" data-step="3"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -244,18 +326,59 @@
       <span>Start Game</span>
     </button>
     
-    <!-- How to Play section for waiting players -->
+    <!-- How to Play section for waiting players - Timeline Design -->
     <div id="lobbyHowToPlay" class="how-to-play-section lobby-how-to-play" style="display:none;">
       <button class="how-to-play-toggle" onclick="toggleHowToPlay(this)">
         <span>New to the game? Learn how to play</span>
         <span class="toggle-arrow">▼</span>
       </button>
       <div class="how-to-play-content">
-        <div class="tip"><strong>Goal:</strong> Predict exactly how many hands you'll win each round (0 or more)</div>
-        <div class="tip"><strong>Cards:</strong> Each round uses fewer cards (7→6→5...) with a different trump suit</div>
-        <div class="tip"><strong>Scoring:</strong> Exact match = 20 pts | Under = 0 pts | Over = hands won</div>
-        <div class="tip"><strong>Example:</strong> Bid 3 → Win 3 = 20 pts | Win 2 = 0 pts | Win 4 = 4 pts</div>
-        <div class="tip"><strong>Winner:</strong> Highest total score after all rounds</div>
+        <div class="timeline-container">
+          <div class="timeline-track">
+            <div class="timeline-steps">
+              <div class="step-wrapper" data-step="0">
+                <div class="step-dot active" onclick="showStep(this, 0)">1</div>
+                <div class="step-label">Bid</div>
+              </div>
+              <div class="step-wrapper" data-step="1">
+                <div class="step-dot" onclick="showStep(this, 1)">2</div>
+                <div class="step-label">Play</div>
+              </div>
+              <div class="step-wrapper" data-step="2">
+                <div class="step-dot" onclick="showStep(this, 2)">3</div>
+                <div class="step-label">Score</div>
+              </div>
+              <div class="step-wrapper" data-step="3">
+                <div class="step-dot" onclick="showStep(this, 3)">4</div>
+                <div class="step-label">Win</div>
+              </div>
+            </div>
+          </div>
+          <div class="step-contents">
+            <div class="step-content-box active" data-step="0">
+              <h4>🎯 Place Your Bid</h4>
+              <p>Look at your cards and predict exactly how many hands you'll win this round (0 or more).</p>
+            </div>
+            <div class="step-content-box" data-step="1">
+              <h4>🃏 Play Your Cards</h4>
+              <p>Each round uses fewer cards (7→6→5...). Follow suit or play trump to win hands!</p>
+            </div>
+            <div class="step-content-box" data-step="2">
+              <h4>⭐ Earn Points</h4>
+              <p><strong>Exact</strong> = +20 pts • <strong>Under</strong> = 0 pts • <strong>Over</strong> = hands won<br><em>Example: Bid 3, win 3 = 20 pts | Win 2 = 0 pts | Win 4 = 4 pts</em></p>
+            </div>
+            <div class="step-content-box" data-step="3">
+              <h4>🏆 Win the Game</h4>
+              <p>Highest total score after all rounds wins! Accuracy beats luck.</p>
+            </div>
+          </div>
+          <div class="nav-dots">
+            <div class="nav-dot active" onclick="showStep(this, 0)" data-step="0"></div>
+            <div class="nav-dot" onclick="showStep(this, 1)" data-step="1"></div>
+            <div class="nav-dot" onclick="showStep(this, 2)" data-step="2"></div>
+            <div class="nav-dot" onclick="showStep(this, 3)" data-step="3"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

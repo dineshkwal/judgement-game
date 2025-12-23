@@ -644,22 +644,26 @@ button:active {
 .how-to-play-toggle {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.45);
-  font-size: 0.9rem;
-  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   padding: 0;
   font-family: inherit;
   letter-spacing: 0.3px;
   outline: none;
   box-shadow: none;
+  transition: color 0.2s;
+}
+
+.how-to-play-toggle:hover {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .how-to-play-toggle:focus,
-.how-to-play-toggle:hover,
 .how-to-play-toggle:active {
   outline: none;
   box-shadow: none;
@@ -683,19 +687,189 @@ button:active {
 .how-to-play-content {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 10px;
+  transition: max-height 0.4s ease, padding 0.3s ease, margin 0.3s ease;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
   text-align: left;
   margin-top: 0;
 }
 
 .how-to-play-content.show {
-  max-height: 300px;
-  padding: 0.75rem 1rem;
-  margin-top: 0.5rem;
+  max-height: 350px;
+  padding: 1rem;
+  margin-top: 0.75rem;
 }
 
+/* Timeline Container */
+.timeline-container {
+  padding: 0.5rem 0;
+}
+
+/* Timeline Track with connecting line */
+.timeline-track {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.timeline-track::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 15%;
+  width: 70%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(76, 175, 80, 0.4) 10%, 
+    rgba(76, 175, 80, 0.4) 90%, 
+    transparent 100%);
+}
+
+.timeline-steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.step-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.step-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(50, 50, 50, 0.9);
+  border: 2px solid rgba(76, 175, 80, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.step-dot:hover {
+  transform: scale(1.1);
+  border-color: rgba(76, 175, 80, 0.7);
+}
+
+.step-dot.active {
+  background: linear-gradient(135deg, #ffd700, #ffb900);
+  border-color: transparent;
+  color: #1a1a1a;
+  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.25), 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.step-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  margin-top: 0.5rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.step-wrapper:hover .step-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.step-wrapper .step-dot.active + .step-label {
+  color: #ffd700;
+}
+
+/* Step Content Box */
+.step-contents {
+  position: relative;
+  min-height: 80px;
+}
+
+.step-content-box {
+  display: none;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+  border: 1px solid rgba(76, 175, 80, 0.25);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  animation: fadeInStep 0.3s ease;
+}
+
+.step-content-box.active {
+  display: block;
+}
+
+@keyframes fadeInStep {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.step-content-box h4 {
+  color: #ffd700;
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.step-content-box p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.step-content-box p strong {
+  color: #7bed9f;
+  font-weight: 600;
+}
+
+.step-content-box p em {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+}
+
+/* Navigation Dots */
+.nav-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-dot:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.nav-dot.active {
+  background: #ffd700;
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* Legacy tip styles (keep for backward compatibility) */
 .how-to-play-content .tip {
   padding: 0.4rem 0;
   font-size: 0.8rem;
@@ -714,6 +888,40 @@ button:active {
 
 .how-to-play-content .tip strong {
   color: rgba(76, 175, 80, 0.8);
+}
+
+/* Timeline Mobile Responsive */
+@media (max-width: 480px) {
+  .step-dot {
+    width: 34px;
+    height: 34px;
+    font-size: 0.8rem;
+  }
+  
+  .step-label {
+    font-size: 0.5rem;
+  }
+  
+  .timeline-track::before {
+    top: 17px;
+  }
+  
+  .step-content-box {
+    padding: 0.8rem 1rem;
+  }
+  
+  .step-content-box h4 {
+    font-size: 0.85rem;
+  }
+  
+  .step-content-box p {
+    font-size: 0.75rem;
+  }
+  
+  .how-to-play-content.show {
+    max-height: 320px;
+    padding: 0.75rem;
+  }
 }
 
 .features {
