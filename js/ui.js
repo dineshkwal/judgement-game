@@ -226,9 +226,9 @@ function renderScoreboard(){
         <div class="dropdown-list">
           <button onclick="sendQuickChat('Nice! 👍', this)">Nice! 👍</button>
           <button onclick="sendQuickChat('Well played! 🎯', this)">Well played! 🎯</button>
-          <button onclick="sendQuickChat('GG 🤝', this)">GG 🤝</button>
+          <button onclick="sendQuickChat('Good going! 🤝', this)">Good going! 🤝</button>
           <button onclick="sendQuickChat('Wow! 😮', this)">Wow! 😮</button>
-          <button onclick="sendQuickChat('Oops 😅', this)">Oops 😅</button>
+          <button onclick="sendQuickChat('Oops! 😅', this)">Oops! 😅</button>
           <button onclick="sendQuickChat('Hurry up! ⏰', this)">Hurry up! ⏰</button>
         </div>
       </div>
