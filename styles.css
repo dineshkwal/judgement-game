@@ -2940,8 +2940,8 @@ button:active {
   border: 2px solid rgba(76, 175, 80, 0.4);
   padding: 3rem;
   max-width: 1200px;
-  width: 30%;
-  max-height: 90%;
+  width: 50vh;
+  max-height: 90vh;
   overflow-y: auto;
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(76, 175, 80, 0.2);
@@ -3615,7 +3615,7 @@ button:active {
   
   #scorecardModal {
     padding: 1rem;
-    width: 95%;
+    width: 50vh;
     max-height: 90vh;
   }
   
@@ -3766,6 +3766,12 @@ button:active {
     font-size: 0.75rem;
     flex-wrap: wrap;
     margin-bottom: 0;
+  }
+
+  #scorecardModal {
+    padding: 1rem;
+    width: 90%;
+    max-height: 90vh;
   }
   
   /* Corner buttons mobile */
