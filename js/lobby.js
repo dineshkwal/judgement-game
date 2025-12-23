@@ -93,6 +93,10 @@ function listenForPlayers(){
       storage.trickResolving = false;
       storage.cardPlaying = false;
       
+      // Reset host/creator state - will be re-fetched from Firebase by listenForPlayers()
+      storage.isLobbyCreator = false;
+      storage.lobbyCreatorId = null;
+      
       // Close scorecard overlay
       const overlay = document.getElementById('scorecardOverlay');
       if (overlay) {
