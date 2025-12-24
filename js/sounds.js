@@ -112,7 +112,7 @@ function playBidSound() {
  * Play card play sound (when card lands on table)
  */
 function playCardPlaySound() {
-  playSound('cardPlay', 0.5); // Softer volume for frequent sound
+  playSound('cardPlay', 0.25); // Softer volume for frequent sound
 }
 
 /**
@@ -126,7 +126,7 @@ function playTrickCompleteSound() {
  * Play round complete sound (when a round ends)
  */
 function playRoundCompleteSound() {
-  playSound('roundComplete');
+  playSound('roundComplete', 0.25);
 }
 
 /**
