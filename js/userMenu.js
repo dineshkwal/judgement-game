@@ -60,8 +60,8 @@ function resetToLobby(){
     storage.trickResolving = false;
     storage.cardPlaying = false;
     
-    // Close scorecard overlay if open
-    const overlay = document.getElementById('scorecardOverlay');
+    // Close game over overlay if open
+    const overlay = document.getElementById('gameOverOverlay');
     if (overlay) {
       overlay.classList.remove('show');
       overlay.classList.remove('game-over-screen');
