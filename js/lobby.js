@@ -97,8 +97,8 @@ function listenForPlayers(){
       storage.isLobbyCreator = false;
       storage.lobbyCreatorId = null;
       
-      // Close scorecard overlay
-      const overlay = document.getElementById('scorecardOverlay');
+      // Close game over overlay
+      const overlay = document.getElementById('gameOverOverlay');
       if (overlay) {
         overlay.classList.remove('show');
         overlay.classList.remove('game-over-screen');
@@ -141,8 +141,8 @@ function listenForPlayers(){
       storage.cardPlaying = false;
       storage.lastKnownBids = undefined;
       
-      // Close scorecard overlay if open
-      const overlay = document.getElementById('scorecardOverlay');
+      // Close game over overlay if open
+      const overlay = document.getElementById('gameOverOverlay');
       if (overlay) {
         overlay.classList.remove('show');
         overlay.classList.remove('game-over-screen');
@@ -329,9 +329,9 @@ function listenForPlayers(){
             }, 2100);
           }
           
-          // If scorecard modal is open, refresh it with latest data
-          const scorecardOverlay = document.getElementById('scorecardOverlay');
-          if (scorecardOverlay && scorecardOverlay.classList.contains('show')) {
+          // If in-game scoreboard modal is open, refresh it with latest data
+          const inGameScoreboardOverlay = document.getElementById('inGameScoreboardOverlay');
+          if (inGameScoreboardOverlay && inGameScoreboardOverlay.classList.contains('show')) {
             renderScorecard();
           }
           return; // Don't continue with normal flow
@@ -394,9 +394,9 @@ function listenForPlayers(){
         }
       }
       
-      // If scorecard modal is open, refresh it with latest data
-      const scorecardOverlay = document.getElementById('scorecardOverlay');
-      if (scorecardOverlay && scorecardOverlay.classList.contains('show')) {
+      // If in-game scoreboard modal is open, refresh it with latest data
+      const inGameScoreboardOverlay = document.getElementById('inGameScoreboardOverlay');
+      if (inGameScoreboardOverlay && inGameScoreboardOverlay.classList.contains('show')) {
         renderScorecard();
       }
       
