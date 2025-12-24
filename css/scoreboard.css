@@ -1,0 +1,321 @@
+/* ===========================================
+   scoreboard.css - Scoreboard Styling
+   =========================================== */
+
+/* Scoreboard Container */
+#scoreboard {
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  max-width: 650px;
+  width: 90%;
+  overflow: visible;
+  margin: 0 auto 1rem auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Scoreboard Header */
+.scoreboard-header {
+  text-align: center;
+  position: relative;
+}
+
+/* Header row with corner buttons */
+.header-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Corner buttons for reactions and quick chat */
+.corner-btn {
+  position: absolute;
+  top: 50%;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.25rem;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  -webkit-tap-highlight-color: transparent;
+  opacity: 0.75;
+  filter: grayscale(30%);
+}
+
+.corner-btn.left {
+  left: 5px;
+}
+
+.corner-btn.right {
+  right: 5px;
+}
+
+.corner-btn:hover {
+  opacity: 1;
+  filter: grayscale(0%);
+  transform: scale(1.15);
+}
+
+.corner-btn:active {
+  transform: scale(0.9);
+  opacity: 0.8;
+}
+
+/* Icon inside corner button */
+.corner-btn-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* Dropdown base styles - reveals upward */
+.reaction-dropdown,
+.quickchat-dropdown {
+  position: absolute;
+  bottom: 100%;
+  margin-bottom: 4px;
+  background: rgba(15, 25, 15, 0.92);
+  backdrop-filter: blur(16px);
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(76, 175, 80, 0.2);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px) scale(0.95);
+  transition: all 0.15s ease;
+}
+
+.reaction-dropdown.show,
+.quickchat-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.reaction-dropdown {
+  right: 4px;
+}
+
+.quickchat-dropdown {
+  left: 4px;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+/* Emoji grid in dropdown */
+.dropdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+.dropdown-grid button {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+  line-height: 1;
+}
+
+.dropdown-grid button:hover {
+  background: rgba(76, 175, 80, 0.2);
+  transform: scale(1.1);
+}
+
+.dropdown-grid button:active {
+  transform: scale(0.9);
+}
+
+/* Quick chat list in dropdown */
+.dropdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 95px;
+}
+
+.dropdown-list button {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 8px 12px;
+  margin: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  text-align: left;
+  transition: all 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+  outline: none;
+  box-shadow: none;
+  width: 100%;
+  display: block;
+}
+
+.dropdown-list button:hover {
+  background: rgba(76, 175, 80, 0.2);
+  color: #fff;
+  transform: scale(1.02);
+}
+
+.dropdown-list button:active {
+  transform: scale(0.98);
+}
+
+.dropdown-list button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Emoji reaction bar (hidden - replaced by corner button dropdowns) */
+.emoji-reaction-bar {
+  display: none;
+}
+
+.emoji-reaction-row {
+  display: none;
+}
+
+.emoji-reaction-row .emoji-btn {
+  background: transparent;
+  border: none;
+  width: 36px;
+  height: 36px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  border-radius: 8px;
+}
+
+.emoji-reaction-row .emoji-btn:hover {
+  transform: scale(1.2);
+  background: rgba(76, 175, 80, 0.2);
+}
+
+.emoji-reaction-row .emoji-btn:active {
+  transform: scale(0.95);
+}
+
+.emoji-reaction-bar .emoji-btn {
+  background: transparent;
+  border: none;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.emoji-reaction-bar .emoji-btn:hover {
+  transform: scale(1.2);
+  filter: drop-shadow(0 2px 8px rgba(76, 175, 80, 0.6));
+}
+
+.emoji-reaction-bar .emoji-btn:active {
+  transform: scale(0.9);
+}
+
+.emoji-reaction-bar .emoji-btn:focus {
+  outline: none;
+  background: transparent;
+}
+
+.emoji-reaction-bar .emoji-btn:focus-visible {
+  outline: none;
+}
+
+/* Scoreboard Table */
+#scoreboard table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+#scoreboard thead {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#scoreboard th {
+  color: #888;
+  font-weight: 500;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 0.6rem 1rem;
+  text-align: left;
+  background: transparent;
+  border: none;
+}
+
+#scoreboard th:not(:first-child) {
+  text-align: center;
+}
+
+#scoreboard tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.2s ease;
+}
+
+#scoreboard tbody tr:last-child {
+  border-bottom: none;
+}
+
+#scoreboard tbody tr:first-child {
+  border-top: none;
+}
+
+#scoreboard tbody tr:hover {
+  background: rgba(255, 215, 0, 0.05);
+}
+
+#scoreboard tbody td {
+  padding: 0.6rem 1rem;
+  color: #a5d6a7;
+}
+
+#scoreboard tbody td:first-child {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #c8e6c9;
+  text-align: left;
+}
+
+#scoreboard tbody td:first-child > span:first-child {
+  margin-right: 0.4rem;
+}
+
+#scoreboard tbody td:not(:first-child) {
+  text-align: center;
+  font-size: 1rem;
+}

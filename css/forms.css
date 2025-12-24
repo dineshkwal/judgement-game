@@ -1,0 +1,158 @@
+/* ===========================================
+   forms.css - Form Elements and Input Styling
+   =========================================== */
+
+/* Form Elements */
+input, button, select {
+  padding: .8rem 1.2rem;
+  margin: .3rem;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+}
+
+input, select {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+select {
+  cursor: pointer;
+}
+
+select option {
+  background: #0f2010;
+  color: #e0e0e0;
+  padding: 0.8rem;
+  font-weight: 500;
+}
+
+select option:checked {
+  background: linear-gradient(135deg, #2d5f2d 0%, #1e4a1e 100%);
+  color: #a8e6a8;
+  font-weight: 600;
+}
+
+select option:hover {
+  background: #1a3d1a;
+  color: #fff;
+}
+
+select option:checked:hover {
+  background: linear-gradient(135deg, #388e3c 0%, #2d5f2d 100%);
+  color: #c8f5c8;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+input.error {
+  border-color: #f44336;
+  background: rgba(244, 67, 54, 0.05);
+}
+
+input.error:focus {
+  box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+}
+
+.input-error-message {
+  color: #f44336;
+  font-size: 0.85rem;
+  margin-top: 0.3rem;
+  display: none;
+  animation: shake 0.3s ease;
+}
+
+.input-error-message.active {
+  display: block;
+}
+
+/* Buttons */
+button {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 204, 0, 0.4);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Primary Button */
+.primary-btn {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.primary-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
+}
+
+.btn-icon {
+  font-size: 1.3rem;
+  transition: transform 0.3s ease;
+}
+
+.primary-btn:hover .btn-icon {
+  transform: translateX(5px);
+}
+
+/* Input Group */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #a8e6a8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Helper Text */
+.helper-text {
+  display: block;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* Info Text */
+.info-text {
+  text-align: center;
+  color: #888;
+  font-size: 0.9rem;
+  margin-top: -0.5rem;
+}

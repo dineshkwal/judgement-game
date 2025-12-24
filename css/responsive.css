@@ -1,0 +1,594 @@
+/* ===========================================
+   responsive.css - Media Queries and Responsive Styles
+   =========================================== */
+
+/* ========== MEDIUM SCREENS (768px) ========== */
+@media (max-width: 768px) {
+  .game-content {
+    padding-top: 6rem;
+  }
+  
+  .item-label-below .label-key {
+    font-size: 0.55rem;
+  }
+  
+  .item-label-below .label-value {
+    font-size: 0.7rem;
+  }
+  
+  .bid-popup {
+    font-size: 0.7rem;
+    padding: 5px 11px;
+    top: -42px;
+    gap: 5px;
+  }
+  
+  .bid-emoji {
+    font-size: 0.95rem;
+  }
+  
+  .bid-text {
+    font-size: 0.9rem;
+  }
+  
+  #scoreboard {
+    max-width: 320px;
+    font-size: 0.75rem;
+  }
+  
+  #scoreboard table {
+    font-size: 0.75rem;
+    border-spacing: 0 0.4rem;
+  }
+  
+  .scoreboard-header {
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    margin-bottom: 0;
+  }
+  
+  .round-info {
+    font-size: 0.85rem;
+  }
+  
+  .trump-info {
+    font-size: 0.85rem;
+    gap: 0.5rem;
+    padding: 0.6rem;
+  }
+  
+  .trump-suit {
+    font-size: 1.2rem;
+  }
+  
+  .cards-info {
+    font-size: 0.9rem;
+  }
+  
+  .emoji-reaction-row {
+    gap: 0.3rem;
+    padding: 0.4rem 0.4rem 0;
+    margin-top: 0.2rem;
+  }
+  
+  .emoji-reaction-row .emoji-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1.15rem;
+  }
+
+  #scoreboard th, #scoreboard td {
+    padding: 0.7rem 0.5rem;
+  }
+  
+  #scoreboard th {
+    font-size: 0.65rem;
+    padding: 0.8rem 0.5rem;
+    letter-spacing: 0.3px;
+  }
+  
+  #scoreboard th:first-child {
+    padding-left: 1rem;
+  }
+  
+  #scoreboard tbody td:first-child {
+    font-size: 0.85rem;
+  }
+  
+  #scoreboard tbody td:not(:first-child) {
+    font-size: 0.9rem;
+  }
+  
+  .trick .card {
+    transform: scale(0.9);
+    margin-left: -45px;
+  }
+  
+  .trick .card:first-child {
+    margin-left: 0;
+  }
+  
+  #centerMsg {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.8rem;
+  }
+  
+  #roundInfo {
+    font-size: 1rem;
+    padding: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  #table {
+    width: 75vmin;
+    height: 75vmin;
+    margin: 1rem auto;
+  }
+  
+  #biddingUI #biddingPrompt {
+    text-align: center;
+  }
+  
+  #biddingUI select {
+    width: 100%;
+  }
+  
+  #biddingUI button {
+    width: 100%;
+  }
+  
+  .custom-dropdown {
+    width: 100%;
+    flex: 1;
+  }
+  
+  #biddingUI > div {
+    width: 100%;
+  }
+  
+  #biddingUI button {
+    flex: 1;
+  }
+  
+  .seat .mini-card {
+    width: 26px;
+    height: 38px;
+  }
+  
+  .seat .mini-card .mini-rank {
+    font-size: 0.6rem;
+  }
+  
+  .seat .mini-card .mini-suit {
+    font-size: 0.85rem;
+  }
+  
+  .hand {
+    justify-content: flex-start;
+    padding: 0.5rem;
+    margin: 1rem auto;
+  }
+  
+  .card {
+    width: 80px;
+    height: 115px;
+  }
+  
+  .card .card-corner {
+    font-size: 0.9rem;
+  }
+  
+  .card .card-center {
+    font-size: 2rem;
+  }
+  
+  #msg {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  
+  #gameOverModal {
+    padding: 1rem;
+    width: 50vh;
+    max-height: 90vh;
+  }
+  
+  #gameOverModal h2 {
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem 0;
+    padding: 0 40px;
+    display: block !important;
+    visibility: visible !important;
+  }
+  
+  #gameOverModal .close-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 1.3rem;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+  
+  #gameOverContent h1 {
+    font-size: 1.8rem !important;
+    margin: 0.5rem 0 !important;
+  }
+  
+  #gameOverContent h2 {
+    font-size: 1.3rem !important;
+    margin: 1rem 0 !important;
+  }
+  
+  #gameOverContent p {
+    font-size: 1rem !important;
+  }
+  
+  #gameOverContent h3 {
+    font-size: 1.2rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  #gameOverContent table td {
+    padding: 0.7rem 0.8rem !important;
+    font-size: 1rem !important;
+  }
+  
+  #gameOverContent button {
+    padding: 0.8rem 1.2rem !important;
+    font-size: 1rem !important;
+    margin: 0.5rem 0.25rem !important;
+    display: inline-block !important;
+  }
+  
+  #gameOverContent table {
+    font-size: 0.75rem;
+  }
+  
+  #gameOverContent th,
+  #gameOverContent td {
+    padding: 0.6rem 0.4rem;
+  }
+  
+  #gameOverContent th {
+    font-size: 0.7rem;
+    padding: 0.7rem 0.4rem;
+    letter-spacing: 0.5px;
+  }
+  
+  #gameOverContent td {
+    font-size: 0.7rem;
+  }
+  
+  #gameOverContent td:first-child {
+    font-size: 0.7rem;
+  }
+  
+  /* Override inline styles for Bid/Won/Pts content on mobile */
+  #gameOverContent td div {
+    font-size: 0.7rem !important;
+    margin-bottom: 0.3rem !important;
+  }
+  
+  #gameOverContent tr:last-child td {
+    font-size: 0.85rem;
+    padding: 0.8rem 0.4rem;
+  }
+  
+  #gameOverContent tr:last-child td:first-child {
+    font-size: 0.8rem;
+  }
+  
+  .emoji-reaction-row {
+    gap: 0.2rem;
+    padding: 0.3rem 0.3rem 0;
+    margin-top: 0.2rem;
+  }
+  
+  .emoji-reaction-row .emoji-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
+  }
+
+  .tab-btn {
+    padding: 0.8rem 0.5rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.3px;
+  }
+  
+  .registration-tabs {
+    gap: 0.5rem;
+  }
+  
+  /* Timeline Mobile */
+  .step-dot {
+    width: 34px;
+    height: 34px;
+    font-size: 0.8rem;
+  }
+  
+  .step-label {
+    font-size: 0.5rem;
+  }
+  
+  .timeline-track::before {
+    top: 17px;
+  }
+  
+  .step-content-box {
+    padding: 0.8rem 1rem;
+  }
+  
+  .step-content-box h4 {
+    font-size: 0.85rem;
+  }
+  
+  .step-content-box p {
+    font-size: 0.75rem;
+  }
+  
+  .how-to-play-content.show {
+    max-height: 320px;
+    padding: 0.75rem;
+  }
+  
+  /* Avatar grid */
+  .avatar-option {
+    min-width: 60px;
+    width: 60px;
+    height: 60px;
+  }
+  
+  .avatar-grid-nav {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
+  }
+}
+
+/* ========== SMALL SCREENS (480px) ========== */
+@media (max-width: 480px) {
+  .game-content {
+    padding-top: 7rem;
+  }
+  
+  .bid-popup {
+    font-size: 0.65rem;
+    padding: 5px 10px;
+    top: -40px;
+    gap: 5px;
+  }
+  
+  .bid-emoji {
+    font-size: 0.9rem;
+  }
+  
+  .bid-text {
+    font-size: 0.85rem;
+  }
+  
+  #scoreboard {
+    max-width: 280px;
+  }
+  
+  #scoreboard table {
+    font-size: 0.7rem;
+    border-spacing: 0 0.3rem;
+  }
+  
+  .scoreboard-header {
+    gap: 0.3rem;
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+  }
+
+  #gameOverModal {
+    padding: 1rem;
+    width: 90%;
+    max-height: 90vh;
+  }
+  
+  /* Corner buttons mobile */
+  .corner-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 0.95rem;
+  }
+  
+  .corner-btn.left {
+    left: 4px;
+  }
+  
+  .corner-btn.right {
+    right: 4px;
+  }
+  
+  .reaction-dropdown,
+  .quickchat-dropdown {
+    padding: 8px;
+  }
+  
+  .dropdown-grid button {
+    font-size: 1.3rem;
+    padding: 6px;
+  }
+  
+  .dropdown-list button {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .dropdown-list {
+    min-width: 120px;
+  }
+  
+  .round-info {
+    font-size: 0.75rem;
+    padding: 0.5rem 2.5rem;
+  }
+  
+  .trump-info {
+    font-size: 0.75rem;
+    gap: 0.4rem;
+    padding: 0.6rem;
+  }
+  
+  .trump-suit {
+    font-size: 1.1rem;
+  }
+  
+  #centerMsg {
+    font-size: 0.85rem;
+    padding: 0.7rem 0.8rem;
+  }
+  
+  #scoreboard th, #scoreboard td {
+    padding: 0.6rem 0.4rem;
+  }
+  
+  #scoreboard th {
+    font-size: 0.6rem;
+    padding: 0.7rem 0.4rem;
+    letter-spacing: 0.2px;
+  }
+  
+  #scoreboard tbody td:first-child {
+    font-size: 0.8rem;
+  }
+  
+  #scoreboard tbody td:not(:first-child) {
+    font-size: 0.85rem;
+  }
+  
+  .trick .card {
+    transform: scale(0.9);
+    margin-left: -42px;
+  }
+  
+  .trick .card:first-child {
+    margin-left: 0;
+  }
+  
+  .card {
+    width: 70px;
+    height: 100px;
+  }
+  
+  .card .card-corner {
+    font-size: 0.8rem;
+  }
+  
+  .card .card-center {
+    font-size: 1.8rem;
+  }
+  
+  #gameOverModal {
+    padding: 1rem 0.75rem;
+    border-radius: 16px;
+  }
+  
+  #gameOverModal h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  
+  #gameOverModal .close-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 1.1rem;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+  
+  #gameOverContent table {
+    font-size: 0.65rem;
+  }
+  
+  #gameOverContent th,
+  #gameOverContent td {
+    padding: 0.5rem 0.3rem;
+  }
+  
+  #gameOverContent th {
+    font-size: 0.6rem;
+    padding: 0.6rem 0.3rem;
+    letter-spacing: 0.3px;
+  }
+  
+  #gameOverContent td {
+    font-size: 0.65rem;
+  }
+  
+  #gameOverContent td:first-child {
+    font-size: 0.6rem;
+    max-width: 50px;
+    padding: 0.5rem 0.2rem;
+    font-weight: 500;
+  }
+  
+  #gameOverContent th:first-child {
+    max-width: 50px;
+    padding: 0.6rem 0.2rem;
+    font-size: 0.55rem;
+    font-weight: 500;
+  }
+  
+  /* Override inline styles for Bid/Won/Pts content on extra small mobile */
+  #gameOverContent td div {
+    font-size: 0.6rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+  
+  #gameOverContent tr:last-child td {
+    font-size: 0.75rem;
+    padding: 0.7rem 0.3rem;
+    font-weight: 600;
+  }
+  
+  #gameOverContent tr:last-child td:first-child {
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+  
+  /* Register container */
+  .register-container {
+    padding: 2rem 1.5rem;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .resume-banner {
+    padding: 1.2rem;
+  }
+  
+  .resume-content h3 {
+    font-size: 1rem;
+  }
+  
+  .resume-content p {
+    font-size: 0.85rem;
+  }
+  
+  .resume-actions {
+    width: 100%;
+    gap: 0.8rem;
+  }
+  
+  .resume-btn,
+  .dismiss-resume-btn {
+    flex: 1;
+    padding: 0.7rem;
+  }
+  
+  .game-icon {
+    font-size: 3rem;
+  }
+  
+  .features {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+}

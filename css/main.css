@@ -1,0 +1,34 @@
+/* ===========================================
+   main.css - Main CSS Entry Point
+   Imports all modular CSS files
+   =========================================== */
+
+/* Core */
+@import url('./variables.css');
+@import url('./base.css');
+@import url('./background.css');
+@import url('./animations.css');
+@import url('./forms.css');
+
+/* Screens */
+@import url('./register.css');
+@import url('./lobby.css');
+@import url('./game.css');
+
+/* Game Components */
+@import url('./table.css');
+@import url('./cards.css');
+@import url('./bidding.css');
+@import url('./scoreboard.css');
+@import url('./user-menu.css');
+
+/* Overlays & Modals */
+@import url('./game-over.css');
+@import url('./in-game-scoreboard.css');
+@import url('./reconnect.css');
+
+/* Platform-specific fixes */
+@import url('./ios-fixes.css');
+
+/* Responsive - must be last */
+@import url('./responsive.css');

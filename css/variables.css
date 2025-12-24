@@ -1,0 +1,21 @@
+/* ===========================================
+   CSS Variables - Core Design Tokens
+   =========================================== */
+
+:root {
+  /* Colors */
+  --bg: #0a1a0a;
+  --bg-pattern: #142814;
+  --card: #fff;
+  --accent: #ffcc00;
+  --accent-hover: #ffd700;
+  --table: #2c5f2c;
+  --primary: #4caf50;
+  --primary-dark: #388e3c;
+  --gradient-start: #1a2f1a;
+  --gradient-end: #0a1a0a;
+  
+  /* Spacing & Sizing */
+  --radius: 12px;
+  --gap: 1rem;
+}
