@@ -93,7 +93,7 @@ function renderScorecard() {
       if (roundData && roundData.players[player.id]) {
         const data = roundData.players[player.id];
         const ptsClass = data.points >= 0 ? 'pts' : 'pts negative';
-        html += `<td><div class="cell-content"><span class="bid-won">${data.bid}/${data.won}</span><span class="${ptsClass}">${data.points > 0 ? '+' : ''}${data.points}</span></div></td>`;
+        html += `<td><div class="cell-content"><span class="bid-won">Bid: ${data.bid}, Won: ${data.won}</span><span class="${ptsClass}">${data.points > 0 ? '+' : ''}${data.points}</span></div></td>`;
       } else {
         // Round not completed yet
         html += '<td><span class="cell-empty">–</span></td>';
