@@ -350,6 +350,10 @@ function resolveTrick(){
 
   const winnerName = storage.players.find(p => p.id === winner)?.name || 'Player';
   debugLog('DEBUG: resolveTrick showing winner message:', winnerName);
+  
+  // Play trick complete sound
+  playTrickCompleteSound();
+  
   showCenterMessage(`${winnerName} won the hand!`, 3000); // Show for 3 seconds
   
   // Set flag to prevent updateUI from changing message during winner display
@@ -420,6 +424,7 @@ function resolveTrick(){
     
     if(allEmpty){
       // Show round ending message and keep the flag set to prevent other messages
+      playRoundCompleteSound();
       showCenterMessage('Round complete!', 2000);
       // Keep showingWinnerMessage = true to protect the "Round complete!" message
       // It will be cleared by the message timeout in showCenterMessage()

@@ -130,12 +130,8 @@ function debugSkipToNextRound() {
     return;
   }
   
-  // Check if we're the dealer (only dealer can advance rounds)
-  if (storage.dealerId !== storage.myId) {
-    alert('Only the dealer can skip rounds! Current dealer: ' + 
-      storage.players.find(p => p.id === storage.dealerId)?.name);
-    return;
-  }
+  // In debug mode, allow anyone to skip rounds (not just dealer)
+  console.log('🔧 DEBUG: Skipping round (triggered by player: ' + storage.myId + ')');
   
   // Force complete the current round by setting all bids and tricks
   storage.players.forEach(p => {

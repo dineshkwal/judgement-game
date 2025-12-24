@@ -30,6 +30,9 @@ let selectedAvatar = avatars[0];
 window.addEventListener('DOMContentLoaded', () => {
   debugLog('DOM loaded, initializing...');
   
+  // Initialize sound system
+  initSounds();
+  
   // Track page view
   Analytics.trackPageView('Home - Game Registration');
   

@@ -113,6 +113,9 @@ function renderFinalScorecard(sortedPlayers) {
   debugLog('DEBUG: renderFinalScorecard called for player:', storage.myId);
   debugLog('DEBUG: sortedPlayers:', sortedPlayers);
   
+  // Play game complete sound
+  playGameCompleteSound();
+  
   const content = document.getElementById('gameOverContent');
   const modal = document.getElementById('gameOverModal');
   

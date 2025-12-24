@@ -176,6 +176,9 @@ function listenForPlayers(){
       const prevTrickLength = storage.trick?.length || 0;
       const prevGameEnded = storage.gameEnded; // Preserve gameEnded flag
       
+      // Track previous hand count to detect when cards are dealt
+      const prevHandCount = storage.hands && storage.hands[storage.myId] ? storage.hands[storage.myId].length : 0;
+      
       // CRITICAL: Use lastKnownBids to track what we had BEFORE this Firebase update
       // This prevents missing bid popups when multiple updates happen rapidly
       // On first load (when lastKnownBids is undefined), initialize it with current bids to prevent showing old bid popups
@@ -223,6 +226,13 @@ function listenForPlayers(){
       }
       if(!storage.hands || typeof storage.hands !== 'object' || Array.isArray(storage.hands)) {
         storage.hands = {};
+      }
+      
+      // Detect when new cards are dealt (hand went from 0 to having cards)
+      const newHandCount = storage.hands && storage.hands[storage.myId] ? storage.hands[storage.myId].length : 0;
+      if (prevHandCount === 0 && newHandCount > 0) {
+        debugLog(`🃏 Cards dealt! Playing card deal sound`);
+        playCardDealSound();
       }
       
       const trickNowFull = gameData.trick && gameData.trick.length === gameData.players.length;
