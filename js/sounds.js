@@ -10,7 +10,9 @@ const sounds = {
   cardPlay: null,
   trickComplete: null,
   roundComplete: null,
-  gameComplete: null
+  gameComplete: null,
+  lobbyButton: null,
+  startGame: null
 };
 
 // Sound settings
@@ -43,6 +45,14 @@ function initSounds() {
   // Preload game complete sound
   sounds.gameComplete = new Audio('assets/sounds/game-complete.mp3');
   sounds.gameComplete.preload = 'auto';
+  
+  // Preload lobby button sound (create/join lobby)
+  sounds.lobbyButton = new Audio('assets/sounds/create-join-lobby.mp3');
+  sounds.lobbyButton.preload = 'auto';
+  
+  // Preload start game sound
+  sounds.startGame = new Audio('assets/sounds/start-game.mp3');
+  sounds.startGame.preload = 'auto';
   
   // Load sound preference from localStorage
   const savedPref = localStorage.getItem('soundEnabled');
@@ -116,6 +126,20 @@ function playRoundCompleteSound() {
  */
 function playGameCompleteSound() {
   playSound('gameComplete');
+}
+
+/**
+ * Play lobby button sound (create/join lobby)
+ */
+function playLobbyButtonSound() {
+  playSound('lobbyButton');
+}
+
+/**
+ * Play start game sound
+ */
+function playStartGameSound() {
+  playSound('startGame');
 }
 
 /**
