@@ -47,10 +47,33 @@
 
 <!-- User Dropdown Menu -->
 <div id="userMenu">
+  <button id="optionsBtn" onclick="openOptionsModal()">⚙️ Options</button>
   <button id="resetToLobbyBtn" onclick="resetToLobby()">Reset to Lobby</button>
   <button id="leaveGameBtn" onclick="leaveGame()">Leave Game</button>
   <button id="newGameBtn" onclick="newGame()">New Game</button>
   <button id="debugSkipRound" onclick="debugSkipToNextRound()" style="display:none; background:#ff9800; border-top: 1px solid rgba(255,255,255,0.1);">⚡ Skip to Next Round (DEBUG)</button>
+</div>
+
+<!-- Options Modal -->
+<div id="optionsOverlay" class="options-overlay" onclick="closeOptionsModal()">
+  <div id="optionsModal" class="options-modal" onclick="event.stopPropagation()">
+    <div class="options-header">
+      <h2>⚙️ Options</h2>
+      <button class="options-close-btn" onclick="closeOptionsModal()">✕</button>
+    </div>
+    <div class="options-content">
+      <div class="option-row">
+        <div class="option-label">
+          <span class="option-icon" id="soundIcon">🔊</span>
+          <span>Sound Effects</span>
+        </div>
+        <div class="option-toggle">
+          <button id="soundOnBtn" class="toggle-btn active" onclick="setSoundOption(true)">On</button>
+          <button id="soundOffBtn" class="toggle-btn" onclick="setSoundOption(false)">Off</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- In-Game Scoreboard Overlay (Design 2) -->
