@@ -587,6 +587,9 @@ function leaveLobby(){
 }
 
 function startGame(){
+  // Play start game sound
+  playStartGameSound();
+  
   // Randomly select a starting dealer
   const randomIndex = Math.floor(Math.random() * storage.players.length);
   const hostId = storage.players[randomIndex].id;

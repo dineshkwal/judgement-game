@@ -26,6 +26,9 @@ function createLobby() {
   }
   isRegistering = true;
   
+  // Play button sound
+  playLobbyButtonSound();
+  
   const nameInput = document.getElementById('playerNameCreate').value;
   
   // Clear previous errors
@@ -126,6 +129,9 @@ function joinLobby() {
     return;
   }
   isRegistering = true;
+  
+  // Play button sound
+  playLobbyButtonSound();
   
   const nameInput = document.getElementById('playerNameJoin').value;
   const lobbyCodeInput = document.getElementById('lobbyCodeInput').value;
