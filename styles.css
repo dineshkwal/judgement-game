@@ -2899,7 +2899,7 @@ button:active {
   transform: none;
 }
 
-#scorecardOverlay {
+#gameOverOverlay {
   display: none;
   position: fixed;
   top: 0;
@@ -2913,7 +2913,7 @@ button:active {
   align-items: center;
 }
 
-#scorecardOverlay.show {
+#gameOverOverlay.show {
   display: flex;
   animation: fadeIn 0.3s ease-out;
 }
@@ -2928,13 +2928,13 @@ button:active {
 }
 
 /* Hide top bar elements when scorecard is open */
-#scorecardOverlay.show ~ #game #gameTopBar {
+#gameOverOverlay.show ~ #game #gameTopBar {
   opacity: 0;
   pointer-events: none;
 }
 
 /* ========== IN-GAME SCOREBOARD MODAL (default) ========== */
-#scorecardModal {
+#gameOverModal {
   background: linear-gradient(135deg, rgba(30, 30, 30, 0.95) 0%, rgba(20, 20, 20, 0.98) 100%);
   backdrop-filter: blur(20px);
   border-radius: 24px;
@@ -2950,7 +2950,7 @@ button:active {
 }
 
 /* ========== GAME OVER SCREEN MODAL (narrower for game over design) ========== */
-#scorecardOverlay.game-over-screen #scorecardModal {
+#gameOverOverlay.game-over-screen #gameOverModal {
   width: 50vh;
   padding: 2rem;
 }
@@ -3035,7 +3035,7 @@ button:active {
   visibility: visible;
 }
 
-#scorecardModal h2 {
+#gameOverModal h2 {
   margin: 0 0 0.5rem 0;
   color: #fff;
   font-size: 2rem;
@@ -3050,7 +3050,7 @@ button:active {
   opacity: 1;
 }
 
-.scorecard-lobby-code {
+.game-over-lobby-code {
   margin: 0;
   color: #ffd700;
   font-size: 0.9rem;
@@ -3060,7 +3060,7 @@ button:active {
   display: block;
 }
 
-#scorecardModal .close-btn {
+#gameOverModal .close-btn {
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
@@ -3083,7 +3083,7 @@ button:active {
   backdrop-filter: blur(10px);
 }
 
-#scorecardModal .close-btn:hover {
+#gameOverModal .close-btn:hover {
   background: rgba(244, 67, 54, 0.8);
   color: white;
   border-color: #f44336;
@@ -3092,12 +3092,12 @@ button:active {
 }
 
 /* Hide close button on game over screen */
-#scorecardOverlay.game-over-screen .close-btn {
+#gameOverOverlay.game-over-screen .close-btn {
   display: none !important;
 }
 
 /* Hide title on game over screen */
-#scorecardOverlay.game-over-screen #scorecardTitle {
+#gameOverOverlay.game-over-screen #gameOverTitle {
   display: none !important;
 }
 
@@ -3307,7 +3307,8 @@ button:active {
 
 /* ========== END GAME OVER SCREEN STYLES ========== */
 
-#scorecardContent table {
+/* Game Over Scorecard Table Styles (when viewing full scorecard from game over) */
+#gameOverContent table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
@@ -3319,8 +3320,8 @@ button:active {
   border: 2px solid rgba(76, 175, 80, 0.4);
 }
 
-#scorecardContent th,
-#scorecardContent td {
+#gameOverContent th,
+#gameOverContent td {
   border: none;
   border-right: 1px solid rgba(76, 175, 80, 0.15);
   border-bottom: 1px solid rgba(76, 175, 80, 0.15);
@@ -3328,12 +3329,12 @@ button:active {
   text-align: center;
 }
 
-#scorecardContent th:last-child,
-#scorecardContent td:last-child {
+#gameOverContent th:last-child,
+#gameOverContent td:last-child {
   border-right: none;
 }
 
-#scorecardContent th {
+#gameOverContent th {
   background: linear-gradient(135deg, rgba(56, 142, 60, 0.8) 0%, rgba(46, 125, 50, 0.8) 100%);
   color: #fff;
   font-weight: 700;
@@ -3349,7 +3350,7 @@ button:active {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-#scorecardContent td {
+#gameOverContent td {
   background: rgba(30, 30, 30, 0.6);
   line-height: 1.9;
   color: rgba(255, 255, 255, 0.95);
@@ -3360,7 +3361,7 @@ button:active {
 }
 
 /* First column (ROUND) styling */
-#scorecardContent td:first-child {
+#gameOverContent td:first-child {
   background: rgba(50, 50, 50, 0.9);
   font-weight: 700;
   color: #fff;
@@ -3369,18 +3370,18 @@ button:active {
   letter-spacing: 0.5px;
 }
 
-#scorecardContent tbody tr:hover td {
+#gameOverContent tbody tr:hover td {
   background: rgba(76, 175, 80, 0.2);
   transform: translateX(2px);
   box-shadow: inset 0 0 20px rgba(76, 175, 80, 0.1);
 }
 
-#scorecardContent tbody tr:hover td:first-child {
+#gameOverContent tbody tr:hover td:first-child {
   background: rgba(76, 175, 80, 0.25);
 }
 
 /* Total Score Row Highlight */
-#scorecardContent tr:last-child td {
+#gameOverContent tr:last-child td {
   background: linear-gradient(135deg, rgba(76, 175, 80, 0.4) 0%, rgba(56, 142, 60, 0.4) 100%);
   font-weight: 700;
   font-size: 1.3rem;
@@ -3391,7 +3392,7 @@ button:active {
   padding: 1.5rem;
 }
 
-#scorecardContent tr:last-child td:first-child {
+#gameOverContent tr:last-child td:first-child {
   background: linear-gradient(135deg, rgba(76, 175, 80, 0.5) 0%, rgba(56, 142, 60, 0.5) 100%);
   border-right: 2px solid rgba(76, 175, 80, 0.6);
   font-size: 1.2rem;
@@ -3399,28 +3400,335 @@ button:active {
 }
 
 /* Total Score - override positive/negative colors for last row */
-#scorecardContent tr:last-child td.score-positive {
+#gameOverContent tr:last-child td.score-positive {
   color: #fff !important;
   text-shadow: 0 0 15px rgba(102, 187, 106, 0.8);
 }
 
-#scorecardContent tr:last-child td.score-negative {
+#gameOverContent tr:last-child td.score-negative {
   color: #fff !important;
   text-shadow: 0 0 15px rgba(239, 83, 80, 0.8);
 }
 
 /* Points styling */
-#scorecardContent .score-positive {
+#gameOverContent .score-positive {
   color: #66bb6a;
   font-weight: 700;
   text-shadow: 0 0 10px rgba(102, 187, 106, 0.5);
 }
 
-#scorecardContent .score-negative {
+#gameOverContent .score-negative {
   color: #ef5350;
   font-weight: 700;
   text-shadow: 0 0 10px rgba(239, 83, 80, 0.5);
 }
+
+/* ========================================== */
+/* IN-GAME SCOREBOARD (Separate from Game Over) */
+/* ========================================== */
+
+/* Overlay */
+.ingame-scoreboard-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.ingame-scoreboard-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal - EXACT MATCH TO MOCKUP */
+.ingame-scoreboard-modal {
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid rgba(76, 175, 80, 0.3);
+  border-radius: 28px;
+  padding: 2.5rem;
+  max-width: 900px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* Close button - EXACT MATCH TO MOCKUP */
+.ingame-close-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: #666;
+  font-size: 1.4rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.ingame-close-btn:hover {
+  background: rgba(244, 67, 54, 0.2);
+  border-color: rgba(244, 67, 54, 0.3);
+  color: #f44336;
+}
+
+/* Scoreboard container */
+.design2-scoreboard {
+  background: transparent;
+}
+
+/* Header - EXACT MATCH TO MOCKUP */
+.design2-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.design2-header h2 {
+  font-size: 1.1rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin: 0 0 0.6rem 0;
+  font-weight: 600;
+}
+
+.design2-header .design2-lobby {
+  color: #4caf50;
+  font-size: 0.95rem;
+}
+
+/* Table */
+.design2-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Header cells - EXACT MATCH TO MOCKUP */
+.design2-table thead th {
+  padding: 1rem 0.75rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #999;
+  font-weight: 600;
+  border-bottom: 2px solid #222;
+  background: rgba(255, 255, 255, 0.02);
+  text-align: center;
+  vertical-align: bottom;
+}
+
+.design2-table thead th:first-child {
+  text-align: left;
+  color: #888;
+  border-radius: 8px 0 0 0;
+}
+
+.design2-table thead th:last-child {
+  border-radius: 0 8px 0 0;
+}
+
+/* Player total score in header - EXACT MATCH TO MOCKUP */
+.design2-table thead th .player-total {
+  display: block;
+  font-size: 1.6rem;
+  color: #888;
+  font-weight: 700;
+  margin-top: 0.3rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Leader highlighting - EXACT MATCH TO MOCKUP */
+.design2-table thead th.leader {
+  background: linear-gradient(180deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.02));
+}
+
+.design2-table thead th.leader .player-total {
+  color: #4caf50;
+}
+
+/* Body cells - EXACT MATCH TO MOCKUP */
+.design2-table tbody td {
+  padding: 0.85rem 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 1rem;
+  color: #ccc;
+  vertical-align: middle;
+}
+
+.design2-table tbody td:first-child {
+  text-align: left;
+  color: #888;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* Row hover */
+.design2-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Cell content (bid/won + points) - EXACT MATCH TO MOCKUP */
+.design2-table .cell-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.design2-table .bid-won {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.design2-table .pts {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #4caf50;
+}
+
+.design2-table .pts.negative {
+  color: #f44336;
+}
+
+.design2-table .cell-empty {
+  color: #2a2a2a;
+  font-size: 1.1rem;
+}
+
+/* ========== IN-GAME SCOREBOARD MOBILE (768px) ========== */
+@media (max-width: 768px) {
+  .ingame-scoreboard-modal {
+    padding: 1.5rem;
+    max-width: 95%;
+    border-radius: 20px;
+  }
+  
+  .ingame-close-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+  
+  .design2-header {
+    margin-bottom: 1.25rem;
+  }
+  
+  .design2-header h2 {
+    font-size: 0.8rem;
+    letter-spacing: 2.5px;
+  }
+  
+  .design2-header .design2-lobby {
+    font-size: 0.75rem;
+  }
+  
+  .design2-table thead th {
+    padding: 0.6rem 0.4rem;
+    font-size: 0.65rem;
+  }
+  
+  .design2-table thead th .player-total {
+    font-size: 1.1rem;
+  }
+  
+  .design2-table tbody td {
+    padding: 0.5rem 0.4rem;
+  }
+  
+  .design2-table tbody td:first-child {
+    font-size: 0.75rem;
+  }
+  
+  .design2-table .bid-won {
+    font-size: 0.6rem;
+  }
+  
+  .design2-table .pts {
+    font-size: 0.85rem;
+  }
+}
+
+/* ========== IN-GAME SCOREBOARD SMALL MOBILE (480px) ========== */
+@media (max-width: 480px) {
+  .ingame-scoreboard-modal {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+  
+  .design2-header {
+    margin-bottom: 1rem;
+  }
+  
+  .design2-header h2 {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+  }
+  
+  .design2-header .design2-lobby {
+    font-size: 0.65rem;
+  }
+  
+  .design2-table thead th {
+    padding: 0.5rem 0.3rem;
+    font-size: 0.55rem;
+  }
+  
+  .design2-table thead th:first-child {
+    border-radius: 6px 0 0 0;
+  }
+  
+  .design2-table thead th:last-child {
+    border-radius: 0 6px 0 0;
+  }
+  
+  .design2-table thead th .player-total {
+    font-size: 0.95rem;
+  }
+  
+  .design2-table tbody td {
+    padding: 0.4rem 0.25rem;
+  }
+  
+  .design2-table tbody td:first-child {
+    font-size: 0.65rem;
+  }
+  
+  .design2-table .bid-won {
+    font-size: 0.55rem;
+  }
+  
+  .design2-table .pts {
+    font-size: 0.75rem;
+  }
+  
+  .design2-table .cell-empty {
+    font-size: 0.75rem;
+  }
+}
+
+/* ========== END IN-GAME SCOREBOARD ========== */
 
 @media (max-width: 768px) {
   .game-content {
@@ -3611,13 +3919,13 @@ button:active {
     text-align: center;
   }
   
-  #scorecardModal {
+  #gameOverModal {
     padding: 1rem;
     width: 50vh;
     max-height: 90vh;
   }
   
-  #scorecardModal h2 {
+  #gameOverModal h2 {
     font-size: 1.5rem;
     margin: 0 0 0.5rem 0;
     padding: 0 40px;
@@ -3625,7 +3933,7 @@ button:active {
     visibility: visible !important;
   }
   
-  #scorecardModal .close-btn {
+  #gameOverModal .close-btn {
     width: 35px;
     height: 35px;
     font-size: 1.3rem;
@@ -3633,72 +3941,72 @@ button:active {
     right: 0.75rem;
   }
   
-  #scorecardContent h1 {
+  #gameOverContent h1 {
     font-size: 1.8rem !important;
     margin: 0.5rem 0 !important;
   }
   
-  #scorecardContent h2 {
+  #gameOverContent h2 {
     font-size: 1.3rem !important;
     margin: 1rem 0 !important;
   }
   
-  #scorecardContent p {
+  #gameOverContent p {
     font-size: 1rem !important;
   }
   
-  #scorecardContent h3 {
+  #gameOverContent h3 {
     font-size: 1.2rem !important;
     margin-bottom: 1rem !important;
   }
   
-  #scorecardContent table td {
+  #gameOverContent table td {
     padding: 0.7rem 0.8rem !important;
     font-size: 1rem !important;
   }
   
-  #scorecardContent button {
+  #gameOverContent button {
     padding: 0.8rem 1.2rem !important;
     font-size: 1rem !important;
     margin: 0.5rem 0.25rem !important;
     display: inline-block !important;
   }
   
-  #scorecardContent table {
+  #gameOverContent table {
     font-size: 0.75rem;
   }
   
-  #scorecardContent th,
-  #scorecardContent td {
+  #gameOverContent th,
+  #gameOverContent td {
     padding: 0.6rem 0.4rem;
   }
   
-  #scorecardContent th {
+  #gameOverContent th {
     font-size: 0.7rem;
     padding: 0.7rem 0.4rem;
     letter-spacing: 0.5px;
   }
   
-  #scorecardContent td {
+  #gameOverContent td {
     font-size: 0.7rem;
   }
   
-  #scorecardContent td:first-child {
+  #gameOverContent td:first-child {
     font-size: 0.7rem;
   }
   
   /* Override inline styles for Bid/Won/Pts content on mobile */
-  #scorecardContent td div {
+  #gameOverContent td div {
     font-size: 0.7rem !important;
     margin-bottom: 0.3rem !important;
   }
   
-  #scorecardContent tr:last-child td {
+  #gameOverContent tr:last-child td {
     font-size: 0.85rem;
     padding: 0.8rem 0.4rem;
   }
   
-  #scorecardContent tr:last-child td:first-child {
+  #gameOverContent tr:last-child td:first-child {
     font-size: 0.8rem;
   }
   
@@ -3766,7 +4074,7 @@ button:active {
     margin-bottom: 0;
   }
 
-  #scorecardModal {
+  #gameOverModal {
     padding: 1rem;
     width: 90%;
     max-height: 90vh;
@@ -3871,17 +4179,17 @@ button:active {
     font-size: 1.8rem;
   }
   
-  #scorecardModal {
+  #gameOverModal {
     padding: 1rem 0.75rem;
     border-radius: 16px;
   }
   
-  #scorecardModal h2 {
+  #gameOverModal h2 {
     font-size: 1.3rem;
     margin-bottom: 1rem;
   }
   
-  #scorecardModal .close-btn {
+  #gameOverModal .close-btn {
     width: 30px;
     height: 30px;
     font-size: 1.1rem;
@@ -3889,33 +4197,33 @@ button:active {
     right: 0.5rem;
   }
   
-  #scorecardContent table {
+  #gameOverContent table {
     font-size: 0.65rem;
   }
   
-  #scorecardContent th,
-  #scorecardContent td {
+  #gameOverContent th,
+  #gameOverContent td {
     padding: 0.5rem 0.3rem;
   }
   
-  #scorecardContent th {
+  #gameOverContent th {
     font-size: 0.6rem;
     padding: 0.6rem 0.3rem;
     letter-spacing: 0.3px;
   }
   
-  #scorecardContent td {
+  #gameOverContent td {
     font-size: 0.65rem;
   }
   
-  #scorecardContent td:first-child {
+  #gameOverContent td:first-child {
     font-size: 0.6rem;
     max-width: 50px;
     padding: 0.5rem 0.2rem;
     font-weight: 500;
   }
   
-  #scorecardContent th:first-child {
+  #gameOverContent th:first-child {
     max-width: 50px;
     padding: 0.6rem 0.2rem;
     font-size: 0.55rem;
@@ -3923,18 +4231,18 @@ button:active {
   }
   
   /* Override inline styles for Bid/Won/Pts content on extra small mobile */
-  #scorecardContent td div {
+  #gameOverContent td div {
     font-size: 0.6rem !important;
     margin-bottom: 0.25rem !important;
   }
   
-  #scorecardContent tr:last-child td {
+  #gameOverContent tr:last-child td {
     font-size: 0.75rem;
     padding: 0.7rem 0.3rem;
     font-weight: 600;
   }
   
-  #scorecardContent tr:last-child td:first-child {
+  #gameOverContent tr:last-child td:first-child {
     font-size: 0.7rem;
     font-weight: 600;
   }

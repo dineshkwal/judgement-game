@@ -1,18 +1,18 @@
 /* ---------- SCORECARD FUNCTIONS ---------- */
 
 function toggleScorecard() {
-  const overlay = document.getElementById('scorecardOverlay');
-  if (!overlay) return;
+  const inGameOverlay = document.getElementById('inGameScoreboardOverlay');
   
-  const isShowing = overlay.classList.contains('show');
+  // Check if in-game scoreboard is showing
+  const inGameShowing = inGameOverlay && inGameOverlay.classList.contains('show');
   
-  if (isShowing) {
-    overlay.classList.remove('show');
+  if (inGameShowing) {
+    // Close in-game scoreboard
+    inGameOverlay.classList.remove('show');
     
-    // If we came from game over screen via "View Full Scorecard", go back to game over
+    // If we came from game over screen, go back to it
     if (window.scoreboardFromGameOver) {
       window.scoreboardFromGameOver = false;
-      // Small delay to allow the overlay to close smoothly
       setTimeout(() => {
         const sortedPlayers = [...storage.players].sort((a, b) => 
           (storage.scores[b.id] || 0) - (storage.scores[a.id] || 0)
@@ -21,45 +21,18 @@ function toggleScorecard() {
       }, 100);
     }
   } else {
-    // Track scorecard opened
+    // Open in-game scoreboard
     Analytics.trackScorecardOpened('game');
-    
     renderScorecard();
-    overlay.classList.add('show');
-    // Remove game-over-screen class when showing regular scorecard
-    overlay.classList.remove('game-over-screen');
+    if (inGameOverlay) {
+      inGameOverlay.classList.add('show');
+    }
   }
 }
 
 function renderScorecard() {
-  const content = document.getElementById('scorecardContent');
-  const lobbyCodeElement = document.getElementById('scorecardLobbyCode');
-  const titleElement = document.getElementById('scorecardTitle');
-  
-  // Remove game-over-screen class to show close button
-  const overlay = document.getElementById('scorecardOverlay');
-  if (overlay) {
-    overlay.classList.remove('game-over-screen');
-  }
-  
-  // Ensure title is always visible
-  if (titleElement) {
-    titleElement.textContent = 'Game Scoreboard';
-    titleElement.style.display = 'block';
-    titleElement.style.visibility = 'visible';
-  }
-  
-  // Update lobby code if available
-  if (lobbyCodeElement && storage.lobbyId) {
-    lobbyCodeElement.textContent = `Lobby: ${storage.lobbyId}`;
-    lobbyCodeElement.style.display = 'block';
-  }
-  
-  // Restore close button visibility (in case it was hidden by renderFinalScorecard)
-  const closeBtn = document.getElementById('closeScorecard');
-  if (closeBtn) {
-    closeBtn.style.display = 'block';
-  }
+  const content = document.getElementById('inGameScoreboardContent');
+  if (!content) return;
   
   // Always show scorecard, even if no rounds completed yet
   if (!storage.players || storage.players.length === 0) {
@@ -67,13 +40,39 @@ function renderScorecard() {
     return;
   }
   
-  // Build the scorecard table with rounds as rows, players as columns
-  let html = '<table><thead><tr>';
+  // Find the leader (highest score)
+  let leaderId = null;
+  let leaderScore = -Infinity;
+  storage.players.forEach(player => {
+    const score = storage.scores[player.id] || 0;
+    if (score > leaderScore) {
+      leaderScore = score;
+      leaderId = player.id;
+    }
+  });
+  
+  // Design 2: Compact Modern Table - Totals in header
+  let html = '<div class="design2-scoreboard">';
+  
+  // Header
+  html += '<div class="design2-header">';
+  html += '<h2>Scoreboard</h2>';
+  if (storage.lobbyId) {
+    html += `<div class="design2-lobby">Lobby: ${storage.lobbyId}</div>`;
+  }
+  html += '</div>';
+  
+  // Build the table with totals in header
+  html += '<table class="design2-table"><thead><tr>';
   html += '<th>Round</th>';
   
-  // Add column for each player
+  // Add column for each player with their total score in header
   storage.players.forEach(player => {
-    html += `<th>${player.name}</th>`;
+    const totalScore = storage.scores[player.id] || 0;
+    const isLeader = player.id === leaderId;
+    html += `<th class="${isLeader ? 'leader' : ''}">`;
+    html += `${player.name}<span class="player-total">${totalScore}</span>`;
+    html += `</th>`;
   });
   
   html += '</tr></thead><tbody>';
@@ -83,42 +82,30 @@ function renderScorecard() {
   
   // Add row for each round (1 to totalRounds)
   for (let roundNum = 1; roundNum <= totalRounds; roundNum++) {
-    html += '<tr>';
-    html += `<td>Round ${roundNum}</td>`;
-    
     // Find this round's data in history
     const roundData = storage.roundHistory ? storage.roundHistory.find(r => r.round === roundNum) : null;
+    
+    html += '<tr>';
+    html += `<td>Round ${roundNum}</td>`;
     
     // Add cell for each player
     storage.players.forEach(player => {
       if (roundData && roundData.players[player.id]) {
         const data = roundData.players[player.id];
-        const pointsClass = data.points >= 0 ? 'score-positive' : 'score-negative';
-        html += `<td>`;
-        html += `<div style="margin-bottom:0.5rem; color: rgba(255,255,255,0.75); font-size:1.15rem; font-weight:500;">Bid: ${data.bid}</div>`;
-        html += `<div style="margin-bottom:0.5rem; color: rgba(255,255,255,0.75); font-size:1.15rem; font-weight:500;">Won: ${data.won}</div>`;
-        html += `<div class="${pointsClass}" style="font-size:1.35rem; font-weight:700;">Pts: ${data.points > 0 ? '+' : ''}${data.points}</div>`;
-        html += `</td>`;
+        const ptsClass = data.points >= 0 ? 'pts' : 'pts negative';
+        html += `<td><div class="cell-content"><span class="bid-won">${data.bid}/${data.won}</span><span class="${ptsClass}">${data.points > 0 ? '+' : ''}${data.points}</span></div></td>`;
       } else {
         // Round not completed yet
-        html += '<td style="color: rgba(255,255,255,0.4); font-weight:500; font-size:1.6rem;">–</td>';
+        html += '<td><span class="cell-empty">–</span></td>';
       }
     });
     
     html += '</tr>';
   }
   
-  // Add total score row at bottom
-  html += '<tr>';
-  html += '<td>Total Score</td>';
-  storage.players.forEach(player => {
-    const totalScore = storage.scores[player.id] || 0;
-    const totalClass = totalScore >= 0 ? 'score-positive' : 'score-negative';
-    html += `<td class="${totalClass}">${totalScore}</td>`;
-  });
-  html += '</tr>';
-  
   html += '</tbody></table>';
+  html += '</div>';
+  
   content.innerHTML = html;
 }
 
@@ -126,11 +113,11 @@ function renderFinalScorecard(sortedPlayers) {
   debugLog('DEBUG: renderFinalScorecard called for player:', storage.myId);
   debugLog('DEBUG: sortedPlayers:', sortedPlayers);
   
-  const content = document.getElementById('scorecardContent');
-  const modal = document.getElementById('scorecardModal');
+  const content = document.getElementById('gameOverContent');
+  const modal = document.getElementById('gameOverModal');
   
   if(!content || !modal) {
-    debugLog('ERROR: scorecardContent or scorecardModal not found!');
+    debugLog('ERROR: gameOverContent or gameOverModal not found!');
     return;
   }
   
@@ -184,35 +171,25 @@ function renderFinalScorecard(sortedPlayers) {
   // Footer links
   html += '<div class="game-over-links">';
   html += '<button class="game-over-link" onclick="shareGameResults()">Share</button>';
-  html += '<button class="game-over-link" onclick="Analytics.trackViewFullScorecard(); renderScorecard(); window.scoreboardFromGameOver = true;">Scoreboard</button>';
+  html += '<button class="game-over-link" onclick="showInGameScoreboardFromGameOver()">Scoreboard</button>';
   html += '</div>';
   
   html += '</div>';
   
   content.innerHTML = html;
   
-  // Update modal header for game over screen
-  const title = document.getElementById('scorecardTitle');
-  const lobbyCode = document.getElementById('scorecardLobbyCode');
-  
-  if (title) {
-    title.style.display = 'none'; // Hide "GAME SCOREBOARD" title
-  }
+  // Update lobby code for game over screen
+  const lobbyCode = document.getElementById('gameOverLobbyCode');
   
   if (lobbyCode && storage.lobbyId) {
     lobbyCode.textContent = `Lobby: ${storage.lobbyId}`;
-    lobbyCode.style.display = 'block';
-    lobbyCode.style.fontSize = '0.9rem';
-    lobbyCode.style.marginBottom = '0.5rem';
-    lobbyCode.style.color = '#4caf50';
   }
   
-  // Show the overlay
-  const overlay = document.getElementById('scorecardOverlay');
+  // Show the game over overlay
+  const overlay = document.getElementById('gameOverOverlay');
   if(overlay) {
-    debugLog('DEBUG: Showing scorecardOverlay');
+    debugLog('DEBUG: Showing game over overlay');
     overlay.classList.add('show');
-    // Add class to hide close button for game over screen
     overlay.classList.add('game-over-screen');
   } else {
     debugLog('ERROR: scorecardOverlay not found!');
@@ -221,23 +198,39 @@ function renderFinalScorecard(sortedPlayers) {
   debugLog('DEBUG: renderFinalScorecard completed successfully');
 }
 
-// Wait for DOM to be ready
-document.addEventListener('DOMContentLoaded', function() {
-  // Close scorecard button
-  const closeBtn = document.getElementById('closeScorecard');
-  if (closeBtn) {
-    closeBtn.addEventListener('click', toggleScorecard);
+// Show in-game scoreboard from game over screen
+function showInGameScoreboardFromGameOver() {
+  Analytics.trackViewFullScorecard();
+  window.scoreboardFromGameOver = true;
+  
+  // Hide game over overlay
+  const gameOverOverlay = document.getElementById('gameOverOverlay');
+  if (gameOverOverlay) {
+    gameOverOverlay.classList.remove('show');
   }
   
-  // Close on overlay click (but not modal click)
-  const overlay = document.getElementById('scorecardOverlay');
-  if (overlay) {
-    overlay.addEventListener('click', (e) => {
-      if (e.target.id === 'scorecardOverlay') {
+  // Show in-game scoreboard
+  renderScorecard();
+  const inGameOverlay = document.getElementById('inGameScoreboardOverlay');
+  if (inGameOverlay) {
+    inGameOverlay.classList.add('show');
+  }
+}
+
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+  // Close on in-game scoreboard overlay click
+  const inGameOverlay = document.getElementById('inGameScoreboardOverlay');
+  if (inGameOverlay) {
+    inGameOverlay.addEventListener('click', (e) => {
+      if (e.target.id === 'inGameScoreboardOverlay') {
         toggleScorecard();
       }
     });
   }
+  
+  // Game over overlay should NOT close on background click - only via buttons
+  // So we don't add a click handler to close it
 });
 
 /* ---------- SHARE GAME RESULTS ---------- */

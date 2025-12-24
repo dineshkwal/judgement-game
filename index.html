@@ -49,15 +49,21 @@
   <button id="debugSkipRound" onclick="debugSkipToNextRound()" style="display:none; background:#ff9800; border-top: 1px solid rgba(255,255,255,0.1);">⚡ Skip to Next Round (DEBUG)</button>
 </div>
 
-<!-- Scorecard Overlay -->
-<div id="scorecardOverlay" onclick="toggleScorecard()">
-  <div id="scorecardModal" onclick="event.stopPropagation()">
-    <div class="scorecard-header">
-      <h2 id="scorecardTitle">Game Scoreboard</h2>
-      <p id="scorecardLobbyCode" class="scorecard-lobby-code"></p>
+<!-- In-Game Scoreboard Overlay (Design 2) -->
+<div id="inGameScoreboardOverlay" class="ingame-scoreboard-overlay">
+  <div id="inGameScoreboardModal" class="ingame-scoreboard-modal" onclick="event.stopPropagation()">
+    <button class="ingame-close-btn" onclick="toggleScorecard()">✕</button>
+    <div id="inGameScoreboardContent"></div>
+  </div>
+</div>
+
+<!-- Game Over Overlay (does NOT close on background click) -->
+<div id="gameOverOverlay">
+  <div id="gameOverModal" onclick="event.stopPropagation()">
+    <div class="game-over-header">
+      <p id="gameOverLobbyCode" class="game-over-lobby-code"></p>
     </div>
-    <button class="close-btn" onclick="toggleScorecard()">✕</button>
-    <div id="scorecardContent"></div>
+    <div id="gameOverContent"></div>
   </div>
 </div>
 
