@@ -148,6 +148,9 @@ function hideCenterMessage(){
 function showBidPopup(playerId, bidValue) {
   console.log('showBidPopup called:', playerId, bidValue);
   
+  // Play bid sound
+  playBidSound();
+  
   const seat = document.querySelector(`.seat[data-player-id="${playerId}"]`);
   console.log('Found seat:', seat);
   
@@ -521,6 +524,9 @@ function animateCardPlay(cardElement, card, callback) {
     clone.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.95)`;
     
     setTimeout(() => {
+      // Play sound when card lands
+      playCardPlaySound();
+      
       // Fade out clone
       clone.style.opacity = '0';
       
@@ -599,6 +605,9 @@ function animateCardPlayFromAvatar(playerId, card, callback) {
     cardEl.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(0.9)`;
     
     setTimeout(() => {
+      // Play sound when card lands
+      playCardPlaySound();
+      
       // Fade out
       cardEl.style.opacity = '0';
       

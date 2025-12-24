@@ -653,3 +653,14 @@
   display: inline-block;
   animation: heartbeat 1.5s ease-in-out infinite;
 }
+
+.footer .credits-link {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer .credits-link:hover {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: underline;
+}
