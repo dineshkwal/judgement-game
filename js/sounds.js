@@ -75,7 +75,7 @@ function initSounds() {
  * @param {string} soundName - Name of the sound to play
  * @param {number} volume - Volume level (0-1), default 1.0
  */
-function playSound(soundName, volume = 1.0) {
+function playSound(soundName, volume = 0.5) {
   if (!soundEnabled) return;
   
   const sound = sounds[soundName];
