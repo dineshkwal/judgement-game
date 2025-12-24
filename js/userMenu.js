@@ -27,6 +27,44 @@ function toggleUserMenu(){
   menu.classList.toggle('show');
 }
 
+/* ---------- OPTIONS MODAL ---------- */
+function openOptionsModal() {
+  // Close user menu
+  document.getElementById('userMenu').classList.remove('show');
+  
+  // Update toggle buttons to reflect current state
+  updateSoundToggleUI();
+  
+  // Show modal
+  document.getElementById('optionsOverlay').classList.add('show');
+}
+
+function closeOptionsModal() {
+  document.getElementById('optionsOverlay').classList.remove('show');
+}
+
+function updateSoundToggleUI() {
+  const isEnabled = isSoundEnabled();
+  const onBtn = document.getElementById('soundOnBtn');
+  const offBtn = document.getElementById('soundOffBtn');
+  const icon = document.getElementById('soundIcon');
+  
+  if (isEnabled) {
+    onBtn.classList.add('active');
+    offBtn.classList.remove('active');
+    icon.textContent = '🔊';
+  } else {
+    onBtn.classList.remove('active');
+    offBtn.classList.add('active');
+    icon.textContent = '🔇';
+  }
+}
+
+function setSoundOption(enabled) {
+  setSoundEnabled(enabled);
+  updateSoundToggleUI();
+}
+
 /**
  * Reset to Lobby (Host only) - takes all players back to lobby
  * Game state is cleared but players stay in the lobby
@@ -251,3 +289,13 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
     }
   });
 }
+
+// Close options modal with ESC key
+window.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    const optionsOverlay = document.getElementById('optionsOverlay');
+    if (optionsOverlay && optionsOverlay.classList.contains('show')) {
+      closeOptionsModal();
+    }
+  }
+});

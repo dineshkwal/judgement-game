@@ -25,6 +25,7 @@
 /* Overlays & Modals */
 @import url('./game-over.css');
 @import url('./in-game-scoreboard.css');
+@import url('./options-modal.css');
 @import url('./reconnect.css');
 
 /* Platform-specific fixes */
