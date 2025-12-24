@@ -1,0 +1,655 @@
+/* ===========================================
+   register.css - Registration Screen Styling
+   =========================================== */
+
+/* Register Container */
+.register-container {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  padding: 3rem 2.5rem 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 480px;
+  width: 100%;
+  animation: fadeInUp 0.6s ease;
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.game-logo {
+  display: inline-block;
+  margin-bottom: 1rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+.game-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: bounce 2s infinite;
+}
+
+.tagline {
+  color: #a8e6a8;
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin-top: 0.5rem;
+}
+
+/* Resume Game Banner */
+.resume-banner {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(46, 125, 50, 0.15) 100%);
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: slideDown 0.4s ease-out;
+}
+
+.resume-content {
+  text-align: center;
+}
+
+.resume-content h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.resume-content h3 span {
+  color: var(--primary);
+}
+
+.resume-content p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #b8b8b8;
+}
+
+.resume-content strong {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.resume-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.resume-btn {
+  padding: 0.7rem 1.8rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 12px rgba(76, 175, 80, 0.3);
+}
+
+.resume-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 18px rgba(76, 175, 80, 0.5);
+}
+
+.dismiss-resume-btn {
+  padding: 0.7rem 1.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #ccc;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dismiss-resume-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Registration Tabs */
+.registration-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 0;
+  border-bottom: none;
+  position: relative;
+}
+
+.registration-tabs::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  z-index: 1;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: 0.5px;
+  z-index: 2;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+}
+
+.tab-btn::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  background: var(--primary);
+}
+
+.tab-btn:hover {
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: none;
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  box-shadow: none;
+}
+
+.tab-btn.active::before {
+  height: 3px;
+  margin-bottom: -5px;
+}
+
+.tab-icon {
+  font-size: 1.2rem;
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+  opacity: 0;
+  padding-top: 1.5rem;
+}
+
+.tab-content.active {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fadeSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.tab-content.slide-left {
+  animation: fadeSlideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.tab-content.slide-right {
+  animation: fadeSlideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Avatar Selection */
+.avatar-grid-container {
+  position: relative;
+  margin-top: 0.8rem;
+  padding-bottom: 0.5rem;
+}
+
+.avatar-grid {
+  display: flex;
+  gap: 0.8rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5rem 0;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+}
+
+.avatar-grid::-webkit-scrollbar {
+  height: 4px;
+}
+
+.avatar-grid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.avatar-grid::-webkit-scrollbar-thumb {
+  background: rgba(76, 175, 80, 0.4);
+  border-radius: 10px;
+}
+
+.avatar-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(76, 175, 80, 0.6);
+}
+
+.avatar-option {
+  min-width: 70px;
+  width: 70px;
+  height: 70px;
+  padding: 0.4rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+.avatar-option:first-child {
+  margin-left: 0;
+}
+
+.avatar-option:last-child {
+  margin-right: 0;
+}
+
+.avatar-option img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.avatar-option:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+  background: rgba(76, 175, 80, 0.1);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.avatar-option.selected {
+  border-color: var(--primary);
+  background: rgba(76, 175, 80, 0.2);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+.avatar-option.selected:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255, 204, 0, 0.3);
+}
+
+/* Avatar Preview */
+.avatar-preview-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.avatar-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--primary);
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.4);
+  transition: all 0.3s ease;
+}
+
+.avatar-preview:hover {
+  transform: scale(1.05) rotate(5deg);
+  box-shadow: 0 6px 25px rgba(76, 175, 80, 0.6);
+}
+
+.avatar-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #a8e6a8;
+  text-align: center;
+}
+
+/* How to Play Section */
+.how-to-play-section {
+  margin-top: 0.25rem;
+  text-align: center;
+}
+
+/* How to Play in Lobby - more spacing */
+.how-to-play-section.lobby-how-to-play {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.how-to-play-toggle {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  font-family: inherit;
+  letter-spacing: 0.3px;
+  outline: none;
+  box-shadow: none;
+  transition: color 0.2s;
+}
+
+.how-to-play-toggle:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.how-to-play-toggle:focus,
+.how-to-play-toggle:active {
+  outline: none;
+  box-shadow: none;
+  border: none;
+  background: transparent;
+}
+
+.how-to-play-toggle .toggle-arrow {
+  font-size: 0.55rem;
+  transition: transform 0.3s ease;
+  opacity: 0.7;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 1px;
+}
+
+.how-to-play-toggle.active .toggle-arrow {
+  transform: rotate(180deg);
+}
+
+.how-to-play-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease, margin 0.3s ease;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  text-align: left;
+  margin-top: 0;
+}
+
+.how-to-play-content.show {
+  max-height: 350px;
+  padding: 1rem;
+  margin-top: 0.75rem;
+}
+
+/* Timeline Container */
+.timeline-container {
+  padding: 0.5rem 0;
+}
+
+/* Timeline Track with connecting line */
+.timeline-track {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.timeline-track::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 15%;
+  width: 70%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(76, 175, 80, 0.4) 10%, 
+    rgba(76, 175, 80, 0.4) 90%, 
+    transparent 100%);
+}
+
+.timeline-steps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.step-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.step-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(50, 50, 50, 0.9);
+  border: 2px solid rgba(76, 175, 80, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.step-dot:hover {
+  transform: scale(1.1);
+  border-color: rgba(76, 175, 80, 0.7);
+}
+
+.step-dot.active {
+  background: linear-gradient(135deg, #ffd700, #ffb900);
+  border-color: transparent;
+  color: #1a1a1a;
+  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.25), 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.step-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  margin-top: 0.5rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.step-wrapper:hover .step-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.step-wrapper .step-dot.active + .step-label {
+  color: #ffd700;
+}
+
+/* Step Content Box */
+.step-contents {
+  position: relative;
+  min-height: 80px;
+}
+
+.step-content-box {
+  display: none;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+  border: 1px solid rgba(76, 175, 80, 0.25);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  animation: fadeInStep 0.3s ease;
+}
+
+.step-content-box.active {
+  display: block;
+}
+
+.step-content-box h4 {
+  color: #ffd700;
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.step-content-box p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.step-content-box p strong {
+  color: #7bed9f;
+  font-weight: 600;
+}
+
+.step-content-box p em {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+}
+
+/* Navigation Dots */
+.nav-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-dot:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.nav-dot.active {
+  background: #ffd700;
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* Legacy tip styles */
+.how-to-play-content .tip {
+  padding: 0.4rem 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.55);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.how-to-play-content .tip:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.how-to-play-content .tip:first-child {
+  padding-top: 0;
+}
+
+.how-to-play-content .tip strong {
+  color: rgba(76, 175, 80, 0.8);
+}
+
+/* Features Section */
+.features {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #ccc;
+  flex: 1;
+  text-align: center;
+}
+
+.feature-icon {
+  font-size: 2rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+}
+
+/* Footer */
+.footer {
+  position: static;
+  text-align: center;
+  padding: 0.8rem 1.5rem;
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(10, 26, 10, 0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  font-weight: 400;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  display: none;
+  max-width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Show on register screen and lobby screen */
+#register.active ~ .footer,
+#lobby.active ~ .footer {
+  display: block;
+}
+
+.footer:hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(10, 26, 10, 0.85);
+}
+
+.footer .heart {
+  color: #ff6b6b;
+  display: inline-block;
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
