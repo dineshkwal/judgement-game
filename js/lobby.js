@@ -235,6 +235,14 @@ function listenForPlayers(){
         playCardDealSound();
       }
       
+      // Detect when it becomes my turn (currentPlayer changed TO my ID)
+      const wasMyTurn = prevCurrentPlayer === storage.myId;
+      const isNowMyTurn = gameData.currentPlayer === storage.myId;
+      if (!wasMyTurn && isNowMyTurn && gameData.status === 'playing') {
+        debugLog(`🔔 It's now my turn! Speaking notification`);
+        speakYourTurn();
+      }
+      
       const trickNowFull = gameData.trick && gameData.trick.length === gameData.players.length;
       const currentPlayerNowNull = !gameData.currentPlayer;
       const currentPlayerChangedToNull = prevCurrentPlayer && !gameData.currentPlayer;

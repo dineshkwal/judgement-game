@@ -168,7 +168,7 @@ function renderFinalScorecard(sortedPlayers) {
   // Action buttons
   html += '<div class="game-over-actions">';
   html += '<button class="game-over-btn primary" onclick="playAgain()">Play Again</button>';
-  html += `<button class="game-over-btn secondary" onclick="Analytics.trackNewGameClicked(); window.location.href = window.location.origin + window.location.pathname">New Game</button>`;
+  html += `<button class="game-over-btn secondary" onclick="playLobbyButtonSound(); Analytics.trackNewGameClicked(); window.location.href = window.location.origin + window.location.pathname">New Game</button>`;
   html += '</div>';
   
   // Footer links

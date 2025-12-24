@@ -375,6 +375,9 @@ function playAgain() {
     return;
   }
 
+  // Play button sound
+  playLobbyButtonSound();
+
   // Track play again clicked
   Analytics.trackPlayAgainClicked();
 
