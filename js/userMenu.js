@@ -34,6 +34,7 @@ function openOptionsModal() {
   
   // Update toggle buttons to reflect current state
   updateSoundToggleUI();
+  updateVoiceToggleUI();
   
   // Show modal
   document.getElementById('optionsOverlay').classList.add('show');
@@ -63,6 +64,28 @@ function updateSoundToggleUI() {
 function setSoundOption(enabled) {
   setSoundEnabled(enabled);
   updateSoundToggleUI();
+}
+
+function updateVoiceToggleUI() {
+  const isEnabled = isVoiceEnabled();
+  const onBtn = document.getElementById('voiceOnBtn');
+  const offBtn = document.getElementById('voiceOffBtn');
+  const icon = document.getElementById('voiceIcon');
+  
+  if (isEnabled) {
+    onBtn.classList.add('active');
+    offBtn.classList.remove('active');
+    icon.textContent = '🗣️';
+  } else {
+    onBtn.classList.remove('active');
+    offBtn.classList.add('active');
+    icon.textContent = '🔇';
+  }
+}
+
+function setVoiceOption(enabled) {
+  setVoiceEnabled(enabled);
+  updateVoiceToggleUI();
 }
 
 /**
