@@ -170,8 +170,8 @@
   }
   
   .card {
-    width: 80px;
-    height: 115px;
+    width: 5rem;    /* 80px at 16px base */
+    height: 7.2rem; /* 115px at 16px base */
   }
   
   .card .card-corner {
@@ -471,8 +471,8 @@
   }
   
   .card {
-    width: 70px;
-    height: 100px;
+    width: 4.375rem;  /* 70px at 16px base */
+    height: 6.25rem;  /* 100px at 16px base */
   }
   
   .card .card-corner {

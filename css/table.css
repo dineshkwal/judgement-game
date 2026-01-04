@@ -7,8 +7,8 @@
   position: relative;
   width: 60vmin;
   height: 60vmin;
-  max-width: 400px;
-  max-height: 400px;
+  max-width: 25rem;  /* 400px at 16px base, scales with UI size */
+  max-height: 25rem;
   background: radial-gradient(circle at center, #2c5f2c 0%, #1e4520 100%);
   border-radius: 50%;
   margin: 2.5rem auto 1.25rem auto;
@@ -23,8 +23,8 @@
 /* Player Seats */
 .seat {
   position: absolute;
-  width: 70px;
-  height: 95px;
+  width: 4.375rem;  /* 70px at 16px base */
+  height: 5.938rem; /* 95px at 16px base */
   text-align: center;
   transform: translate(-50%, -50%);
   display: flex;
@@ -33,8 +33,8 @@
 }
 
 .seat img {
-  width: 50px;
-  height: 50px;
+  width: 3.125rem;  /* 50px at 16px base */
+  height: 3.125rem;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(76, 175, 80, 0.4);
@@ -76,8 +76,8 @@
 /* Mini Card on Seat */
 .seat .mini-card {
   position: absolute;
-  width: 26px;
-  height: 38px;
+  width: 1.625rem;  /* 26px at 16px base */
+  height: 2.375rem; /* 38px at 16px base */
   background: white;
   border-radius: 3px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);

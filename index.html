@@ -58,7 +58,7 @@
 <div id="optionsOverlay" class="options-overlay" onclick="closeOptionsModal()">
   <div id="optionsModal" class="options-modal" onclick="event.stopPropagation()">
     <div class="options-header">
-      <h2>⚙️ Options</h2>
+      <h2>Options</h2>
       <button class="options-close-btn" onclick="closeOptionsModal()">✕</button>
     </div>
     <div class="options-content">
@@ -67,20 +67,30 @@
           <span class="option-icon" id="soundIcon">🔊</span>
           <span>Sound Effects</span>
         </div>
-        <div class="option-toggle">
-          <button id="soundOnBtn" class="toggle-btn active" onclick="setSoundOption(true)">On</button>
-          <button id="soundOffBtn" class="toggle-btn" onclick="setSoundOption(false)">Off</button>
-        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="soundToggle" onchange="setSoundOption(this.checked)" checked>
+          <span class="toggle-slider"></span>
+        </label>
       </div>
       <div class="option-row">
         <div class="option-label">
           <span class="option-icon" id="voiceIcon">🗣️</span>
           <span>"Your Turn" Voice</span>
         </div>
-        <div class="option-toggle">
-          <button id="voiceOnBtn" class="toggle-btn" onclick="setVoiceOption(true)">On</button>
-          <button id="voiceOffBtn" class="toggle-btn active" onclick="setVoiceOption(false)">Off</button>
+        <label class="toggle-switch">
+          <input type="checkbox" id="voiceToggle" onchange="setVoiceOption(this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="option-row">
+        <div class="option-label">
+          <span class="option-icon">🔍</span>
+          <span>Large UI</span>
         </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="uiScaleToggle" onchange="setUIScale(this.checked ? 'large' : 'default')">
+          <span class="toggle-slider"></span>
+        </label>
       </div>
     </div>
   </div>

@@ -51,7 +51,7 @@
 }
 
 .dropdown-selected {
-  padding: 0.8rem 1rem;
+  padding: 0.8rem 2rem 0.8rem 1rem;
   font-size: 1.1rem;
   font-weight: 600;
   background: rgba(255, 255, 255, 0.15);
@@ -71,11 +71,11 @@
 
 .dropdown-arrow {
   position: absolute;
-  right: 1rem;
+  right: 0.6rem;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 0.7rem;
-  color: #fff;
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.7);
   transition: transform 0.3s ease;
   pointer-events: none;
 }

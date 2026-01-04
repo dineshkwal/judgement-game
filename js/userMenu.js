@@ -35,6 +35,7 @@ function openOptionsModal() {
   // Update toggle buttons to reflect current state
   updateSoundToggleUI();
   updateVoiceToggleUI();
+  updateUIScaleToggleUI();
   
   // Show modal
   document.getElementById('optionsOverlay').classList.add('show');
@@ -46,18 +47,14 @@ function closeOptionsModal() {
 
 function updateSoundToggleUI() {
   const isEnabled = isSoundEnabled();
-  const onBtn = document.getElementById('soundOnBtn');
-  const offBtn = document.getElementById('soundOffBtn');
+  const toggle = document.getElementById('soundToggle');
   const icon = document.getElementById('soundIcon');
   
-  if (isEnabled) {
-    onBtn.classList.add('active');
-    offBtn.classList.remove('active');
-    icon.textContent = '🔊';
-  } else {
-    onBtn.classList.remove('active');
-    offBtn.classList.add('active');
-    icon.textContent = '🔇';
+  if (toggle) {
+    toggle.checked = isEnabled;
+  }
+  if (icon) {
+    icon.textContent = isEnabled ? '🔊' : '🔇';
   }
 }
 
@@ -68,24 +65,58 @@ function setSoundOption(enabled) {
 
 function updateVoiceToggleUI() {
   const isEnabled = isVoiceEnabled();
-  const onBtn = document.getElementById('voiceOnBtn');
-  const offBtn = document.getElementById('voiceOffBtn');
+  const toggle = document.getElementById('voiceToggle');
   const icon = document.getElementById('voiceIcon');
   
-  if (isEnabled) {
-    onBtn.classList.add('active');
-    offBtn.classList.remove('active');
-    icon.textContent = '🗣️';
-  } else {
-    onBtn.classList.remove('active');
-    offBtn.classList.add('active');
-    icon.textContent = '🔇';
+  if (toggle) {
+    toggle.checked = isEnabled;
+  }
+  if (icon) {
+    icon.textContent = isEnabled ? '🗣️' : '🔇';
   }
 }
 
 function setVoiceOption(enabled) {
   setVoiceEnabled(enabled);
   updateVoiceToggleUI();
+}
+
+/* ---------- UI SCALE ---------- */
+let currentUIScale = 'default';
+
+function initUIScale() {
+  const savedScale = localStorage.getItem('uiScale');
+  if (savedScale && ['default', 'large', 'xlarge'].includes(savedScale)) {
+    currentUIScale = savedScale;
+  }
+  applyUIScale(currentUIScale);
+}
+
+function applyUIScale(scale) {
+  // Remove all scale classes
+  document.documentElement.classList.remove('ui-scale-default', 'ui-scale-large', 'ui-scale-xlarge');
+  // Add the selected scale class
+  document.documentElement.classList.add(`ui-scale-${scale}`);
+}
+
+function setUIScale(scale) {
+  currentUIScale = scale;
+  localStorage.setItem('uiScale', scale);
+  applyUIScale(scale);
+  updateUIScaleToggleUI();
+}
+
+function getUIScale() {
+  return currentUIScale;
+}
+
+function updateUIScaleToggleUI() {
+  const scale = getUIScale();
+  const toggle = document.getElementById('uiScaleToggle');
+  
+  if (toggle) {
+    toggle.checked = (scale === 'large');
+  }
 }
 
 /**

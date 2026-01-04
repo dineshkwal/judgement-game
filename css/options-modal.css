@@ -23,11 +23,11 @@
 
 /* Options Modal */
 .options-modal {
-  background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%);
-  border-radius: 16px;
+  background: linear-gradient(145deg, #1a2f1a 0%, #0d1a0d 100%);
+  border-radius: 20px;
   border: 1px solid rgba(76, 175, 80, 0.3);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(76, 175, 80, 0.2);
-  min-width: 300px;
+  min-width: 320px;
   max-width: 400px;
   width: 90%;
   animation: optionsSlideIn 0.3s ease-out;
@@ -111,13 +111,72 @@
   font-size: 1.25rem;
 }
 
-/* Toggle Buttons */
+/* Modern Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  border-radius: 28px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 2px;
+  bottom: 2px;
+  background: #fff;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(24px);
+}
+
+.toggle-switch input:focus + .toggle-slider {
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3);
+}
+
+/* Legacy Toggle Buttons - kept for backwards compatibility */
 .option-toggle {
   display: flex;
   background: #222;
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.option-toggle.triple .toggle-btn {
+  padding: 0.5rem 0.65rem;
+  min-width: 42px;
 }
 
 .toggle-btn {
@@ -162,8 +221,28 @@
     font-size: 0.9rem;
   }
   
+  .toggle-switch {
+    width: 48px;
+    height: 26px;
+  }
+  
+  .toggle-slider:before {
+    height: 20px;
+    width: 20px;
+  }
+  
+  .toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(22px);
+  }
+  
   .toggle-btn {
     padding: 0.4rem 0.75rem;
     font-size: 0.8rem;
+  }
+  
+  .option-toggle.triple .toggle-btn {
+    padding: 0.4rem 0.5rem;
+    min-width: 38px;
+    font-size: 0.75rem;
   }
 }

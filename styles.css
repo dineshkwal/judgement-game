@@ -1710,8 +1710,8 @@ button:active {
 
 .seat .mini-card {
   position: absolute;
-  width: 26px;
-  height: 38px;
+  width: 1.625rem;  /* 26px at 16px base */
+  height: 2.375rem; /* 38px at 16px base */
   background: white;
   border-radius: 3px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
@@ -1764,8 +1764,8 @@ button:active {
 }
 
 .seat img {
-  width: 50px;
-  height: 50px;
+  width: 3.125rem;  /* 50px at 16px base */
+  height: 3.125rem;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(76, 175, 80, 0.4);

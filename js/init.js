@@ -33,6 +33,9 @@ window.addEventListener('DOMContentLoaded', () => {
   // Initialize sound system
   initSounds();
   
+  // Initialize UI scale from saved preference
+  initUIScale();
+  
   // Track page view
   Analytics.trackPageView('Home - Game Registration');
   
