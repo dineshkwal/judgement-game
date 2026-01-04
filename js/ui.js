@@ -223,7 +223,7 @@ function renderScoreboard(){
   let html = `<div class="scoreboard-header">
     <div class="header-row">
       <button class="corner-btn left" onclick="toggleQuickChatDropdown(event)" title="Quick Chat">
-        <img src="assets/chat.svg" alt="Chat" class="corner-btn-icon">
+        <span class="corner-btn-emoji">💭</span>
       </button>
       <div class="quickchat-dropdown" id="quickChatDropdown">
         <div class="dropdown-list">
@@ -237,7 +237,7 @@ function renderScoreboard(){
       </div>
       <div class="round-info">ROUND ${round}<span class="round-divider"></span>${cardsThisRound > 0 ? cardsThisRound : 0} ${cardLabel}</div>
       <button class="corner-btn right" onclick="toggleReactionDropdown(event)" title="Send Reaction">
-        <img src="assets/emoji.svg" alt="Emoji" class="corner-btn-icon">
+        <span class="corner-btn-emoji">😀</span>
       </button>
       <div class="reaction-dropdown" id="reactionDropdown">
         <div class="dropdown-grid">
