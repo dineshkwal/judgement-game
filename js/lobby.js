@@ -537,10 +537,29 @@ function refreshLobby(){
     if (lobbyHowToPlay) {
       lobbyHowToPlay.style.display = 'block';
     }
+    // Hide waiting message for host
+    const waitingForHost = document.getElementById('waitingForHost');
+    if (waitingForHost) {
+      waitingForHost.style.display = 'none';
+    }
   } else {
     // Hide start button and round selector for non-hosts
     startBtn.style.display = 'none';
     roundSelContainer.style.display = 'none';
+    
+    // Show waiting for host message for non-hosts (only if 2+ players)
+    const waitingForHost = document.getElementById('waitingForHost');
+    if (waitingForHost && storage.players.length >= 2) {
+      // Find the host's name
+      const host = storage.players.find(p => p.id === storage.lobbyCreatorId);
+      const hostNameEl = document.getElementById('hostName');
+      if (hostNameEl && host) {
+        hostNameEl.textContent = host.name;
+      }
+      waitingForHost.style.display = 'flex';
+    } else if (waitingForHost) {
+      waitingForHost.style.display = 'none';
+    }
     
     // Show how-to-play section for non-hosts while they wait
     const lobbyHowToPlay = document.getElementById('lobbyHowToPlay');
