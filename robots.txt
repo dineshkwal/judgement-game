@@ -1,0 +1,6 @@
+# Robots.txt for gameofjudgement.com
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://gameofjudgement.com/sitemap.xml
