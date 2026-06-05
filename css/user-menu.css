@@ -33,40 +33,117 @@
   object-fit: cover;
 }
 
-/* User Menu Dropdown */
+/* User Menu Dropdown — glass refined (matches Options modal) */
 #userMenu {
   position: fixed;
   top: 4.5rem;
   right: 1rem;
-  background: #222;
-  border-radius: var(--radius);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, .6);
   display: none;
   flex-direction: column;
-  min-width: 150px;
-  overflow: hidden;
+  gap: 2px;
+  min-width: 215px;
+  padding: 8px;
+  background: linear-gradient(150deg, rgba(31, 58, 33, .92), rgba(13, 26, 13, .96));
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(76, 175, 80, .32);
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .6), 0 0 0 1px rgba(76, 175, 80, .12), inset 0 1px 0 rgba(255, 255, 255, .07);
   z-index: 1001;
 }
 
 #userMenu.show {
   display: flex;
+  animation: menuPop .28s cubic-bezier(.2, .9, .3, 1.2);
 }
 
-#userMenu button {
-  background: #333;
+/* Beak pointing up toward the avatar */
+#userMenu::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  right: 16px;
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(150deg, rgba(31, 58, 33, .92), rgba(13, 26, 13, .96));
+  border-left: 1px solid rgba(76, 175, 80, .32);
+  border-top: 1px solid rgba(76, 175, 80, .32);
+  transform: rotate(45deg);
+}
+
+#userMenu .menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: transparent;
   color: #eee;
   border: none;
-  padding: .8rem 1rem;
-  text-align: left;
-  cursor: pointer;
-  border-radius: 0;
   margin: 0;
-  transition: background .2s;
+  padding: 11px 12px;
+  text-align: left;
+  font-family: inherit;
+  font-size: .95rem;
+  font-weight: 500;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background .18s ease;
 }
 
-#userMenu button:hover {
-  background: #444;
+#userMenu .menu-item .mi-ic {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  font-size: 16px;
+  background: rgba(76, 175, 80, .14);
+  border: 1px solid rgba(76, 175, 80, .22);
+  transition: background .18s ease;
+}
+
+#userMenu .menu-item .mi-lbl {
+  flex: 1;
+}
+
+#userMenu .menu-item:hover {
+  background: rgba(76, 175, 80, .16);
   transform: none;
+}
+
+#userMenu .menu-item:hover .mi-ic {
+  background: rgba(76, 175, 80, .28);
+}
+
+/* Divider between everyday controls and session-ending actions */
+#userMenu .menu-divider {
+  height: 1px;
+  margin: 6px 10px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .12), transparent);
+}
+
+/* Destructive actions (Leave Game, New Game) */
+#userMenu .menu-item.danger .mi-lbl {
+  color: #ffb3ab;
+}
+
+#userMenu .menu-item.danger .mi-ic {
+  background: rgba(255, 107, 94, .12);
+  border-color: rgba(255, 107, 94, .3);
+}
+
+#userMenu .menu-item.danger:hover {
+  background: rgba(255, 107, 94, .14);
+}
+
+#userMenu .menu-item.danger:hover .mi-ic {
+  background: rgba(255, 107, 94, .22);
+}
+
+@keyframes menuPop {
+  from { opacity: 0; transform: translateY(-10px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* Scorecard Button */

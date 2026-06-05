@@ -14,15 +14,15 @@ function toggleUserMenu(){
 
     if (storage.isLobbyCreator) {
       // Host sees "Manage Players", "Reset to Lobby" and "New Game"
-      if (manageBtn) manageBtn.style.display = 'block';
-      resetBtn.style.display = 'block';
+      if (manageBtn) manageBtn.style.display = 'flex';
+      resetBtn.style.display = 'flex';
       leaveBtn.style.display = 'none';
-      newGameBtn.style.display = 'block';
+      newGameBtn.style.display = 'flex';
     } else {
       // Others only see "Leave Game"
       if (manageBtn) manageBtn.style.display = 'none';
       resetBtn.style.display = 'none';
-      leaveBtn.style.display = 'block';
+      leaveBtn.style.display = 'flex';
       newGameBtn.style.display = 'none';
     }
   }
@@ -421,7 +421,7 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   document.addEventListener('DOMContentLoaded', function() {
     const debugBtn = document.getElementById('debugSkipRound');
     if (debugBtn) {
-      debugBtn.style.display = 'block';
+      debugBtn.style.display = 'flex';
       console.log('🔧 DEBUG MODE: Skip Round button enabled');
     }
   });

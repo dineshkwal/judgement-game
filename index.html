@@ -97,12 +97,13 @@
 
 <!-- User Dropdown Menu -->
 <div id="userMenu">
-  <button id="managePlayersBtn" onclick="openManagePlayersModal()" style="display:none;">👥 Manage Players</button>
-  <button id="optionsBtn" onclick="openOptionsModal()">⚙️ Options</button>
-  <button id="resetToLobbyBtn" onclick="resetToLobby()">Reset to Lobby</button>
-  <button id="leaveGameBtn" onclick="leaveGame()">Leave Game</button>
-  <button id="newGameBtn" onclick="newGame()">New Game</button>
-  <button id="debugSkipRound" onclick="debugSkipToNextRound()" style="display:none; background:#ff9800; border-top: 1px solid rgba(255,255,255,0.1);">⚡ Skip to Next Round (DEBUG)</button>
+  <button id="optionsBtn" class="menu-item" onclick="openOptionsModal()"><span class="mi-ic">⚙️</span><span class="mi-lbl">Options</span></button>
+  <button id="managePlayersBtn" class="menu-item" onclick="openManagePlayersModal()" style="display:none;"><span class="mi-ic">👥</span><span class="mi-lbl">Manage Players</span></button>
+  <div class="menu-divider"></div>
+  <button id="resetToLobbyBtn" class="menu-item" onclick="resetToLobby()"><span class="mi-ic">🔄</span><span class="mi-lbl">Reset to Lobby</span></button>
+  <button id="leaveGameBtn" class="menu-item danger" onclick="leaveGame()"><span class="mi-ic">🚪</span><span class="mi-lbl">Leave Game</span></button>
+  <button id="newGameBtn" class="menu-item danger" onclick="newGame()"><span class="mi-ic">✨</span><span class="mi-lbl">New Game</span></button>
+  <button id="debugSkipRound" class="menu-item" onclick="debugSkipToNextRound()" style="display:none;"><span class="mi-ic">⚡</span><span class="mi-lbl">Skip to Next Round (DEBUG)</span></button>
 </div>
 
 <!-- Options Modal -->
