@@ -1,424 +1,195 @@
-# Game of Judgement - Online Multiplayer Card Game
+# Game of Judgement
 
-A polished, real-time multiplayer implementation of the Judgement (Oh Hell) card game with Firebase Realtime Database, featuring a modern UI, player reconnection system, and comprehensive game state management.
+A polished, real-time multiplayer implementation of **Judgement** (also known as *Oh Hell*, *Oh Pshaw*, *Kachuful*, *Nomination Whist*) — a trick-taking card game where you score by **predicting exactly** how many hands you'll win each round.
+
+🎮 **Play now:** [gameofjudgement.com](https://gameofjudgement.com)
+
+Built with vanilla JavaScript and Firebase Realtime Database. No build step, no framework — just static files served from GitHub Pages.
+
+---
 
 ## ✨ Features
 
-### Core Gameplay
-- **Real-Time Multiplayer**: Instant synchronization using Firebase Realtime Database
-- **Smart Lobby System**: Create or join games with shareable 6-character lobby codes (case-insensitive)
-- **Random Dealer Selection**: Starting dealer randomly chosen each game for fairness
-- **Turn-Based Bidding**: Players bid on hands with anti-sum rule enforcement
-- **Trump System**: Rotating trump suits across rounds
-- **Hand-Taking Logic**: Classic trick-taking mechanics with lead suit and trump rules
-- **Automatic Dealer Rotation**: Dealer rotates clockwise each round (indicated with 🃏)
-- **Live Scoreboard**: Real-time tracking of Player, Hands Bid, and Hands Made
-- **Game Scoreboard**: Detailed round-by-round breakdown accessible via scoreboard icon
-- **Configurable Rounds**: Choose starting number of cards (1-26 based on player count)
+### Gameplay
+- **Real-time multiplayer** — instant state sync across all players via Firebase Realtime Database
+- **Lobby system** — create or join with a shareable, case-insensitive 6-character code (or a direct join URL)
+- **Tabbed onboarding** — Create / Join tabs, name entry, and a 10-avatar picker ([DiceBear](https://dicebear.com) Adventurer)
+- **Random + rotating dealer** — starting dealer is random for fairness; dealer rotates clockwise each round (🃏)
+- **Turn-based bidding** with the **anti-sum rule** — the last bidder can't make total bids equal total hands, guaranteeing someone fails
+- **Trick play** — follow-suit enforcement (illegal cards are disabled), trump resolution, hand-winner leads next
+- **Rotating trump** each round (♠️ → ♥️ → ♦️ → ♣️)
+- **Configurable rounds** — host picks the starting card count; cards decrease by one each round down to zero
 
-### Player Experience
-- **Reconnection System**: Firebase Presence-based disconnection detection
-  - Automatic reconnection when players return
-  - 120-second grace period with countdown timer
-  - Modal with "Dismiss" and "Continue Without Player" options
-  - Only shown during active gameplay (not in lobby)
-- **Auto-Rejoin**: Players can return to their game after accidental disconnect or page refresh
-- **Avatar Selection**: 10 unique avatars with horizontal scrollable picker and navigation arrows
-- **Personalized Messages**: Shows actual player names instead of generic "dealer" text
+### Scoring
+Classic scoring (the active ruleset):
+- **Exact bid:** +20 points
+- **Under bid:** 0 points
+- **Over bid:** points equal to hands actually won
 
-### Scoring System
-- **Correct Bid**: 20 points + actual hands made
-- **Under Bid**: 0 points (failed to make bid)
-- **Over Bid**: Points equal to actual hands made (no bonus)
-- **Winner Determination**: Highest total score at game end
+> Alternative scoring presets (High Stakes / Aggressive / Casual) are scaffolded in `js/config.js` but not yet wired into gameplay — see [Roadmap](#-roadmap).
 
-### UI/UX Design
-- **Modern Design**: Glass-morphism effects with backdrop blur and gradient backgrounds
-- **Responsive Layout**: Works seamlessly on desktop and mobile browsers
-- **Clean Card Design**: Large, readable cards (90px × 130px) with 4-corner labels
-- **Smart Card Display**: Horizontal scrollable hand with smooth overflow
-- **Circular Table Layout**: Players arranged around realistic green felt table
-- **Fixed Top Bar**: Game info, round status, and user menu always accessible
-- **Visual Feedback**: Hover effects, active turn indicators, and smooth animations
-- **End Game Rankings**: Beautiful modal with medals (🥇🥈🥉) and congratulations
-- **Footer**: "Made with ❤️" on registration and lobby screens with heartbeat animation
+### Scoreboards & rankings
+- **Live scoreboard** during play (player, hands bid, hands made, trump)
+- **Detailed scorecard modal** — round-by-round bids, results, and points
+- **End-game rankings** — animated modal with medals (🥇🥈🥉) and a winner callout
+
+### Players & hosting
+- **Host controls** (lobby creator only):
+  - **Kick from lobby** — remove a player before the game starts
+  - **Manage Players (in-game)** — modal to remove a player mid-game; the existing leave-handling pipeline advances turns / reassigns the dealer so the round never stalls
+  - **Reset to Lobby** — send everyone back to the lobby, keeping the group together
+  - **New Game** — end the current game for everyone
+- **Leave Game** (any player) — exit while the game continues for the rest
+- **Reconnection** — Firebase presence (`onDisconnect`, `beforeunload`, `sendBeacon`, Page Visibility) tracks online/offline status with a grace period
+- **Auto-rejoin** — a resume banner restores your session after a refresh or accidental disconnect (via `localStorage`)
+
+### Polish
+- **Glass-morphism UI** — frosted gradients, blur, layered shadows; a circular green-felt table
+- **Sound effects** — dealing, playing, bidding, trick/round/game completion, lobby & start cues (toggleable)
+- **"Your turn" voice** — optional spoken turn prompt (toggleable)
+- **Larger-text mode** — accessibility UI-scale toggle
+- **Emoji reactions** — a 7-emoji reaction bar broadcast to the table in real time
+- **Responsive + iOS fixes** — works across desktop and mobile browsers
+- **Options modal** — sound, voice, and text-size settings in one place
+- **SEO & sharing** — Open Graph / Twitter cards, JSON-LD structured data, canonical URL, `robots.txt`, `sitemap.xml`, full favicon set
+- **Analytics** — Google Analytics 4 event tracking
+
+---
+
+## 🎮 How to Play
+
+1. **Register** — pick a name and avatar; **Create Lobby** or **Join** with a code.
+2. **Lobby** — share the code; the host picks the starting card count and starts (2+ players).
+3. **Deal** — the dealer deals; everyone gets cards equal to the round number.
+4. **Bid** — clockwise from the player after the dealer, predict how many hands you'll win. The last bidder is bound by the **anti-sum rule**.
+5. **Play** — lead any card; others must **follow suit** if able. Highest trump wins, else highest lead suit. Winner leads next.
+6. **Score** — exact = +20, under = 0, over = hands won. Repeat with one fewer card and the next trump.
+7. **Win** — when cards reach zero, highest total score takes it. 🥇
+
+### Rules reference
+
+**Follow-suit** — if a lead suit is set and you hold it, you must play it (other cards are disabled). No lead suit → play anything. Leading → play anything.
+
+**Anti-sum rule** — the last player to bid may not choose a value that makes total bids equal the total hands in the round. *Example:* 4 players × 5 cards = 5 hands; if bids so far are 2 + 1 + 1, the last player cannot bid 1.
+
+**Hand resolution** — highest trump wins; with no trump, highest card of the lead suit wins; off-suit cards can't win. Winner leads the next hand.
+
+**Card values (high → low)** — A(14) · K(13) · Q(12) · J(11) · 10 … 2.
+
+---
+
+## 🚀 Run Locally
+
+**Prerequisites:** any static file server (Python works out of the box) and a modern browser. The Firebase config is already included in `js/config.js`.
+
+```bash
+# from the project root
+python -m http.server 8000
+# then open http://localhost:8000
+```
+
+Share the lobby code or full URL to play with others (the Firebase backend is shared/live).
+
+---
 
 ## 📁 Project Structure
 
 ```
 GameOfJudgement/
-├── index.html              # Main HTML structure (196 lines)
-├── styles.css              # Complete CSS styling (2,426 lines)
-├── assets/
-│   └── score-icon.svg      # Scoreboard button icon
+├── index.html              # App shell: register / lobby / game screens + modals
+├── credits.html            # Credits page
+├── css/
+│   ├── main.css            # Imports all CSS modules (active stylesheet)
+│   ├── variables.css       # Design tokens (colors, radius, UI-scale)
+│   ├── user-menu.css       # Top-right glass dropdown menu
+│   ├── options-modal.css   # Options + Manage Players modals
+│   ├── lobby.css · table.css · cards.css · bidding.css
+│   ├── scoreboard.css · in-game-scoreboard.css · game.css · game-over.css
+│   ├── register.css · forms.css · reconnect.css
+│   ├── background.css · animations.css · responsive.css · ios-fixes.css · base.css
+│   └── (20 modules total)
 ├── js/
-│   ├── config.js           # Firebase configuration (13 lines)
-│   ├── state.js            # Global state + Firebase Presence system (320 lines)
-│   ├── utils.js            # Helper functions (deck, colors, screens) (23 lines)
-│   ├── register.js         # Player registration and lobby creation (46 lines)
-│   ├── lobby.js            # Lobby management and game initialization (357 lines)
-│   ├── ui.js               # All UI rendering functions (430 lines)
-│   ├── game.js             # Core game logic (deal, bid, play, score) (536 lines)
-│   ├── scorecard.js        # Scorecard modal and rankings (186 lines)
-│   ├── userMenu.js         # User dropdown menu handlers (36 lines)
-│   └── init.js             # App initialization and auto-rejoin (225 lines)
-├── README.md               # This file (192 lines)
-└── CNAME                   # Custom domain configuration
+│   ├── config.js           # Firebase init + scoring presets
+│   ├── state.js            # Global state + Firebase presence/reconnection
+│   ├── utils.js            # Deck, colors, screen helpers
+│   ├── validation.js       # Input validation
+│   ├── sounds.js           # Sound effects + "your turn" voice
+│   ├── tabs.js             # Register tabs + how-to-play timeline
+│   ├── register.js         # Registration, avatar picker, lobby creation
+│   ├── lobby.js            # Lobby sync, game init, player-left handling, kick
+│   ├── ui.js               # All DOM rendering (table, cards, scoreboard, seats)
+│   ├── game.js             # Core logic: deal, bid, play, resolve, score
+│   ├── scorecard.js        # Scorecard modal + final rankings
+│   ├── reactions.js        # Emoji reaction bar (real-time)
+│   ├── userMenu.js         # User dropdown, Options + Manage Players modals
+│   ├── analytics.js        # Google Analytics 4 events
+│   └── init.js             # Bootstrap + auto-rejoin
+├── assets/                 # Icons, favicons, OG image, sounds/ (8 mp3s)
+├── styles.css              # Legacy monolithic stylesheet (kept, not loaded)
+├── CNAME                   # Custom domain (gameofjudgement.com)
+├── robots.txt · sitemap.xml
+└── README.md
 ```
 
-**Total: 4,986 lines of code** (excluding README)
+Roughly **6,000 lines of JavaScript** across 15 modules and **5,000 lines of CSS** across 20 modules. Current app version: **1.3.0** (see `APP_VERSION` in `js/state.js`).
 
-## 🚀 Setup & Installation
+---
 
-### Prerequisites
-- Python 3.x (for local testing with HTTP server)
-- Modern web browser (Chrome, Firefox, Edge, Safari recommended)
-- Firebase project (configuration already included)
+## 🏗️ Architecture
 
-### Running Locally
+### Tech stack
+- **Frontend:** Vanilla JavaScript (ES6+), HTML5, modular CSS — no framework, no bundler
+- **Backend:** Firebase Realtime Database (`firebase-app-compat` / `firebase-database-compat` 10.13.1)
+- **Hosting:** GitHub Pages with a custom domain
+- **Fonts:** Google Fonts (Poppins, JetBrains Mono)
 
-1. Clone or download this repository
-2. Open terminal in project directory
-3. Start Python HTTP server:
-   ```bash
-   python -m http.server 8000
-   ```
-4. Open browser to: `http://localhost:8000`
-5. Share the lobby code or full URL with friends to join your game
+### Load order
+Scripts load in dependency order in `index.html`:
+`analytics → config → state → utils → validation → sounds → tabs → register → lobby → ui → game → scorecard → reactions → userMenu → init`
 
-### Firebase Configuration
-
-The project uses Firebase Realtime Database with the following structure:
+### Firebase data model
 ```
-lobbies/
-  {lobbyId}/
-    players/
-      {playerId}/
-        - id, name, avatar, joinedAt, lastSeen, status
-    game/
-      - hostId, dealerId, currentBidder, currentPlayer
-      - players, round, cardsPerRound, status
-      - hands, trick, leadSuit, trump
-      - bids, tricksWon, scores
+lobbies/{lobbyId}/
+  creatorId                        # the host (lobby creator)
+  players/{playerId}/              # id, name, avatar, joinedAt, status, lastSeen
+  game/                            # players[], round, cardsPerRound, dealerId,
+                                   # currentBidder, currentPlayer, hands, trick,
+                                   # leadSuit, trump, bids, tricksWon, scores,
+                                   # roundHistory, status
+  reactions/                       # broadcast emoji reactions
+  rematch/                         # signals players into a fresh lobby
 ```
 
-**Firebase Presence System:**
-- `status`: 'online' or 'offline' for each player
-- `onDisconnect()`: Automatic status updates when connection lost
-- `beforeunload`: Catches tab close, back button, navigation
-- Real-time monitoring with 120-second reconnection grace period
+### Presence & player removal
+- **Presence:** `onDisconnect()` plus `beforeunload` + `navigator.sendBeacon()` + the Page Visibility API keep each player's `status` (`online`/`offline`) current.
+- **Player removal is one pipeline:** whether a player **leaves voluntarily** or is **kicked by the host**, their node is removed from `players/`. Every client's `listenForPlayers` listener diffs the roster and, during an active game, runs `handlePlayerLeft()` (advance turn / reassign dealer / clean up bids+tricks, guarded so only the dealer-or-creator writes) and `checkGameViability()`. Kicked players are ejected back to the register screen by `listenForKick()`.
 
-Configuration is in `js/config.js` (already configured for this project).
+---
 
-## 🎮 How to Play
+## 🗺️ Roadmap
 
-### Starting a Game
-1. **Enter Details**: Type your name and select an avatar from the picker
-2. **Create/Join Lobby**: Click "Create Lobby" or enter existing lobby code
-3. **Share Code**: Share the 6-character code or copy the full URL
-4. **Wait for Players**: Minimum 2 players required to start
-5. **Configure Game**: Select starting number of cards (default is maximum)
-6. **Start Game**: Host clicks "START GAME" (dealer chosen randomly)
+Ideas not yet built (or scaffolded but inactive):
+- **Activate scoring presets** — wire the High Stakes / Aggressive / Casual rulesets in `config.js` into game + lobby (a `customScoring` branch explores this)
+- **Spectator mode**, **in-game text chat**, **AI opponents** for solo play
+- **Per-player stats & game history**, **tournaments / multi-game series**
+- **Firebase Auth**, lobby expiry/auto-cleanup, host kick **ban list**, profanity filter on names
 
-### Gameplay Flow
-1. **Deal Phase**: 
-   - Dealer clicks "Deal Cards" to distribute cards to all players
-   - Each player receives cards equal to current round number
-   
-2. **Bidding Phase**: 
-   - Players bid clockwise starting from the player after dealer
-   - Bid represents how many hands you think you'll win
-   - **Anti-Sum Rule**: Last bidder cannot make total bids equal total hands
-   - Invalid bids are disabled automatically
-   
-3. **Playing Phase**: 
-   - First player leads with any card
-   - **Follow-Suit Rule**: Must play lead suit if you have it
-   - Cards you cannot legally play are grayed out and disabled
-   - Highest trump wins; if no trump, highest lead suit wins
-   - Hand winner leads the next hand
-   - Continue until all cards played
-   
-4. **Scoring**: 
-   - **Made exact bid**: 20 + bid value (e.g., bid 3, made 3 = 23 points)
-   - **Under bid**: 0 points (bid 3, made 2 = 0 points)
-   - **Over bid**: Only actual hands made (bid 3, made 4 = 4 points)
-   - Scores accumulate across rounds
-   
-5. **Next Round**: 
-   - Dealer rotates clockwise (🃏 indicator)
-   - Cards decrease by one per round
-   - Trump suit rotates (♠️ → ♥️ → ♦️ → ♣️)
-   
-6. **End Game**: 
-   - Game ends when cards reach zero
-   - Beautiful modal displays final rankings
-   - Top 3 players get medals (🥇🥈🥉)
-   - Winner gets special congratulations message
+---
 
-### Scoreboard & Stats
-- **Round Scoreboard**: Click scoreboard icon to view current standings
-- **Live Updates**: Hands Bid and Hands Made update in real-time
-- **Historical Data**: See all previous rounds' bids and results
-- **Final Rankings**: Automatic display with sorted positions at game end
+## 🙌 Credits
 
-### User Menu Features
-- **Avatar Display**: Click your avatar in top-right corner
-- **Leave Game**: Exit current lobby (doesn't end game for others)
-- **New Game**: Reset everything and return to registration
+- **Author:** Dinesh Khandelwal
+- **Avatars:** [DiceBear](https://dicebear.com) (Adventurer)
+- **Fonts:** [Poppins](https://fonts.google.com/specimen/Poppins) · [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono)
+- Game based on the traditional **Judgement / Oh Hell** trick-taking card game.
 
-## 📖 Game Rules
+See [`credits.html`](credits.html) for the in-app credits.
 
-### Follow-Suit Rule
-When a lead suit has been played in a hand:
-- **Have lead suit**: You MUST play a card of the lead suit (other cards grayed out)
-- **No lead suit**: You can play any card (trump to win, or discard)
-- **Leading a hand**: You can play any card from your hand (no restrictions)
-
-### Anti-Sum Rule
-The last player to bid cannot choose a value that makes the total bids equal the total hands available in that round. This ensures at least one player must fail their bid, adding strategic depth.
-
-**Example:** 4 players, 5 cards each = 5 total hands
-- Player 1 bids: 2
-- Player 2 bids: 1  
-- Player 3 bids: 1
-- Player 4 (last) cannot bid: 1 (because 2+1+1+1=5)
-- Player 4 can bid: 0, 2, 3, 4, or 5
-
-### Hand Resolution Priority
-1. **Trump suit** beats all other suits (highest trump wins)
-2. **Lead suit** beats off-suits if no trump played (highest lead suit wins)
-3. **Off-suit cards** cannot win (even if higher value)
-4. **Hand winner** leads the next hand
-
-### Card Values (High to Low)
-- Ace (A) = 14 (highest)
-- King (K) = 13
-- Queen (Q) = 12
-- Jack (J) = 11
-- 10-2 = Face value
-
-### Strategic Tips
-- **Bid conservatively** early in the round (exact bids are hard!)
-- **Track trump cards** played to assess winning chances
-- **Lead with low cards** when you've made your bid
-- **Watch the anti-sum rule** when bidding last
-- **Remember dealer rotates** - your position changes each round
-
-## 🔧 Technical Architecture
-
-### Firebase Presence System
-**Problem Solved:** Previous heartbeat-based system had false positives (modal after every card play)
-
-**Current Implementation:**
-- `onDisconnect()`: Firebase native presence detection
-- `beforeunload`: Catches tab close, navigation, back button
-- `navigator.sendBeacon()`: Synchronous status updates on page unload
-- Page Visibility API: Handles tab switching
-- Status field: 'online' / 'offline' for each player
-- Real-time monitoring: Only during active gameplay (not lobby)
-- 120-second grace period: Countdown with dismiss/remove options
-
-**Benefits:**
-- Event-driven (no polling)
-- No false positives
-- Battery efficient
-- Native Firebase reliability
-
-### Code Architecture
-**Modular Design** following separation of concerns:
-```
-Configuration (config.js)
-    ↓
-State Management (state.js) + Firebase Presence
-    ↓
-Utilities (utils.js) → Helper functions
-    ↓
-Registration (register.js) → Player onboarding
-    ↓
-Lobby (lobby.js) → Game setup & Firebase listeners
-    ↓
-UI Layer (ui.js) → Rendering & display
-    ↓
-Game Logic (game.js) → Core mechanics
-    ↓
-Scorecard (scorecard.js) → Rankings & history
-    ↓
-User Menu (userMenu.js) → Navigation
-    ↓
-Initialization (init.js) → App bootstrap & auto-rejoin
-```
-
-### Key Components
-
-**state.js** (320 lines)
-- Global storage object with game state
-- Firebase Presence system (setupPresence, stopPresence)
-- Reconnection modal management
-- Player connection monitoring
-- Auto-reconnect detection
-
-**game.js** (536 lines)
-- Deal cards logic with shuffling
-- Bidding system with anti-sum validation
-- Play card mechanics with follow-suit enforcement
-- Hand winner determination
-- Score calculation and round progression
-
-**lobby.js** (357 lines)
-- Firebase listeners for players and game state
-- Lobby management (create, join, leave)
-- Random dealer selection
-- Game initialization
-- Case-insensitive lobby code handling
-
-**ui.js** (430 lines)
-- Dynamic DOM updates
-- Seat positioning around circular table
-- Card rendering and animation
-- Scoreboard display
-- Turn indicators and messages
-
-**init.js** (225 lines)
-- App initialization on load
-- Auto-rejoin logic using localStorage
-- URL parameter parsing for direct joins
-- Player session restoration
-
-## 🎨 UI/UX Highlights
-
-### Visual Design
-- **Glass-morphism**: `backdrop-filter: blur()` with rgba backgrounds
-- **Gradients**: Smooth color transitions throughout
-- **Shadows**: Multi-layer box-shadows for depth
-- **Animations**: Smooth transitions, hover effects, heartbeat, float
-- **Responsive**: Mobile-first with media queries
-
-### User Experience
-- **Smart Card Disabling**: Invalid plays grayed out automatically
-- **Active Turn Indicator**: Gold glow with pulsing animation
-- **Horizontal Scrolling**: Smooth card hand with custom scrollbar
-- **Avatar Picker**: Horizontal scroll with navigation arrows
-- **Copy Link Button**: One-click lobby sharing with feedback
-- **Modal System**: Non-blocking overlays for scorecard and reconnection
-- **Footer**: Consistent branding with heartbeat animation
-
-### Accessibility
-- Keyboard-focusable elements
-- High contrast text and borders
-- Clear visual feedback on interactions
-- Readable font sizes (16px+ base)
-- Color-blind friendly (not relying solely on color)
-
-## 🐛 Recent Bug Fixes & Improvements
-
-### Major Fixes
-✅ **Firebase Presence System** - Replaced heartbeat polling to eliminate false positive disconnections  
-✅ **Case-Insensitive Lobbies** - Uppercase normalization for all lobby codes  
-✅ **Bidding Bug** - Fixed Firebase empty object normalization causing single-player bidding  
-✅ **Scorecard Reset** - Proper null checks prevent stale data between rounds  
-✅ **Card Disabling** - Fixed cards staying disabled after winning a hand  
-✅ **User Menu Dropdown** - Restructured HTML to prevent double-toggle issues  
-✅ **Reconnection Modal** - Only shows during active game (not lobby), auto-hides on reconnect  
-
-### UX Enhancements
-✅ **Removed "Select Starting Player"** - Random dealer selection for fairness  
-✅ **Terminology Update** - Changed "trick" to "hand" in user-facing text  
-✅ **Simplified Scoreboard** - Removed confusing score column from live view  
-✅ **End Game Modal** - No more alerts, beautiful rankings with medals  
-✅ **Lobby Styling** - Consistent glass-morphism design across all screens  
-✅ **Footer Visibility** - Unified footer on register and lobby screens  
-✅ **Personalized Messages** - Shows actual player names instead of "dealer"  
-✅ **Game Header** - Conditional display when single player waiting  
-
-### Code Quality
-✅ **Removed Debug Logs** - Cleaned up console statements  
-✅ **Modular Architecture** - Maintained clean separation of concerns  
-✅ **Firebase Handling** - Proper null checks and error handling  
-✅ **Comment Cleanup** - Removed outdated TODOs and debug comments  
-
-## 📝 Development Notes
-
-### Project Evolution
-This project started as a monolithic 918-line HTML file and was refactored into a modular architecture with 10 JavaScript files totaling ~2,200 lines. The restructuring significantly improved:
-- **Maintainability**: Easy to locate and fix bugs
-- **Debuggability**: Clear stack traces and isolated concerns
-- **Scalability**: Easy to add new features
-- **Collaboration**: Multiple developers can work simultaneously
-
-### Performance Considerations
-- Firebase listeners efficiently scoped to minimize data transfer
-- Card shuffling uses Fisher-Yates algorithm (O(n))
-- DOM updates batched where possible
-- Event listeners properly cleaned up to prevent memory leaks
-
-### Browser Compatibility
-Tested and working on:
-- ✅ Chrome 90+ (desktop & mobile)
-- ✅ Firefox 88+ (desktop & mobile)
-- ✅ Safari 14+ (desktop & mobile)
-- ✅ Edge 90+
-
-## 🚀 Future Enhancements
-
-### Planned Features
-- [ ] **Sound Effects**: Card dealing, bidding, winning sounds
-- [ ] **Animations**: Card flip, fly-to-center, trick collection
-- [ ] **Game Statistics**: Personal win/loss record, average scores
-- [ ] **Game History**: Review past games with full play-by-play
-- [ ] **Spectator Mode**: Watch live games without participating
-- [ ] **Chat System**: In-game text chat between players
-- [ ] **Custom Avatars**: Upload personal images or use Gravatar
-- [ ] **Tournaments**: Multi-game series with leaderboards
-- [ ] **AI Players**: Computer opponents for solo practice
-- [ ] **Rule Variants**: Different scoring systems and gameplay modes
-
-### Deployment Options
-- **Firebase Hosting**: Single command deployment (`firebase deploy`)
-- **Netlify**: Drag-and-drop with automatic SSL
-- **Vercel**: Git integration with preview deployments
-- **GitHub Pages**: Free hosting with custom domain support
-
-### Security Improvements
-- [ ] Firebase Authentication (Google, Email/Password)
-- [ ] Rate limiting on lobby creation
-- [ ] Game room expiration (auto-cleanup after 24h)
-- [ ] Profanity filter for player names
-- [ ] Kick/ban functionality for lobby hosts
-
-## ❓ Known Issues
-
-All major issues resolved! 🎉
-
-Minor polish opportunities:
-- Loading state during initial Firebase connection
-- Network error handling UI
-- Offline mode detection
-- Game pause/resume functionality
-
-## 📚 Resources & Credits
-
-### Technologies Used
-- **Frontend**: Vanilla JavaScript (ES6+), HTML5, CSS3
-- **Backend**: Firebase Realtime Database
-- **Avatars**: [Dicebear Avatars API](https://dicebear.com/) (Adventurer style)
-- **Icons**: Custom SVG (scorecard icon)
-- **Fonts**: Google Fonts (Poppins)
-
-### Game Rules
-Based on the traditional **Judgement** (also known as **Oh Hell**, **Oh Pshaw**, **Nomination Whist**) card game. Rules adapted from standard trick-taking card game conventions with anti-sum bidding rule.
-
-### Inspiration
-This project was built to explore:
-- Real-time multiplayer game synchronization
-- Firebase Presence and connection state management  
-- Modular JavaScript architecture
-- Glass-morphism UI design
-- Responsive game layouts
+---
 
 ## 📄 License
 
-MIT License - free to use, modify, and distribute.
+MIT License — free to use, modify, and distribute.
 
 ```
 Copyright (c) 2025 Game of Judgement
@@ -433,24 +204,9 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 ```
 
 ---
 
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to:
-- Report bugs via GitHub Issues
-- Submit pull requests for bug fixes
-- Propose new features or enhancements
-- Improve documentation
-- Share your game experiences
-
----
-
-**Built with ❤️ for card game enthusiasts**
-
-*Last Updated: November 2025*
+**Built with ❤️ by Dinesh Khandelwal**
