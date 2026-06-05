@@ -18,8 +18,22 @@ function makeDeck(){
   return d;
 }
 
-function suitColor(s){ 
-  return ['♠','♣'].includes(s) ? 'spades' : 'hearts'; 
+function suitColor(s){
+  return ['♠','♣'].includes(s) ? 'spades' : 'hearts';
+}
+
+/**
+ * Generate a lobby code from an unambiguous alphabet.
+ * Excludes look-alike characters (I, L, O, 0, 1) so codes are easy to read
+ * aloud and type. Uppercase to match the case-insensitive join flow.
+ */
+function generateLobbyCode(length = 6) {
+  const alphabet = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < length; i++) {
+    code += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+  }
+  return code;
 }
 
 function showScreen(id){

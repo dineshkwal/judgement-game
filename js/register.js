@@ -56,7 +56,7 @@ function createLobby() {
   const id = Date.now().toString();
   storage.myId = id;
   
-  const lobbyId = Math.random().toString(36).substr(2, 6).toUpperCase();
+  const lobbyId = generateLobbyCode();
   storage.lobbyId = lobbyId;
   
   // Store player info in localStorage
@@ -387,7 +387,7 @@ function playAgain() {
   const oldLobbyId = storage.lobbyId;
   
   // Generate new lobby ID
-  const newLobbyId = Math.random().toString(36).substr(2, 6).toUpperCase();
+  const newLobbyId = generateLobbyCode();
   
   // Get all current players
   const currentPlayers = storage.players;

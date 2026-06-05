@@ -108,6 +108,8 @@
   color: #ffd700;
   font-family: 'JetBrains Mono', 'Fira Code', 'Source Code Pro', 'SF Mono', 'Consolas', monospace;
   letter-spacing: 3px;
+  /* Slashed zero so 0 is unmistakable from O */
+  font-feature-settings: "zero" 1;
 }
 
 /* Copy Link Button */
