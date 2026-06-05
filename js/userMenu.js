@@ -10,14 +10,17 @@ function toggleUserMenu(){
     const resetBtn = document.getElementById('resetToLobbyBtn');
     const leaveBtn = document.getElementById('leaveGameBtn');
     const newGameBtn = document.getElementById('newGameBtn');
-    
+    const manageBtn = document.getElementById('managePlayersBtn');
+
     if (storage.isLobbyCreator) {
-      // Host sees "Reset to Lobby" and "New Game"
+      // Host sees "Manage Players", "Reset to Lobby" and "New Game"
+      if (manageBtn) manageBtn.style.display = 'block';
       resetBtn.style.display = 'block';
       leaveBtn.style.display = 'none';
       newGameBtn.style.display = 'block';
     } else {
       // Others only see "Leave Game"
+      if (manageBtn) manageBtn.style.display = 'none';
       resetBtn.style.display = 'none';
       leaveBtn.style.display = 'block';
       newGameBtn.style.display = 'none';
@@ -43,6 +46,86 @@ function openOptionsModal() {
 
 function closeOptionsModal() {
   document.getElementById('optionsOverlay').classList.remove('show');
+}
+
+/* ---------- MANAGE PLAYERS MODAL (host only) ---------- */
+function openManagePlayersModal() {
+  // Only the lobby creator can manage players
+  if (!storage.isLobbyCreator) return;
+
+  // Close user menu
+  document.getElementById('userMenu').classList.remove('show');
+
+  renderManagePlayersList();
+  document.getElementById('managePlayersOverlay').classList.add('show');
+}
+
+function closeManagePlayersModal() {
+  document.getElementById('managePlayersOverlay').classList.remove('show');
+}
+
+function renderManagePlayersList() {
+  const list = document.getElementById('managePlayersList');
+  if (!list) return;
+  list.innerHTML = '';
+
+  storage.players.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'player-item';
+
+    // Kick button on every row except the host's own
+    const showKickBtn = p.id !== storage.myId;
+    const kickBtnHtml = showKickBtn
+      ? `<button class="kick-btn" onclick="kickFromGame('${p.id}', '${p.name.replace(/'/g, "\\'")}')" title="Remove player"><img src="assets/exit.svg" alt="Remove"></button>`
+      : '';
+
+    div.innerHTML = `
+      <div class="player-info">
+        <img src="${p.avatar}" width="40" height="40" style="border-radius:50%;">
+        <span>${p.name}</span>
+      </div>
+      ${kickBtnHtml}
+    `;
+    list.appendChild(div);
+  });
+}
+
+/**
+ * Kick a player from the active game (lobby creator only).
+ *
+ * Removing the player's node is all that's needed: every client's
+ * listenForPlayers() listener detects the removal and runs the SAME path as a
+ * self-leave -- handlePlayerLeft() advances the turn / reassigns the dealer /
+ * cleans up bids+tricks (with its dealer-or-creator write guard), and
+ * checkGameViability() ends the game if fewer than 2 players remain. The kicked
+ * player's own listenForKick() ejects them back to the register screen.
+ */
+function kickFromGame(playerId, playerName) {
+  if (!storage.isLobbyCreator) {
+    console.warn('Only the lobby creator can remove players');
+    return;
+  }
+  if (playerId === storage.myId) {
+    console.warn('Cannot remove yourself');
+    return;
+  }
+  if (!confirm(`Remove ${playerName} from the game?`)) return;
+
+  db.ref(`lobbies/${storage.lobbyId}/players/${playerId}`).remove()
+    .then(() => {
+      debugLog('Player removed from game:', playerName);
+      // Close the modal if only the host is left to manage; otherwise refresh it
+      const others = storage.players.filter(p => p.id !== storage.myId && p.id !== playerId);
+      if (others.length === 0) {
+        closeManagePlayersModal();
+      } else {
+        renderManagePlayersList();
+      }
+    })
+    .catch(err => {
+      console.error('Error removing player:', err);
+      alert('Failed to remove player. Please try again.');
+    });
 }
 
 function updateSoundToggleUI() {
@@ -344,12 +427,16 @@ if (typeof DEBUG !== 'undefined' && DEBUG) {
   });
 }
 
-// Close options modal with ESC key
+// Close options / manage-players modal with ESC key
 window.addEventListener('keydown', function(event) {
   if (event.key === 'Escape') {
     const optionsOverlay = document.getElementById('optionsOverlay');
     if (optionsOverlay && optionsOverlay.classList.contains('show')) {
       closeOptionsModal();
+    }
+    const manageOverlay = document.getElementById('managePlayersOverlay');
+    if (manageOverlay && manageOverlay.classList.contains('show')) {
+      closeManagePlayersModal();
     }
   }
 });

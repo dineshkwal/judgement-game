@@ -710,28 +710,34 @@ function kickPlayer(playerId, playerName) {
  */
 function listenForKick() {
   db.ref(`lobbies/${storage.lobbyId}/players/${storage.myId}`).on('value', (snapshot) => {
-    // If our player entry no longer exists and we're in the lobby screen
-    if (!snapshot.exists() && document.getElementById('lobby').classList.contains('active')) {
-      debugLog('You have been removed from the lobby');
-      
+    if (snapshot.exists()) return;
+
+    const inLobby = document.getElementById('lobby').classList.contains('active');
+    const inGame = document.getElementById('game').classList.contains('active');
+
+    // If our player entry no longer exists and we're in the lobby or game screen
+    if (inLobby || inGame) {
+      debugLog('You have been removed by the host');
+
       // Clean up listeners
       db.ref(`lobbies/${storage.lobbyId}`).off();
-      
+
       // Clear local storage
       localStorage.removeItem('lastLobbyId');
       localStorage.removeItem('lastPlayerId');
-      
+
       // Reset storage
       storage.lobbyId = null;
       storage.myId = null;
       storage.players = [];
       storage.isLobbyCreator = false;
       storage.lobbyCreatorId = null;
-      
-      // Show message and redirect to registration
-      alert('You have been removed from the lobby by the host.');
+
+      // Show context-appropriate message and redirect to registration
+      const where = inGame ? 'game' : 'lobby';
+      alert(`You have been removed from the ${where} by the host.`);
       showScreen('register');
-      
+
       // Clear URL parameters
       window.history.pushState({}, '', window.location.pathname);
     }

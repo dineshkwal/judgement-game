@@ -201,6 +201,20 @@
   font-weight: 600;
 }
 
+/* Manage Players list (reuses lobby .player-item / .kick-btn styling) */
+.manage-players-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* Keep the lobby hover shift from overflowing the narrower modal */
+.manage-players-list .player-item:hover {
+  transform: none;
+}
+
 /* Mobile adjustments */
 @media (max-width: 500px) {
   .options-modal {

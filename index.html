@@ -97,6 +97,7 @@
 
 <!-- User Dropdown Menu -->
 <div id="userMenu">
+  <button id="managePlayersBtn" onclick="openManagePlayersModal()" style="display:none;">👥 Manage Players</button>
   <button id="optionsBtn" onclick="openOptionsModal()">⚙️ Options</button>
   <button id="resetToLobbyBtn" onclick="resetToLobby()">Reset to Lobby</button>
   <button id="leaveGameBtn" onclick="leaveGame()">Leave Game</button>
@@ -142,6 +143,19 @@
           <span class="toggle-slider"></span>
         </label>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Manage Players Modal (host only) -->
+<div id="managePlayersOverlay" class="options-overlay" onclick="closeManagePlayersModal()">
+  <div id="managePlayersModal" class="options-modal" onclick="event.stopPropagation()">
+    <div class="options-header">
+      <h2>Manage Players</h2>
+      <button class="options-close-btn" onclick="closeManagePlayersModal()">✕</button>
+    </div>
+    <div class="options-content">
+      <div id="managePlayersList" class="manage-players-list"></div>
     </div>
   </div>
 </div>
